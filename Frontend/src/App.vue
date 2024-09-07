@@ -1,19 +1,20 @@
 <template>
-  
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <Navbar />
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './screens/Previews/tarjeta_test.vue'
+import Navbar from './components/NavbarComponent.vue';
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
+    Navbar,
+  },
+};
 </script>
 
 <style>
-
+/* Estilos globales si es necesario */
 </style>
