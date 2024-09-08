@@ -40,6 +40,8 @@
   </template>
   
   <script>
+ import authService from '../controlador/authService';// Importa el servicio de autenticación
+  
   export default {
     data() {
       return {
@@ -54,22 +56,21 @@
         return this.$route.path === route;
       },
       login() {
-        if (this.username === 'estudiante' && this.password === '1234') {
-          this.userRole = 'estudiante';
-          this.$router.push('/inicio-estudiante');
-        } else if (this.username === 'docente' && this.password === '1234') {
-          this.userRole = 'docente';
-          this.$router.push('/inicio-docente');
+        const result = authService.login(this.username, this.password);
+        if (result.route) {
+          this.userRole = result.role;
+          this.$router.push(result.route);
         } else {
-          alert('Credenciales incorrectas');
+          alert(result.error);
         }
         this.showLogin = false;
       },
       logout() {
-        this.userRole = 'guest';
+        const result = authService.logout();
+        this.userRole = result.role;
         this.username = '';
         this.password = '';
-        this.$router.push('/');
+        this.$router.push(result.route);
       }
     }
   };

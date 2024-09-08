@@ -13,38 +13,24 @@
   </template>
   
   <script>
-  import service from './authService'; // Importa el servicio de autenticación
+  import SubjectCard from "@/components/tarjeta_materias.vue";
   
   export default {
+    name: "ScreenPreview",
+    components: {
+      SubjectCard
+    },
     data() {
       return {
-        showLogin: false,
-        username: '',
-        password: '',
-        userRole: 'guest', // guest, estudiante, docente
+        subjects: [
+          { name: "Matemáticas", students: 30 },
+          { name: "Historia", students: 25 },
+          { name: "Ciencias", students: 20 },
+          { name: "Física", students: 15 },
+          { name: "Química", students: 18 },
+          { name: "Geografía", students: 12 }
+        ]
       };
-    },
-    methods: {
-      isActive(route) {
-        return this.$route.path === route;
-      },
-      login() {
-        const result = authService.login(this.username, this.password);
-        if (result.route) {
-          this.userRole = result.role;
-          this.$router.push(result.route);
-        } else {
-          alert(result.error);
-        }
-        this.showLogin = false;
-      },
-      logout() {
-        const result = authService.logout();
-        this.userRole = result.role;
-        this.username = '';
-        this.password = '';
-        this.$router.push(result.route);
-      }
     }
   };
   </script>
