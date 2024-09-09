@@ -88,8 +88,8 @@ export default {
   data() {
     return {
       images: [
-        require('@/assets/imagen1.jpg'),
-        require('@/assets/imagen2.jpg'),
+        require('@/assets/imagen6.jpeg'),
+        require('@/assets/imagen5.jpeg'),
         require('@/assets/imagen3.jpg'),
       ], // Las imágenes locales
       currentImageIndex: 0,
