@@ -11,7 +11,7 @@
   <div class="w3-padding-large" id="main">
   <!-- Header/Home -->
   <header class="w3-container w3-padding-32 w3-center w3-teal" id="home">
-    <h1 class="w3-jumbo"><span class="w3-hide-small">LA</span> ESCUELITA</h1>
+    <h1 class="w3-jumbo"><span class="w3-hide-small">UNIDAD</span> EDUCATIVA</h1>
     <p>PRIMARIA Y SECUNDARIA</p>
     <img  alt="UNIDAD EDUCATIVA"  width="992" height="1108">
   </header>
@@ -44,15 +44,12 @@
   </div>
   <!-- Contact Section -->
   <div class="w3-padding-64 w3-content w3-text-grey" id="contact">
-    <h2 class="w3-text-light-grey">Contact Me</h2>
-    <hr style="width:200px" class="w3-opacity">
 
     <div class="w3-section">
       <p><i class="fa fa-map-marker fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> LA PAZ BOLIVIA</p>
       <p><i class="fa fa-phone fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> CELULAR: 777777777</p>
       <p><i class="fa fa-envelope fa-fw w3-text-white w3-xxlarge w3-margin-right"> </i> Email: mail@mail.com</p>
     </div><br>
-    <p>Let's get in touch. Send me a message:</p>
 
     <form action="/action_page.php" target="_blank">
       <p><input class="w3-input w3-padding-16" type="text" placeholder="Name" required name="Name"></p>
