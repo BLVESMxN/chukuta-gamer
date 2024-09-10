@@ -5,11 +5,11 @@ from .models import (
     Tarea, TareaEstudiante, EstadoTarea, Licencia
 )
 
-
 class EstudianteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Estudiante
         fields = ['id', 'nombres', 'apellidos', 'fecha_nacimiento']
+        extra_kwargs = {'id':{'read_only':True}}
 
 
 class GradoSerializer(serializers.ModelSerializer):

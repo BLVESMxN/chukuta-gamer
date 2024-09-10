@@ -17,7 +17,7 @@ from .serializers import (
 class EstudianteViewSet(viewsets.ModelViewSet):
     queryset = Estudiante.objects.all()
     serializer_class = EstudianteSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
 
 class GradoViewSet(viewsets.ModelViewSet):

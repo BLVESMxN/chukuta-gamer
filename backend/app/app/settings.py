@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'academico',
     'foro',
     'django_filters',
-
 ]
 
 MIDDLEWARE = [
