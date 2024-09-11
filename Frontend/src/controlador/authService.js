@@ -1,12 +1,27 @@
+import { RequestHandler } from "./RequestHandler.mjs";
+
 export default {
   login(username, password) {
-    if (username === 'estudiante' && password === '1234') {
-      return { role: 'estudiante', route: '/inicio-estudiante' };
-    } else if (username === 'docente' && password === '1234') {
-      return { role: 'docente', route: '/inicio-docente' };
-    } else {
-      return { role: 'guest', route: null, error: 'Credenciales incorrectas' };
-    }
+    var handler = new RequestHandler();
+
+    return handler.postRequest('/user/token/', {
+      email: username,
+      password: password,
+    }, {})
+    .then(res => {
+      // Log the response to debug
+      console.log('Response:', res);
+
+      if (res && res.status === 200) {
+        return { role: 'estudiante', route: '/inicio-estudiante' };
+      } else {
+        return { role: 'guest', route: null, error: 'Credenciales incorrectas' };
+      }
+    })
+    .catch(error => {
+      console.error('Error during login:', error);
+      return { role: 'guest', route: null, error: 'Error en el servidor' };
+    });
   },
   logout() {
     return { role: 'guest', route: '/' };
