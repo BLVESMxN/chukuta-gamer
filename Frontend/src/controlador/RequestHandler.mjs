@@ -44,7 +44,7 @@ export class RequestHandler{
         return res;
     }
 
-        async postRequest(url, data={}, par={}){
+    async postRequest(url, data={}, par={}){
 
         
     let csrf = this.getCookie('csrftoken');
