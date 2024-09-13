@@ -12,6 +12,8 @@
       <span v-if="userRole === 'docente'">
         <router-link to="/inicio-docente" :class="{ active: isActive('/inicio-docente') }" class="nav-link">INICIO</router-link>
         <router-link to="/materias-docente" :class="{ active: isActive('/materias-docente') }" class="nav-link">MATERIAS</router-link>
+        <router-link to="/estudiantes-docente" :class="{ active: isActive('/estudiantes-docente') }" class="nav-link">ESTUDIANTES DOCENTES</router-link>
+        <router-link to="/horarios-docente" :class="{ active: isActive('/horarios-docente') }" class="nav-link">HORARIOS DOCENTE</router-link>
       </span>
     </div>
 
