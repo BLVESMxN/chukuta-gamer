@@ -7,12 +7,14 @@ import MateriasEstudiante from './views/MateriasEstudiante.vue';
 import InicioDocente from './views/InicioDocente.vue';
 import MateriasDocente from './views/MateriasDocente.vue';
 import PaginaPrincipal from './views/PaginaPrincipal.vue';
+import DetallesMateria from './views/DetallesMateria.vue'; // Importamos la nueva página
 
 // Definir rutas
 const routes = [
   { path: '/', component: PaginaPrincipal },
   { path: '/inicio-estudiante', component: InicioEstudiante },
   { path: '/materias-estudiante', component: MateriasEstudiante },
+  { path: '/materia/:id', component: DetallesMateria },
   { path: '/inicio-docente', component: InicioDocente },
   { path: '/materias-docente', component: MateriasDocente }
 ];

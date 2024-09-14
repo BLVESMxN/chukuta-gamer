@@ -1,0 +1,86 @@
+.inicio-estudiante {
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .titulo {
+    font-size: 28px;
+    color: #333;
+  }
+  
+  .fecha-actual {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  /* Secciones comunes */
+  .seccion-titulo {
+    font-size: 22px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #444;
+  }
+  
+  /* Tarjetas de materias */
+  .tarjetas-materias {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .tarjeta {
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 8px;
+    width: 200px;
+  }
+  
+  .materia-nombre {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  
+  .materia-profesor {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* Notificaciones */
+  .notificaciones ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .notificacion-item {
+    background-color: #ffe0b3;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  /* Estadísticas rápidas */
+  .estadisticas-detalle {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+  }
+  
+  .estadistica {
+    background-color: #e0f7fa;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    width: 120px;
+  }
+  
+  .estadistica-valor {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .estadistica-label {
+    font-size: 14px;
+    color: #555;
+  }
+  
