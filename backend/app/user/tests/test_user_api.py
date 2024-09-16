@@ -39,9 +39,9 @@ class PublicAdminAPITests(TestCase):
 
     def setUp(self):
         self.user = create_lab_admin(
-            email = 'admin@example.com',
+            email = 'adminn@example.com',
             password = 'Testpass123#Testpass123#',
-            name ='Test Name',
+            name ='Testt Name',
         )
 
         self.client = APIClient()
@@ -53,9 +53,9 @@ class PublicAdminAPITests(TestCase):
     def test_create_user_success(self):
         """Test creating user is succesful"""
         payload = {
-            'email' : 'test@example.com',
+            'email' : 'testt@example.com',
             'password' : 'Testpass123#Testpass123#',
-            'name' : 'TestName',
+            'name' : 'TesttName',
         }
 
         res = self.client.post(CREATE_USER_URL, payload)
@@ -71,9 +71,9 @@ class PublicAdminAPITests(TestCase):
     def test_user_with_email_exists_error(self):
         """Test error returned if user with email exists"""
         payload = {
-            'email' : 'test@example.com',
+            'email' : 'testt@example.com',
             'password' : 'Testpass123#Testpass123#',
-            'name' : 'Test Name',
+            'name' : 'Testt Name',
         }
 
         create_user(**payload)
@@ -85,9 +85,9 @@ class PublicAdminAPITests(TestCase):
     def test_password_too_short_error(self):
         """Test an error is returned if password less then 5 chars."""
         payload  = {
-            'email' : 'test@example.com',
+            'email' : 'testt@example.com',
             'password' : 'pw',
-            'name' : 'TestName',
+            'name' : 'TtestName',
         }
         res = self.client.post(CREATE_USER_URL, payload)
 
@@ -100,8 +100,8 @@ class PublicAdminAPITests(TestCase):
     def test_create_token_for_user(self):
         """Test generates tokem for valid credentials."""
         user_details = {
-            'name' : 'Test Name',
-            'email' : 'test@example.com',
+            'name' : 'Ttest Name',
+            'email' : 'ttest@example.com',
             'password' : 'Testpass123#Testpass123#',
         }
         create_lab_admin(**user_details)
@@ -120,8 +120,8 @@ class PublicAdminAPITests(TestCase):
         create_lab_admin(email='test@example.com', password ='Testpass123#Testpass123#',)
 
         payload = {
-            'email' : 'test@example.com',
-            'password' : 'TestBadd123#Testpass123#',
+            'email' : 'testt@example.com',
+            'password' : 'TtestBadd123#Testpass123#',
         }
         res = self.client.post(TOKEN_URL, payload)
 
@@ -131,7 +131,7 @@ class PublicAdminAPITests(TestCase):
     def test_create_token_blank_password(self):
         """Test posting a blank password returns an error."""
         payload = {
-            'email' : 'test@example.com',
+            'email' : 'ttest@example.com',
             'password' : '',
         }
         res = self.client.post(TOKEN_URL, payload)
@@ -149,9 +149,9 @@ class PublicAdminAPITests(TestCase):
     def test_reject_random_payload(self):
         """Test posting unformated body in a post return an error"""
         payload = {
-            'email1' : 'test@example.com',
+            'email1' : 'ttest@example.com',
             'password' : 'Testpass123#Testpass123#',
-            'name' : 'Test Name',
+            'name' : 'Ttest Name',
             'gender' : 'Why do you care?'}
         res = self.client.post(CREATE_USER_URL, payload)
 
@@ -162,8 +162,8 @@ class PublicAdminAPITests(TestCase):
     def test_token_request_throtling(self):
         """Test that too many failed authentication requests block the API for a period."""
         user_info = {
-            'name' : 'Test Name',
-            'email' : "test@example.com",
+            'name' : 'Ttest Name',
+            'email' : "ttest@example.com",
             'password' : 'Testpass123#Testpass123#',
         }
 
@@ -193,9 +193,9 @@ class PrivateUserAPITests(TestCase):
     """Test API requests that requiere authentication."""
     def setUp(self):
         self.user = create_lab_admin(
-            email = 'test@example.com',
+            email = 'ttest@example.com',
             password = 'Testpass123#Testpass123#',
-            name ='Test Name',
+            name ='Ttest Name',
         )
 
         self.client = APIClient()
