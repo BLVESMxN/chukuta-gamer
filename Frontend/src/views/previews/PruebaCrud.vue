@@ -1,5 +1,6 @@
 <template>
   <div>
+    <button class="back-btn" @click="goBack">Atrás</button>
     <div id="app">
       <header id="header">
         <h1>Detalles de Estudiantes</h1>
@@ -38,6 +39,8 @@
               <th>Nombres</th>
               <th>Apellidos</th>
               <th>Fecha de Nacimiento</th>
+              <th>Acciones</th>
+              <!-- Nueva columna para el botón de eliminar -->
             </tr>
           </thead>
           <tbody>
@@ -46,6 +49,15 @@
               <td>{{ estudiante.nombres }}</td>
               <td>{{ estudiante.apellidos }}</td>
               <td>{{ estudiante.fecha_nacimiento }}</td>
+              <td>
+                <!-- Botón para eliminar estudiante -->
+                <button
+                  @click="deleteEstudiante(estudiante.id)"
+                  class="delete-button"
+                >
+                  X
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
