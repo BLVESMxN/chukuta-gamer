@@ -5,6 +5,6 @@ from core.models import createRoles, createSuperInstance
 
 @receiver(post_migrate)
 def add_initial_data(sender, **kwargs):
-    if sender.name == 'core':
+    '''if sender.name == 'core':
         createRoles()
-        createSuperInstance()
+        createSuperInstance()'''
