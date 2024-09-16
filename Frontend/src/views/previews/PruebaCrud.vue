@@ -1,6 +1,5 @@
 <template>
   <div>
-    <button class="back-btn" @click="goBack">Atrás</button>
     <div id="app">
       <header id="header">
         <h1>Detalles de Estudiantes</h1>
