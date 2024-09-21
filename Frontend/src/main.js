@@ -10,6 +10,8 @@ import PaginaPrincipal from "./views/PaginaPrincipal.vue";
 import EstudiantesDocente from "./views/EstudiantesDocente.vue";
 import HorariosDocente from "./views/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
+import LoginPrueba from "./views/previews/LoginTest.vue";
+import AsignaturasCrud from "./views/AsignaturasCrud.vue";
 
 import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
@@ -17,12 +19,14 @@ import { RequestHandler } from "./controlador/RequestHandler.mjs";
 const routes = [
   { path: "/", component: PaginaPrincipal },
   { path: "/inicio-estudiante", component: InicioEstudiante },
-  { path: "/materias-estudiante", component: MateriasEstudiante },
+  { path: "/  ", component: MateriasEstudiante },
   { path: "/inicio-docente", component: InicioDocente },
   { path: "/materias-docente", component: MateriasDocente },
   { path: "/horarios-docente", component: HorariosDocente },
   { path: "/estudiantes-docente", component: EstudiantesDocente },
   { path: "/prueba-crud", component: prueba },
+  { path: "/Login-Test", component: LoginPrueba },
+  { path: "/Asignatura-Crud", component: AsignaturasCrud },
 ];
 
 // Configuración del router

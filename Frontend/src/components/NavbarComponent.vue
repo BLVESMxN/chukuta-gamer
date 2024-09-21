@@ -6,31 +6,80 @@
         <span class="title">SISTEMA DE ESTUDIANTES</span>
       </span>
       <span v-if="userRole === 'estudiante'">
-        <router-link to="/inicio-estudiante" :class="{ active: isActive('/inicio-estudiante') }" class="nav-link">INICIO</router-link>
-        <router-link to="/materias-estudiante" :class="{ active: isActive('/materias-estudiante') }" class="nav-link">MATERIAS</router-link>
+        <router-link
+          to="/inicio-estudiante"
+          :class="{ active: isActive('/inicio-estudiante') }"
+          class="nav-link"
+          >INICIO</router-link
+        >
+        <router-link
+          to="/materias-estudiante"
+          :class="{ active: isActive('/materias-estudiante') }"
+          class="nav-link"
+          >MATERIAS</router-link
+        >
       </span>
       <span v-if="userRole === 'docente'">
-        <router-link to="/inicio-docente" :class="{ active: isActive('/inicio-docente') }" class="nav-link">INICIO</router-link>
-        <router-link to="/materias-docente" :class="{ active: isActive('/materias-docente') }" class="nav-link">MATERIAS</router-link>
-        <router-link to="/estudiantes-docente" :class="{ active: isActive('/estudiantes-docente') }" class="nav-link">ESTUDIANTES DOCENTES</router-link>
-        <router-link to="/horarios-docente" :class="{ active: isActive('/horarios-docente') }" class="nav-link">HORARIOS DOCENTE</router-link>
+        <router-link
+          to="/inicio-docente"
+          :class="{ active: isActive('/inicio-docente') }"
+          class="nav-link"
+          >INICIO</router-link
+        >
+        <router-link
+          to="/materias-docente"
+          :class="{ active: isActive('/materias-docente') }"
+          class="nav-link"
+          >MATERIAS</router-link
+        >
+        <router-link
+          to="/estudiantes-docente"
+          :class="{ active: isActive('/estudiantes-docente') }"
+          class="nav-link"
+          >ESTUDIANTES DOCENTES</router-link
+        >
+        <router-link
+          to="/horarios-docente"
+          :class="{ active: isActive('/horarios-docente') }"
+          class="nav-link"
+          >HORARIOS DOCENTE</router-link
+        >
       </span>
     </div>
 
     <div class="navbar-right">
-      <button v-if="userRole === 'guest'" @click="showLogin = true" class="login-button">
-        <img src="@/assets/usuario_icon.png" alt="user-icon" class="user-icon" />
+      <button
+        v-if="userRole === 'guest'"
+        @click="showLogin = true"
+        class="login-button"
+      >
+        <img
+          src="@/assets/usuario_icon.png"
+          alt="user-icon"
+          class="user-icon"
+        />
       </button>
 
       <!-- Si el usuario está autenticado, mostrar el icono y el panel de opciones -->
       <div v-else class="user-panel">
-        <img src="@/assets/usuario_icon.png" alt="user-icon" class="user-icon" @click="toggleUserOptions" />
+        <img
+          src="@/assets/usuario_icon.png"
+          alt="user-icon"
+          class="user-icon"
+          @click="toggleUserOptions"
+        />
         <!-- Mostrar el panel de opciones al hacer clic en el icono -->
         <div v-if="showUserOptions" class="user-options-panel">
           <p class="user-name">{{ username }}</p>
-          <router-link to="/editar-datos" class="user-option">Editar datos personales</router-link>
-          <router-link to="/cambiar-contrasena" class="user-option">Cambio de contraseña</router-link>
-          <button @click="logout" class="user-option logout-button">Cerrar Sesión</button>
+          <router-link to="/editar-datos" class="user-option"
+            >Editar datos personales</router-link
+          >
+          <router-link to="/cambiar-contrasena" class="user-option"
+            >Cambio de contraseña</router-link
+          >
+          <button @click="logout" class="user-option logout-button">
+            Cerrar Sesión
+          </button>
         </div>
       </div>
     </div>
@@ -41,8 +90,18 @@
         <span class="close" @click="showLogin = false">&times;</span>
         <h2 class="modal-title">Iniciar Sesión</h2>
         <div class="modal-body">
-          <input type="text" placeholder="Usuario" v-model="username" class="input-field" />
-          <input type="password" placeholder="Contraseña" v-model="password" class="input-field" />
+          <input
+            type="text"
+            placeholder="Usuario"
+            v-model="username"
+            class="input-field"
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            v-model="password"
+            class="input-field"
+          />
           <button @click="login" class="login-button">Ingresar</button>
         </div>
       </div>
@@ -51,16 +110,16 @@
 </template>
 
 <script>
-import authService from '../controlador/authService'; // Importa el servicio de autenticación
+import authService from "../controlador/authService.mjs"; // Importa el servicio de autenticación
 
 export default {
   data() {
     return {
       showLogin: false,
       showUserOptions: false, // Para controlar el panel de opciones del usuario
-      username: '',
-      password: '',
-      userRole: 'guest', // guest, estudiante, docente
+      username: "",
+      password: "",
+      userRole: "guest", // guest, estudiante, docente
     };
   },
   methods: {
@@ -83,13 +142,12 @@ export default {
     logout() {
       const result = authService.logout();
       this.userRole = result.role;
-      this.username = '';
-      this.password = '';
+      this.username = "";
+      this.password = "";
       this.$router.push(result.route);
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style src="../views/styles/navbarcomponent.css"></style>
-
