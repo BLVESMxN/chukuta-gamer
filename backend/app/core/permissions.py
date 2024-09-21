@@ -1,13 +1,7 @@
-from rest_framework import permissions
-
-
+from rest_framework.permissions import BasePermission
 from django.contrib.auth import models as Models
-
-
 from django.db import models
-
 from django.utils.translation import gettext_lazy as _
-
 
 
 
@@ -15,6 +9,11 @@ from django.utils.translation import gettext_lazy as _
 
 class Role(Models.AbstractBaseUser, Models.PermissionsMixin):
     """User roles in the system"""
+
+    ADMIN = 'Administrador'
+    TEACHER = 'Profesor'
+    STUDENT = 'Estudiante'
+    PARENT = 'Padre'
 
     groups = models.ManyToManyField(
         Models.Group,
@@ -42,6 +41,51 @@ class Role(Models.AbstractBaseUser, Models.PermissionsMixin):
 
     USERNAME_FIELD = 'role_name'
 
+    
+        
+    def createAdminRole():
+        try:
+            Role.objects.get(role_name = LAB_ADMIN)
+            print(LAB_ADMIN + "LabAdmin Already Added")
+        except:
+            LabAdmin.objects.create()
+            print(LAB_ADMIN + "LabAdmin Added")
+
+    def createAssistantRole():
+        try:
+            Role.objects.get(role_name = LAB_ASSIST)
+            print(LAB_ASSIST + "LabAssistant Already Added")
+        except:
+            LabAssistant.objects.create()
+            print(LAB_ASSIST + "LabAssistant Added")
+
+    def createRoles():
+        createAdminRole()
+        createAssistantRole()
+
+
+    def createSuperInstance():
+        data = {
+                'email' : 'admin@example.com',
+                'password' : '#123#AndresHinojosa#123',
+        }
+        admin = get_user_model().objects.filter(email = data['email']).first()
+        if admin:
+            print("Admin instance already created")
+            return
+
+        get_user_model().objects.create_superuser(**data)
+        print("Admin instance created")
+
+class IsLabAdmin(BasePermission):
+
+    def has_permission(self, request, view):
+        return isAdmin(request.user)
+
+
+
+
+
 
 
 class RolePermissionsMixin(Models.PermissionsMixin):
@@ -59,7 +103,7 @@ class RolePermissionsMixin(Models.PermissionsMixin):
     @classmethod
     def getDBPermission(db_permission):
 
-        class DBPermissionHandler(permissions.BasePermission):
+        class DBPermissionHandler(BasePermission):
             def __init__(self):
                 self.db_permission = db_permission
 
@@ -68,5 +112,37 @@ class RolePermissionsMixin(Models.PermissionsMixin):
                 return request.user.has_perm(self.db_permission)
 
         return  DBPermissionHandler
+
+
+
+class Admin(Role):
+    """Lab Administrator role"""
+    class Meta:
+        permissions = [ ]
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        self.role_name = ADMIN
+        super().save(*args, **kwargs)
+
+
+class Teacher(Role):
+    """Lab Assistant role"""
+
+    class Meta:
+        permissions = []
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        self.role_name = TEACHER
+        super().save(*args, **kwargs)
+
+
+class IsLogged(BasePermission):
+
+    def has_permission(self, request, view):
+
+        user = request.user
+        return isLogged(user) or user.is_superuser
 
 

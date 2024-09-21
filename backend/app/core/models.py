@@ -10,116 +10,60 @@ from django.contrib.auth.models import (
 )
 
 from core.permissions import Role, RolePermissionsMixin
-
 from django.contrib.auth.password_validation import validate_password
-
 from django.utils import timezone
-
 from rest_framework.permissions import BasePermission
 
-LAB_ADMIN = 'AdministradorLaboratorio'
-LAB_ASSIST = 'AsistenteLaboratorio'
 
-
-def isAdmin(user):
-
-    role = user.role
-    if(user.is_superuser):
-        return True
-    if(role.role_name == LAB_ADMIN):
-        return True
-    return False
-
-
-
-class IsLabAdmin(BasePermission):
-
-    def has_permission(self, request, view):
-        return isAdmin(request.user)
-
-class LabAdmin(Role):
-    """Lab Administrator role"""
-
-    class Meta:
-        permissions = [ ("lab_admin_creation", "Creation of lab admin users"),
-                        ("lab_admin_modification", "Modification of lab admin users"),
-                        ("assistant_inactivation", "Deletion of assistant users"),
-                        ("assistant_modification", "Modification of assistant users"),
-                        ("assistant_creation", "Creation of assistan users"),
-                        ]
-        proxy = True
-
-    def save(self, *args, **kwargs):
-        self.role_name = LAB_ADMIN
-        super().save(*args, **kwargs)
-
-
-class LabAssistant(Role):
-    """Lab Assistant role"""
-
-    class Meta:
-        permissions = []
-        proxy = True
-
-    def save(self, *args, **kwargs):
-        self.role_name = LAB_ASSIST
-        super().save(*args, **kwargs)
-
-
-def createAdminRole():
-    try:
-        Role.objects.get(role_name = LAB_ADMIN)
-        print(LAB_ADMIN + "LabAdmin Already Added")
-    except:
-        LabAdmin.objects.create()
-        print(LAB_ADMIN + "LabAdmin Added")
-
-def createAssistantRole():
-    try:
-        Role.objects.get(role_name = LAB_ASSIST)
-        print(LAB_ASSIST + "LabAssistant Already Added")
-    except:
-        LabAssistant.objects.create()
-        print(LAB_ASSIST + "LabAssistant Added")
-
-def createRoles():
-    createAdminRole()
-    createAssistantRole()
-
-
-def createSuperInstance():
-    data = {
-            'email' : 'admin@example.com',
-            'password' : '#123#AndresHinojosa#123',
-    }
-
-    admin = get_user_model().objects.filter(email = data['email']).first()
-    if admin:
-        print("Admin instance already created")
-        return
-
-    get_user_model().objects.create_superuser(**data)
-    print("Admin instance created")
-
-def getAdminRole():
-    try:
-        return LabAdmin.objects.get(role_name = LAB_ADMIN)
-    except:
-        createAdminRole()
-        return LabAdmin.objects.get(role_name = LAB_ADMIN)
-
-
-def getAssistantRole():
-    try:
-        return LabAssistant.objects.get(role_name = LAB_ASSIST)
-    except:
-        return LabAssistant.objects.get(role_name = LAB_ASSIST)
 
 
 class UserManager(BaseUserManager):
     """Manager for users."""
 
-    def create_user(self, email, password=None, **extra_fields):
+    def generate_email(self, names, last_names, extension, **extra_fields):
+        names = names.split(' ')
+        last_names = last_names.split(' ')
+        if(len(names)<1 or len(last_names)<1):
+            raise ValueError('Nombre inválido')
+        
+        for namex in names:
+            if not namex.isalpha():
+                raise ValueError(f'El nombre {namex} inválido')
+        for namex in last_names:
+            if not namex.isalpha():
+                raise ValueError(f'El apellido {namex} es inválido')
+
+        names_str = names[0]
+        last_names_str = last_names[0]
+
+        names = '.' + '.'.join(names[1:]) if len(names)>1 else ''
+        last_names = '.' + '.'.join(last_names[1:]) if len(last_names)>1 else ''
+
+        new_email = f'{names_str}.{last_names_str}@{extension}.com'
+        query = self.filter(email=new_email)
+        i=0
+        j=0
+        c=1
+        while(query.exists()):
+            if(len(last_names_str)>j):    
+                    last_names_str += last_names[j]
+                    if(last_names[j]=='.'):
+                        j += 1
+                        last_names_str += last_names[j]
+            else:
+                if(len(names_str)>i):
+                    names_str += names[i]
+                    if(names[i]=='.'):
+                        i += 1
+                        names_str += names[i]
+                else:
+                    last_names_str += str(c)
+                    c += 1   
+            new_email = f'{names_str}.{last_names_str}@{extension}.com'
+            query = self.filter(email=new_email)
+
+
+    def create_user(self, email, password=None, role=None **extra_fields):
         """Create, save and return a new user."""
         if not email:
             raise ValueError('User must have an email address')
@@ -127,10 +71,9 @@ class UserManager(BaseUserManager):
         validate_password(password)
         user.set_password(password)
         user.save(using=self._db)
-
         return user
 
-    def create_lab_admin(self, email, password=None, **extra_fields):
+    def create_admin(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('User must have an email address')
         user = self.model(email=self.normalize_email(email), **extra_fields)
@@ -140,7 +83,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_lab_assistant(self, email, password=None, **extra_fields):
+    def create_parent(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('User must have an email address')
         user = self.model(email=self.normalize_email(email), **extra_fields)
@@ -149,6 +92,15 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
+    
+    def create_student(self, first_name, last_name, password=None, **extra_fields):
+        if not first_name:
+            raise ValueError('Se debe especificar el primer nombre')
+        if not last_name:
+            raise ValueError('Se debe especificar el apellido')
+        
+        email = self.generate_email(first_name, last_name)
+        self.create_user(email, password, )
 
     def create_superuser(self, email, password):
         """Create and return a new superuser."""
@@ -158,6 +110,42 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
 
         return user
+
+    def get_last_session(self, user):
+        if not user.is_authenticated: return None
+        last_session = Session.objects.filter(user=user).order_by('-login_time').first()
+        if last_session:
+            return last_session
+        else:
+            return None
+
+    def get_open_session(self, user):
+        last_session = self.get_last_session(user)
+        if not last_session: return None
+        if last_session.logout_time:
+            return None
+        else:
+            return last_session
+    
+    def isLogged(self, user):
+        if self.get_open_session(user):
+            return True
+        return False
+    
+    def logOut(self, user):
+        last_session = self.get_open_session(user)
+        if not last_session:
+            return
+        last_session.logout_time = timezone.now()
+        last_session.save()
+
+    def logIn(self, user):
+
+        if not user.is_authenticated:
+            return
+        if self.get_open_session(user):
+            self.logOut(user)
+        Session.objects.create(user=user)
 
 
 class User(AbstractBaseUser, RolePermissionsMixin):
@@ -176,7 +164,6 @@ class User(AbstractBaseUser, RolePermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
-
     def __str__(self):
         return self.email
 
@@ -191,56 +178,6 @@ class Session(models.Model):
     #session_key = models.CharField(max_length=255,  null=False, blank=True)
 
 
-def get_last_session(user):
 
-    if not user.is_authenticated:
-        return None
-
-    last_session = Session.objects.filter(user=user).order_by('-login_time').first()
-    if last_session:
-        return last_session
-    else:
-        return None
-
-def get_open_session(user):
-
-    last_session = get_last_session(user)
-
-    if not last_session: return None
-
-    if last_session.logout_time:
-        return None
-    else:
-        return last_session
-
-def isLogged(user):
-    if get_open_session(user):
-        return True
-    return False
-
-def logOut(user):
-    last_session = get_open_session(user)
-    if not last_session:
-        return
-
-    last_session.logout_time = timezone.now()
-    last_session.save()
-
-def logIn(user):
-
-    if not user.is_authenticated:
-        return
-    if get_open_session(user):
-        logOut(user)
-    Session.objects.create(user=user)
-
-
-
-class IsLogged(BasePermission):
-
-    def has_permission(self, request, view):
-
-        user = request.user
-        return isLogged(user) or user.is_superuser
 
 
