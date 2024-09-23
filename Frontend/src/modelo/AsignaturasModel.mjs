@@ -1,5 +1,5 @@
-import { AuthService } from "@/controlador/authService.mjs"; // Importamos el AuthService
-import { RequestHandler } from "@/controlador/RequestHandler.mjs"; // Importamos el RequestHandler para las peticiones
+import { AuthService } from "@/controlador/authService.mjs";
+import { RequestHandler } from "@/controlador/RequestHandler.mjs";
 
 export class AsignaturasService {
   constructor() {
@@ -10,28 +10,26 @@ export class AsignaturasService {
   // Método para obtener las asignaturas
   async obtenerAsignaturas() {
     try {
-      // Asegurarnos de que tenemos un token válido
       const tokenSesion = await this.authService.ensureAuthenticated(
-        "user@example.com", // Email de ejemplo, reemplazar por valores reales
-        "passwordSeguro123" // Contraseña de ejemplo
+        "user@example.com",
+        "passwordSeguro123"
       );
 
       if (!tokenSesion) {
         throw new Error("No se pudo autenticar al usuario.");
       }
 
-      // Hacemos una solicitud GET con el token en la cabecera
       const response = await this.requestHandler.getRequest(
         "/academico/asignaturas/",
         {
           headers: {
-            Authorization: `Bearer ${tokenSesion}`, // Incluimos el token en las cabeceras
+            Authorization: `Bearer ${tokenSesion}`,
           },
         }
       );
 
       if (response && response.data) {
-        return response.data; // Retornamos la lista de asignaturas
+        return response.data;
       } else {
         throw new Error("Error obteniendo las asignaturas.");
       }
@@ -44,40 +42,107 @@ export class AsignaturasService {
   // Método para agregar una nueva asignatura
   async agregarAsignatura(nombre, grado) {
     try {
-      // Asegurarnos de que tenemos un token válido
       const tokenSesion = await this.authService.ensureAuthenticated(
-        "user@example.com", // Email de ejemplo, reemplazar por valores reales
-        "passwordSeguro123" // Contraseña de ejemplo
+        "user@example.com",
+        "passwordSeguro123"
       );
 
       if (!tokenSesion) {
         throw new Error("No se pudo autenticar al usuario.");
       }
 
-      // Datos de la nueva asignatura
       const asignaturaData = {
         nombre: nombre,
         grado: grado,
       };
 
-      // Hacemos una solicitud POST con el token en la cabecera
       const response = await this.requestHandler.postRequest(
         "/academico/asignaturas/",
         asignaturaData,
         {
           headers: {
-            Authorization: `Bearer ${tokenSesion}`, // Incluimos el token en las cabeceras
+            Authorization: `Bearer ${tokenSesion}`,
           },
         }
       );
 
       if (response.status === 201) {
-        return response.data; // Retornamos los datos de la asignatura creada
+        return response.data;
       } else {
         throw new Error("Error agregando la asignatura.");
       }
     } catch (error) {
       console.error("Error agregando la asignatura:", error);
+      throw error;
+    }
+  }
+
+  // Método para actualizar una asignatura
+  async actualizarAsignatura(id, nombre, grado) {
+    try {
+      const tokenSesion = await this.authService.ensureAuthenticated(
+        "user@example.com",
+        "passwordSeguro123"
+      );
+
+      if (!tokenSesion) {
+        throw new Error("No se pudo autenticar al usuario.");
+      }
+
+      const asignaturaData = {
+        nombre: nombre,
+        grado: grado,
+      };
+
+      const response = await this.requestHandler.putRequest(
+        `/academico/asignaturas/${id}/`,
+        asignaturaData,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenSesion}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        throw new Error("Error actualizando la asignatura.");
+      }
+    } catch (error) {
+      console.error("Error actualizando la asignatura:", error);
+      throw error;
+    }
+  }
+
+  // Método para eliminar una asignatura
+  async eliminarAsignatura(id) {
+    try {
+      const tokenSesion = await this.authService.ensureAuthenticated(
+        "user@example.com",
+        "passwordSeguro123"
+      );
+
+      if (!tokenSesion) {
+        throw new Error("No se pudo autenticar al usuario.");
+      }
+
+      const response = await this.requestHandler.deleteRequest(
+        `/academico/asignaturas/${id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenSesion}`,
+          },
+        }
+      );
+
+      if (response.status === 204) {
+        return true; // Eliminación exitosa
+      } else {
+        throw new Error("Error eliminando la asignatura.");
+      }
+    } catch (error) {
+      console.error("Error eliminando la asignatura:", error);
       throw error;
     }
   }
