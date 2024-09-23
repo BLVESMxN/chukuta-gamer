@@ -14,6 +14,7 @@ import LoginPrueba from "./views/previews/LoginTest.vue";
 import AsignaturasCrud from "./views/AsignaturasCrud.vue";
 
 import { RequestHandler } from "./controlador/RequestHandler.mjs";
+import TareasCrud from "./views/TareasCrud.vue";
 
 // Definir rutas
 const routes = [
@@ -27,6 +28,7 @@ const routes = [
   { path: "/prueba-crud", component: prueba },
   { path: "/Login-Test", component: LoginPrueba },
   { path: "/Asignatura-Crud", component: AsignaturasCrud },
+  { path: "/Tareas", component: TareasCrud },
 ];
 
 // Configuración del router
