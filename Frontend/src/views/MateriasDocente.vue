@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Materias - Estudiante</h1>
+    <h1>Materias - Docente </h1>
     <div class="materias-grid">
       <tarjetas-materia
         v-for="materia in materias"

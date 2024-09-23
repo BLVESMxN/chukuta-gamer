@@ -1,38 +1,26 @@
-import { createApp } from 'vue';
-import App from './App.vue';
-import { createRouter, createWebHistory } from 'vue-router';
+import { createApp } from "vue";
+import App from "./App.vue";
+import { createRouter, createWebHistory } from "vue-router";
 
-import InicioEstudiante from "./views/InicioEstudiante.vue";
-import MateriasEstudiante from "./views/MateriasEstudiante.vue";
-import InicioDocente from "./views/InicioDocente.vue";
-import MateriasDocente from "./views/MateriasDocente.vue";
-import PaginaPrincipal from "./views/PaginaPrincipal.vue";
-import EstudiantesDocente from "./views/EstudiantesDocente.vue";
-import HorariosDocente from "./views/HorariosDocente.vue";
-import GradosAdmin from "./views/GradosAdmin.vue";
-import AsignaturasAdmin from "./views/AsignaturasAdmin.vue";
-import prueba from "./views/previews/PruebaCrud.vue";
-
-import { RequestHandler } from "./controlador/RequestHandler.mjs";
+import InicioEstudiante from './views/InicioEstudiante.vue';
+import MateriasEstudiante from './views/MateriasEstudiante.vue';
+import InicioDocente from './views/InicioDocente.vue';
+import MateriasDocente from './views/MateriasDocente.vue';
+import PaginaPrincipal from './views/PaginaPrincipal.vue';
 
 // Definir rutas
 const routes = [
-  { path: "/", component: PaginaPrincipal },
-  { path: "/inicio-estudiante", component: InicioEstudiante },
-  { path: "/materias-estudiante", component: MateriasEstudiante },
-  { path: "/inicio-docente", component: InicioDocente },
-  { path: "/materias-docente", component: MateriasDocente },
-  { path: "/horarios-docente", component: HorariosDocente },
-  { path: "/estudiantes-docente", component: EstudiantesDocente },
-  { path: "/grados-admin", component: GradosAdmin},
-  { path: "/asignaturas'admin", component: AsignaturasAdmin },
-  { path: "/prueba-crud", component: prueba },
+  { path: '/', component: PaginaPrincipal },
+  { path: '/inicio-estudiante', component: InicioEstudiante },
+  { path: '/materias-estudiante', component: MateriasEstudiante },
+  { path: '/inicio-docente', component: InicioDocente },
+  { path: '/materias-docente', component: MateriasDocente }
 ];
 
 // Configuración del router
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 });
 
 // Crear la aplicación Vue
