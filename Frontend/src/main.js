@@ -12,6 +12,8 @@ import HorariosDocente from "./views/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
 import LoginPrueba from "./views/previews/LoginTest.vue";
 import AsignaturasCrud from "./views/AsignaturasCrud.vue";
+import AsistenciaCrud from "./views/AsistenciaCrud.vue";
+import GradosCrud from "./views/GradosAdmin.vue";
 
 import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
@@ -27,6 +29,8 @@ const routes = [
   { path: "/prueba-crud", component: prueba },
   { path: "/Login-Test", component: LoginPrueba },
   { path: "/Asignatura-Crud", component: AsignaturasCrud },
+  { path: "/Asistencia-Crud", component: AsistenciaCrud },
+  { path: "/grados-Crud", component: GradosCrud },
 ];
 
 // Configuración del router
