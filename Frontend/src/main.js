@@ -9,6 +9,8 @@ import MateriasDocente from "./views/MateriasDocente.vue";
 import PaginaPrincipal from "./views/PaginaPrincipal.vue";
 import EstudiantesDocente from "./views/EstudiantesDocente.vue";
 import HorariosDocente from "./views/HorariosDocente.vue";
+import GradosAdmin from "./views/GradosAdmin.vue";
+import AsignaturasAdmin from "./views/AsignaturasAdmin.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
 
 import { RequestHandler } from "./controlador/RequestHandler.mjs";
@@ -22,6 +24,8 @@ const routes = [
   { path: "/materias-docente", component: MateriasDocente },
   { path: "/horarios-docente", component: HorariosDocente },
   { path: "/estudiantes-docente", component: EstudiantesDocente },
+  { path: "/grados-admin", component: GradosAdmin},
+  { path: "/asignaturas'admin", component: AsignaturasAdmin },
   { path: "/prueba-crud", component: prueba },
 ];
 
