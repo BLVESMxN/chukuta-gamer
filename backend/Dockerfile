@@ -2,13 +2,6 @@ FROM python:3.9-alpine3.13
 
 ENV PYTHONUNBUFFERED 1
 
-
-RUN apk add --no-cache openssl && \
-    mkdir -p /etc/ssl/private && mkdir -p /etc/ssl/certs && \
-    openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/key.pem -out /etc/ssl/certs/cert.pem \
-    -days 365 -nodes -subj "/C=US/ST=California/L=San Francisco/O=YourCompany/OU=YourDepartment/CN=localhost" && \
-    chmod 600 /etc/ssl/private/key.pem /etc/ssl/certs/cert.pem
-
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
 COPY ./app /app
@@ -35,9 +28,6 @@ RUN python -m venv /py && \
     mkdir -p /vol/web/static && \
     chown -R django-user:django-user /vol && \
     chmod -R 755 /vol
-
-
-RUN chown django-user:django-user /etc/ssl/private/key.pem /etc/ssl/certs/cert.pem
 
 ENV PATH="/py/bin:$PATH"
 

@@ -4,16 +4,86 @@ Database models
 from django.conf import settings
 from django.db import models
 from django.contrib.auth import get_user_model
+import django.contrib.auth as DjangoAuth
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
 )
 
-from core.permissions import Role, RolePermissionsMixin
 from django.contrib.auth.password_validation import validate_password
 from django.utils import timezone
 from rest_framework.permissions import BasePermission
 
+
+class Role(models.Model):
+    """User roles in the system"""
+
+    ADMIN = 'Administrador'
+    TEACHER = 'Profesor'
+    STUDENT = 'Estudiante'
+    PARENT = 'Padre'
+
+    role_name = models.CharField(max_length=255, unique=True, primary_key=True)
+
+    @classmethod
+    def createAdminRole(cls):
+        print("Suggggggggggggggggggggggggggor")
+        try:
+            cls.objects.get(role_name = cls.ADMIN)
+            print(cls.ADMIN + " already Added")
+        except:
+            cls.objects.create(role_name = cls.ADMIN)
+            print(cls.ADMIN + " admin Added")
+
+    @classmethod
+    def createTeacherRole(cls):
+        try:
+            cls.objects.get(role_name = cls.TEACHER)
+            print(cls.TEACHER + " already Added")
+        except:
+            cls.objects.create(role_name = cls.TEACHER)
+            print(cls.TEACHER + " admin Added")
+
+    @classmethod
+    def createParentRole(cls):
+        try:
+            cls.objects.get(role_name = cls.PARENT)
+            print(cls.PARENT + " already Added")
+        except: 
+            cls.objects.create(role_name = cls.PARENT)
+            print(cls.PARENT + " admin Added")
+
+    @classmethod
+    def createStudentRole(cls):
+        try:
+            cls.objects.get(role_name = cls.STUDENT)
+            print(cls.STUDENT + " already Added")
+        except:
+            cls.objects.create(role_name = cls.STUDENT)
+            print(cls.STUDENT + " added")
+
+    @classmethod
+    def createRoles(cls):
+        cls.createAdminRole()
+        cls.createParentRole()
+        cls.createTeacherRole()
+        cls.createStudentRole()
+
+    @classmethod
+    def get_admin_role(cls):
+        return cls.objects.get(role_name=cls.ADMIN) 
+    
+    @classmethod
+    def get_parent_role(cls):
+        return cls.objects.get(role_name=cls.PARENT)
+    
+    @classmethod
+    def get_teacher_role(cls):
+        return cls.objects.get(role_name=cls.TEACHER)
+    
+    @classmethod
+    def get_student_role(cls):
+        return cls.objects.get(role_name=cls.STUDENT)
 
 
 
@@ -61,9 +131,16 @@ class UserManager(BaseUserManager):
                     c += 1   
             new_email = f'{names_str}.{last_names_str}@{extension}.com'
             query = self.filter(email=new_email)
+     
+    def create_superuser(self, email, password):
+        """Create and return a new superuser."""
+        user = self.create_user(email, password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
 
-
-    def create_user(self, email, password=None, role=None **extra_fields):
+    def create_user(self, email, password=None, role=None, **extra_fields):
         """Create, save and return a new user."""
         if not email:
             raise ValueError('User must have an email address')
@@ -74,91 +151,49 @@ class UserManager(BaseUserManager):
         return user
 
     def create_admin(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('User must have an email address')
-        user = self.model(email=self.normalize_email(email), **extra_fields)
-        user.role = getAdminRole()
-        validate_password(password)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+        role = Role.getAdminRole()
+        return self.create_user(email, password, role, **extra_fields)
 
-    def create_parent(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('User must have an email address')
-        user = self.model(email=self.normalize_email(email), **extra_fields)
-        user.role = getAssistantRole()
-        validate_password(password)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-    
-    def create_student(self, first_name, last_name, password=None, **extra_fields):
-        if not first_name:
-            raise ValueError('Se debe especificar el primer nombre')
-        if not last_name:
-            raise ValueError('Se debe especificar el apellido')
-        
+    def create_teacher(self, first_name, last_name, password=None, **extra_fields):
+        role = Role.getTeacherRole()
         email = self.generate_email(first_name, last_name)
-        self.create_user(email, password, )
+        return self.create_user(email, password, role, **extra_fields)
+        
 
-    def create_superuser(self, email, password):
-        """Create and return a new superuser."""
-        user = self.create_user(email, password)
-        user.is_staff = True
-        user.is_superuser = True
-        user.save(using=self._db)
-
-        return user
-
-    def get_last_session(self, user):
-        if not user.is_authenticated: return None
-        last_session = Session.objects.filter(user=user).order_by('-login_time').first()
-        if last_session:
-            return last_session
-        else:
-            return None
-
-    def get_open_session(self, user):
-        last_session = self.get_last_session(user)
-        if not last_session: return None
-        if last_session.logout_time:
-            return None
-        else:
-            return last_session
+    def create_parent(self, first_name, last_name, password=None, **extra_fields):
+        role = Role.getParentRole()
+        email = self.generate_email(first_name, last_name)
+        return self.create_user(email, password, role, **extra_fields)
+        
+    def create_student(self, first_name, last_name, password=None, **extra_fields):
+        role = Role.getStudentRole()
+        email = self.generate_email(first_name, last_name)
+        return self.create_user(email, password, role, **extra_fields)
     
-    def isLogged(self, user):
-        if self.get_open_session(user):
-            return True
-        return False
-    
-    def logOut(self, user):
-        last_session = self.get_open_session(user)
-        if not last_session:
+    @classmethod
+    def createSuperInstance(cls):
+        data = {
+                'email' : 'admin@example.com',
+                'password' : 'admin',
+        }
+        admin = cls.filter(email = data['email']).first()
+        if admin:
+            print("Admin instance already created")
             return
-        last_session.logout_time = timezone.now()
-        last_session.save()
 
-    def logIn(self, user):
+        get_user_model().objects.create_superuser(**data)
+        print("Admin instance created")
+        
+        
 
-        if not user.is_authenticated:
-            return
-        if self.get_open_session(user):
-            self.logOut(user)
-        Session.objects.create(user=user)
-
-
-class User(AbstractBaseUser, RolePermissionsMixin):
+class User(AbstractBaseUser):
     """User in the system."""
-
-    class Meta:
-        permissions = [("own_password_modification", "Modification of self's account password"),
-                       ("own_phone_modification", "Modification of self's account phone number"),]
 
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    role = models.ForeignKey(Role, blank=True, null=True, on_delete=models.RESTRICT)
 
     objects = UserManager()
 
@@ -168,16 +203,54 @@ class User(AbstractBaseUser, RolePermissionsMixin):
         return self.email
 
 
-
-
-
 class Session(models.Model):
     user = models.ForeignKey(get_user_model(), null=False, blank=False, on_delete=models.CASCADE)
     login_time = models.DateTimeField(auto_now_add=True)
     logout_time =  models.DateTimeField(null=True, blank=True)
     #session_key = models.CharField(max_length=255,  null=False, blank=True)
 
+    @classmethod
+    def get_last_session(self, user):
+        if not user.is_authenticated: return None
+        last_session = Session.objects.filter(user=user).order_by('-login_time').first()
+        if last_session:
+            return last_session
+        else:
+            return None
 
+    @classmethod
+    def get_open_session(self, user):
+        last_session = self.get_last_session(user)
+        if not last_session: return None
+        if last_session.logout_time:
+            return None
+        else:
+            return last_session
 
+    @classmethod    
+    def is_logged(self, user):
+        if self.get_open_session(user) and user.is_authenticated:
+            return True
+        return False
+    
+    @classmethod
+    def logout(self, user, request=None):
+        if not user: user = request.user
+        last_session = self.get_open_session(user)
+        if not last_session:
+            return
+        last_session.logout_time = timezone.now()
+        last_session.save()
+        DjangoAuth.logout(user)
+
+    @classmethod
+    def login(self, user, request=None):
+        if not user: user = request.user
+        if not user.is_authenticated:
+            return
+        if self.get_open_session(user):
+            self.logout(user)
+        Session.objects.create(user=user)
+        DjangoAuth.login(request, user)
 
 
