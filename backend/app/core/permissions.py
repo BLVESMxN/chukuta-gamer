@@ -6,9 +6,6 @@ from core.models import Session, Role
 
 
 def HasRole(role_list):
-    print("CCCCCCCCCCCCCCCCCCCCCCOOOOOOOOOOOOOOOOOOOONNNNNNNNNNNNNNNNNNIIIIIIIIIIIIIIIIIIIIIIOOOOOOOOOOOOOOOOOOOOO")
-    print(Role.objects.all())
-    role_list = [Role.objects.get(role_name=role) for role in role_list]
     class HasRole(BasePermission):
         roles = role_list
 

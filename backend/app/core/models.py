@@ -27,7 +27,6 @@ class Role(models.Model):
 
     @classmethod
     def createAdminRole(cls):
-        print("Suggggggggggggggggggggggggggor")
         try:
             cls.objects.get(role_name = cls.ADMIN)
             print(cls.ADMIN + " already Added")
@@ -70,20 +69,32 @@ class Role(models.Model):
         cls.createStudentRole()
 
     @classmethod
-    def get_admin_role(cls):
-        return cls.objects.get(role_name=cls.ADMIN) 
+    def get_admin(cls):
+        try:
+            return cls.objects.get(role_name=cls.ADMIN) 
+        except:
+            return None 
     
     @classmethod
-    def get_parent_role(cls):
-        return cls.objects.get(role_name=cls.PARENT)
+    def get_role(cls):
+        try:    
+            return cls.objects.get(role_name=cls.PARENT)
+        except:
+            return None
     
     @classmethod
-    def get_teacher_role(cls):
-        return cls.objects.get(role_name=cls.TEACHER)
+    def get_teacher(cls):
+        try:
+            return cls.objects.get(role_name=cls.TEACHER)
+        except:
+            return None
     
     @classmethod
-    def get_student_role(cls):
-        return cls.objects.get(role_name=cls.STUDENT)
+    def get_student(cls):
+        try:
+            return cls.objects.get(role_name=cls.STUDENT)
+        except:
+            return None
 
 
 
