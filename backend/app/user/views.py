@@ -19,8 +19,6 @@ from django.contrib.auth import get_user_model
 from user.serializers import (
     AuthTokenSerializer,
     UserSerializer,
-    AssistanSerializer,
-    AdminSerializer,
     ManageUserSerializer,
     SessionSerializer,
     HealthCheckSerializer,
@@ -58,7 +56,7 @@ class LogListPagination(pagination.CursorPagination):
 class ListUsersView(generics.ListAPIView):
     """List shows users in the api"""
     serializer_class = UserSerializer
-    permission_classes = [HasRole([Role.get_admin()]), IsLogged]
+    #permission_classes = [HasRole([Role.get_admin()]), IsLogged]
     #pagination_class = UserListPagination
     queryset = get_user_model().objects.all().order_by('email')
     filterset_class = UserFilter
@@ -86,7 +84,7 @@ class ListUsersView(generics.ListAPIView):
 class ListUserLogsView(generics.ListAPIView):
     """List shows user logs in the api"""
     serializer_class = SessionSerializer
-    permission_classes = [HasRole([Role.get_admin()]), IsLogged]
+    #permission_classes = [HasRole([Role.get_admin()]), IsLogged]
     #pagination_class = LogListPagination
     queryset = Session.objects.all()
 
@@ -169,7 +167,7 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 class ManageUserView(generics.RetrieveUpdateAPIView):
     """Edit user profiles"""
     serializer_class = ManageUserSerializer
-    permission_classes = [HasRole([Role.get_admin()]), IsLogged]
+    #permission_classes = [HasRole([Role.get_admin()]), IsLogged]
 
     @extend_schema(parameters=[
         OpenApiParameter(
