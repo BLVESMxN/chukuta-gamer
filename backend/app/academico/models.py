@@ -1,23 +1,11 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core import validators
+from django.utils import timezone
 from core.models import Session
-class Colegio(models.Model):
-    nombre = models.CharField(max_length=255, null=False, blank=False, unique=True)
-    admin = models.ForeignKey(get_user_model(), null=False, blank=False, on_delete=models.RESTRICT)
-
-    def __str__(self):
-        return self.nombre
 
 
-class Profesor(models.Model):
-    user = models.ForeignKey(get_user_model(), blank=False, null=False, unique=True, on_delete=models.RESTRICT)
-    colegio = models.ForeignKey(Colegio, blank=False, null=False, on_delete=models.RESTRICT)
 
-class Estudiante(): 
-    user = models.ForeignKey(get_user_model(), blank=False, null=False, unique=True, on_delete=models.RESTRICT)
-    colegio = models.ForeignKey(Colegio, blank=False, null=False, on_delete=models.RESTRICT)
-   
 class Grado(models.Model):  
     NIVELES = [
         (1, "Primaria"),
@@ -40,9 +28,61 @@ class Grado(models.Model):
     def __str__(self):
         return f'{self.AVR[self.grado]} de {self.NIVELES[self.nivel]}'
 
+
+class Colegio(models.Model):
+    nombre = models.CharField(max_length=255, null=False, blank=False, unique=True)
+    admin = models.ForeignKey(
+        get_user_model(),
+        null=False,
+        blank=False,
+        on_delete=models.RESTRICT,
+        related_name='institucion'
+    )
+
+    def __str__(self):
+        return self.nombre
+
+class Profesor(get_user_model()):
+    colegio = models.ForeignKey(Colegio, blank=False, null=False, on_delete=models.RESTRICT)
+
+    def get_colegio(self):
+        return self.colegio
+    
+    def __str__(self):
+        return f'{self.name}: {self.colegio.__str__()}'
+
+class Estudiante(get_user_model()): 
+    colegio = models.ForeignKey(Colegio,
+        blank=False,
+        null=False,
+        on_delete=models.RESTRICT
+    )
+    grado = models.ForeignKey(
+        Grado,
+        blank=False,
+        null=False,
+        on_delete=models.RESTRICT)
+    
+    def get_colegio(self):
+        return self.colegio
+    
+    def __str__(self): 
+        return f'{self.name}: {self.grado.__str__()} {self.colegio.__str__()}'
+
 class Asignatura(models.Model):
     nombre = models.CharField(max_length=255, null=False, blank=False)
     grado = models.ForeignKey(Grado, null=False, blank=False, on_delete=models.RESTRICT)
+    colegio = models.ForeignKey(
+        Colegio, 
+        blank=False,
+        null=False,
+        on_delete=models.RESTRICT)
+
+    def get_colegio(self):
+        return self.colegio
+    
+    def __str__(self):
+        return f'{self.nombre}: {self.grado.__str__()} {self.colegio.__str__()}'
 
 class Periodo(models.Model):
     anio = models.IntegerField(
@@ -59,10 +99,13 @@ class Periodo(models.Model):
         null=False,
         blank=False,
     )
-    fecha_inicio = models.DateField(),
+    fecha_inicio = models.DateField(
+        null=False,
+        blank=False,
+    ),
     fecha_fin = models.DateField(),
 
-class Curso(models.Models):
+class Curso(models.Model):
     asignatura = models.ForeignKey(
         Asignatura,
         blank=False,
@@ -87,45 +130,204 @@ class Curso(models.Models):
     
     estudiantes = models.ManyToManyField(
         Estudiante,
-        related_name="cursos"
-        through="Inscripsion",
-        through_fields=("cursos, estudiantes"),
+        related_name="record",
+        through="Inscripcion",
+        through_fields=("curso", "estudiante"),
     )
 
-class Inscripsion(models.Model):
-    cursos = models.ForeignKey(Curso, on_delete=models.CASCADE)
-    estudiantes = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
-    promedio = models.IntegerField(validators=[
+    def get_profesor(self):
+        return self.profesor
+    
+    def get_colegio(self):
+        asignatura = self.asignatura
+        return asignatura.colegio
+
+
+class Inscripcion(models.Model):
+    curso = models.ForeignKey(
+        Curso,
+        on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(
+        Estudiante,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE)
+    promedio = models.IntegerField(
+    validators=[
         validators.MinValueValidator(0),
         validators.MaxValueValidator(100),
     ])
 
+    def get_curso(self):
+        return self.curso
+
+    def get_profesor(self):
+        return self.curso.get_profesor()
+    
+    def get_colegio(self):
+        return self.curso.get_colegio()
+    
+    def save(self):
+        if self.estudiante.get_colegio() != self.curso.get_colegio():
+            raise ValueError("El estudiante no pertenece al colegio")
+
+
 class Tarea(models.Model):
     descripcion = models.TextField()
-    fecha_inicio = models.DateTimeField(blank=True, null=False)
+    fecha_inicio = models.DateTimeField(blank=True, null=False, default=timezone.now)
     fecha_fin = models.DateTimeField(blank=True, null=True)
-    curso = models.ForeignKey(Curso,
-                            blank=False,
-                            null=False,
-                            on_delete=models.CASCADE, 
-                            related_name="tareas")
-    
+    curso = models.ForeignKey(
+        Curso,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE, 
+        related_name="evaluaciones"
+    )
     sesion = models.ForeignKey(
         Session,
         blank=True,
         null=False,
-        on_delete=models.RESTRICT
+        on_delete=models.RESTRICT,
     )
-
     estudiantes = models.ManyToManyField(
         Estudiante,
-        blank=False,
+        blank=True,
         null=False,
         related_name="tareas",
-        through='Entrega'
+        through='Revision',
+        through_fields=("tarea", "estudiante")
     )
 
+    def get_curso(self):
+        return self.curso
+
+    def get_profesor(self):
+        return self.curso.get_profesor()
+    
+    def get_colegio(self):
+        return self.curso.get_colegio()
+    
+    def save(self, *args, **kwargs):
+        if not self.fecha_inicio: self.fecha_inicio = timezone.now()
+        super().save(*args, **kwargs)
+        
+        estudiantes_inscritos = set(self.curso.estudiantes.values_list('id', flat=True))
+        estudiantes_con_tarea = set(self.estudiantes.values_list('id', flat=True))
+
+        estudiantes_pks = estudiantes_inscritos.difference(estudiantes_con_tarea)
+        estudiantes_to_add = Estudiante.objects.filter(id__in=estudiantes_pks)
+        for estudiante in estudiantes_to_add:
+            revision = Revision(estudiante=estudiante, tarea=self)
+            revision.save(student_validated=True)
+
+
+class Revision(models.Model):
+    
+    ESTADOS = [
+        ('ENT', "Entregado"),
+        ('PEN', "Pendiante"),
+        ('VEN', "Vencido"),
+    ]
+    
+    estudiante = models.ForeignKey(
+        Estudiante, 
+        blank=False,
+        null=False,
+        on_delete=models.PROTECT)
+    tarea = models.ForeignKey(
+        Tarea,
+        blank=False,
+        null=False,   
+        on_delete=models.RESTRICT
+    )
+    estado = models.CharField(
+        max_length=10,
+        null=False,
+        blank=True,
+        default=ESTADOS[1][0],
+        choices=ESTADOS)
+    calificacion = models.IntegerField(
+        default=0,
+        validators=[
+            validators.MinValueValidator(0, message="Elija una nota de 0 a 100"),
+            validators.MaxValueValidator(100, message="Elija una nota de 0 a 100")
+        ]
+    )
+
+    def get_curso(self):
+        return self.tarea.get_curso()
+    
+    def get_profesor(self): 
+        return self.tarea.get_profesor()
+    
+    def get_colegio(self):
+        return self.tarea.get_colegio()
+    
+    def save(self, *arg, **kwargs):
+        if(kwargs.get('student_validated', False)): 
+            super().save(*arg, **kwargs)
+            return
+        
+        estudiantes_inscritos = self.tarea.curso.estudiantes.all()
+        if self.estudiante not in estudiantes_inscritos:
+            raise ValueError("El estudiante no esta inscrito")
+        super().save(*arg, **kwargs)
+
+
 class Entrega(models.Model):
-    estudiante = models.ForeignKey(Estudiante)
-    tarea = models.ForeignKey(Tarea)
-    calificacion=models.IntegerField()
+    revision = models.ForeignKey(
+        Revision,
+        blank=False,
+        null=False,
+        related_name='entregas',
+        on_delete=models.CASCADE
+    )
+    comentario = models.TextField(
+        max_length=2000,
+    )
+
+    def get_curso(self):
+        return self.revision.get_curso()
+    
+    def get_profesor(self): 
+        return self.revision.get_profesor()
+    
+    def get_colegio(self):
+        return self.revision.get_colegio()
+
+
+class Asistencia(models.Model):
+    
+    ESTADOS = [
+        ('ASI', 'Asistio'),
+        ('FAL', 'Falta'), 
+        ('ATR', 'Atraso'),
+    ]
+    fecha=models.DateField(
+        blank=False,
+        null=False,
+    )    
+    estado = models.CharField(
+        max_length=3,
+        blank=True,
+        null=False,
+        default=ESTADOS[2][0], 
+        choices=ESTADOS)
+    inscripcion= models.ForeignKey(
+        Inscripcion,
+        blank=False,
+        null=False,
+        related_name='asistencias',
+        on_delete= models.CASCADE
+    )
+
+    def get_curso(self):
+        return self.inscripcion.get_curso()
+    
+    def get_profesor(self): 
+        return self.inscripcion.get_profesor()
+    
+    def get_colegio(self):
+        return self.inscripcion.get_colegio()
+
+
