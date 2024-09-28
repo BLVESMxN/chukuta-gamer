@@ -43,13 +43,32 @@ class Colegio(models.Model):
         return self.nombre
 
 class Profesor(get_user_model()):
-    colegio = models.ForeignKey(Colegio, blank=False, null=False, on_delete=models.RESTRICT)
+    colegio = models.ForeignKey(Colegio,
+        blank=False,
+        null=False,
+        on_delete=models.RESTRICT
+    )
 
     def get_colegio(self):
         return self.colegio
     
     def __str__(self):
         return f'{self.name}: {self.colegio.__str__()}'
+
+class Padre(get_user_model()):
+    
+    colegio = models.ForeignKey(Colegio,
+        blank=False,
+        null=False,
+        on_delete=models.RESTRICT,
+    )
+
+    def get_colegio(self):
+        return self.colegio
+    
+    def __str__(self):
+        return f'{self.name}: {self.colegio.__str__()}'
+
 
 class Estudiante(get_user_model()): 
     colegio = models.ForeignKey(Colegio,
@@ -62,6 +81,22 @@ class Estudiante(get_user_model()):
         blank=False,
         null=False,
         on_delete=models.RESTRICT)
+    
+    user_padre = models.ForeignKey(
+        Padre,
+        blank=True,
+        null=False,
+        on_delete=models.RESTRICT,
+        related_name='padre_estudiante',
+    )
+
+    user_madre = models.ForeignKey(
+        Padre,
+        blank=True,
+        null=False,
+        on_delete=models.RESTRICT,
+        related_name='madre_estudiante',
+    )
     
     def get_colegio(self):
         return self.colegio
@@ -105,6 +140,39 @@ class Periodo(models.Model):
     ),
     fecha_fin = models.DateField(),
 
+class Horario(models.Model):
+    
+    DIAS = [
+        ('LUN', 'Lunes'),
+        ('MAR', 'Martes'),
+        ('MIE', 'Miercoles'),
+        ('JUE', 'Jueves'),
+        ('VIE', 'Viernes')
+    ]
+    
+    periodo = models.ForeignKey(
+        Periodo,
+        blank=False,
+        null=False,
+        on_delete=models.RESTRICT,
+    )
+
+    dia = models.IntegerField(
+        blank=False,
+        null=False,
+        choices=DIAS
+    )
+
+    inicio = models.TimeField(
+        blank=False,
+        null=False
+    )
+
+    fin = models.TimeField(
+        blank=False, 
+        null=False,
+    )
+
 class Curso(models.Model):
     asignatura = models.ForeignKey(
         Asignatura,
@@ -133,6 +201,11 @@ class Curso(models.Model):
         related_name="record",
         through="Inscripcion",
         through_fields=("curso", "estudiante"),
+    )
+
+    horarios = models.ManyToManyField(
+        Horario,
+        related_name='cursos_horario',
     )
 
     def get_profesor(self):
