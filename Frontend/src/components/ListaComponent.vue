@@ -9,7 +9,7 @@
         <!-- Botones de acciones -->
         <div class="actions">
           <button @click="registrarAsistencia(estudiante)" class="btn btn-attendance">Registrar Asistencia</button>
-          <button @click="editarEstudiante(estudiante)" class="btn btn-edit">Editar</button>
+          <button @click="editarEstudiante(estudiantea)" class="btn btn-edit">Editar</button>
         </div>
       </div>
     </div>
