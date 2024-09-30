@@ -90,16 +90,15 @@
   </script>
   
   <style scoped>
-  /* Estilos generales */
   .headline {
     font-size: 1.5em;
     font-weight: bold;
   }
   
-  /* Estilos para la impresión */
+
   @media print {
     v-btn {
-      display: none; /* Ocultar el botón de impresión cuando se imprime */
+      display: none;
     }
   
     .v-card {
