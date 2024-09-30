@@ -57,10 +57,10 @@ export class AuthService {
   getTokenFromCookie() {
     const tokenSesion = this.requestHandler.getCookie("csrftoken");
     if (tokenSesion) {
-      console.log("Token:", tokenSesion);
+      console.log("Token obtenido desde la cookie:", tokenSesion);
       return tokenSesion;
     } else {
-      console.error("No se encontró el token ");
+      console.error("No se encontró el token en la cookie.");
       return null;
     }
   }
