@@ -5,14 +5,8 @@
     <div class="form-container">
       <h2>Agregar Asistencia</h2>
       <input
-        v-model="nuevaAsistencia.estudianteId"
-        placeholder="ID del Estudiante"
-        class="input-field"
-        type="number"
-      />
-      <input
-        v-model="nuevaAsistencia.asignaturaId"
-        placeholder="ID de la Asignatura"
+        v-model="nuevaAsistencia.asignaturaEstudianteId"
+        placeholder="ID de Asignatura Estudiante"
         class="input-field"
         type="number"
       />
@@ -22,10 +16,9 @@
         class="input-field"
         type="date"
       />
-      <select v-model="nuevaAsistencia.estado" class="input-field">
-        <option value="Presente">Presente</option>
-        <option value="Ausente">Ausente</option>
-        <option value="Permiso">Permiso</option>
+      <select v-model="nuevaAsistencia.estadoAsisten" class="input-field">
+        <option :value="true">Presente</option>
+        <option :value="false">Ausente</option>
       </select>
       <button @click="agregarAsistencia" class="add-button">
         Agregar Asistencia
@@ -38,8 +31,7 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Estudiante</th>
-            <th>Asignatura</th>
+            <th>ID Asignatura Estudiante</th>
             <th>Fecha</th>
             <th>Estado</th>
           </tr>
@@ -47,17 +39,15 @@
         <tbody>
           <tr v-for="asistencia in asistencias" :key="asistencia.id">
             <td>{{ asistencia.id }}</td>
-            <td>{{ asistencia.estudiante_id }}</td>
-            <td>{{ asistencia.asignatura_id }}</td>
+            <td>{{ asistencia.asignatura_estudiante }}</td>
             <td>{{ asistencia.fecha }}</td>
             <td>
               <select
-                v-model="asistencia.estado"
+                v-model="asistencia.estado_asisten"
                 @change="actualizarEstado(asistencia)"
               >
-                <option value="Presente">Presente</option>
-                <option value="Ausente">Ausente</option>
-                <option value="Permiso">Permiso</option>
+                <option :value="true">Presente</option>
+                <option :value="false">Ausente</option>
               </select>
             </td>
           </tr>
@@ -76,10 +66,9 @@ export default {
       asistencias: [],
       asistenciasService: new AsistenciasEstudiantesService(), // Instanciamos el servicio de asistencias
       nuevaAsistencia: {
-        estudianteId: "",
-        asignaturaId: "",
+        asignaturaEstudianteId: "", // ID que relaciona la asignatura y el estudiante
         fecha: "",
-        estado: "Presente",
+        estadoAsisten: true, // Por defecto, "Presente" (true)
       },
     };
   },
@@ -97,14 +86,14 @@ export default {
 
     async agregarAsistencia() {
       try {
-        const { estudianteId, asignaturaId, fecha, estado } =
+        const { asignaturaEstudianteId, fecha, estadoAsisten } =
           this.nuevaAsistencia;
 
+        // Asegúrate de que los valores correctos son enviados al servicio
         await this.asistenciasService.agregarAsistencia(
-          estudianteId,
-          asignaturaId,
+          asignaturaEstudianteId,
           fecha,
-          estado
+          estadoAsisten
         );
 
         await this.cargarAsistencias();
@@ -112,10 +101,9 @@ export default {
 
         // Limpiar el formulario
         this.nuevaAsistencia = {
-          estudianteId: "",
-          asignaturaId: "",
+          asignaturaEstudianteId: "",
           fecha: "",
-          estado: "Presente",
+          estadoAsisten: true, // Valor por defecto, presente (true)
         };
       } catch (error) {
         console.error("Error agregando la asistencia:", error);
@@ -126,7 +114,7 @@ export default {
       try {
         await this.asistenciasService.actualizarAsistencia(
           asistencia.id,
-          asistencia.estado
+          asistencia.estado_asisten
         );
 
         alert("Estado de asistencia actualizado exitosamente.");

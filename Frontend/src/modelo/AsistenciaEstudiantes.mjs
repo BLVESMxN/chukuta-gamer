@@ -12,20 +12,19 @@ export class AsistenciasEstudiantesService {
     try {
       // Asegurarnos de que tenemos un token válido
       const tokenSesion = await this.authService.ensureAuthenticated(
-        "user@example.com", 
-        "passwordSeguro123" 
+        "admin@example.com",
+        "#123#AndresHinojosa#123"
       );
 
       if (!tokenSesion) {
         throw new Error("No se pudo autenticar al usuario.");
       }
 
-    
       const response = await this.requestHandler.getRequest(
         "/academico/asistencias/",
         {
           headers: {
-            Authorization: `Bearer ${tokenSesion}`, 
+            Authorization: `Bearer ${tokenSesion}`,
           },
         }
       );
@@ -45,8 +44,8 @@ export class AsistenciasEstudiantesService {
     try {
       // Asegurarnos de que tenemos un token válido
       const tokenSesion = await this.authService.ensureAuthenticated(
-        "user@example.com",
-        "passwordSeguro123"
+        "admin@example.com",
+        "#123#AndresHinojosa#123"
       );
 
       if (!tokenSesion) {
@@ -88,8 +87,8 @@ export class AsistenciasEstudiantesService {
     try {
       // Asegurarnos de que tenemos un token válido
       const tokenSesion = await this.authService.ensureAuthenticated(
-        "user@example.com", 
-        "passwordSeguro123"
+        "admin@example.com",
+        "#123#AndresHinojosa#123"
       );
 
       if (!tokenSesion) {
@@ -128,7 +127,7 @@ export class AsistenciasEstudiantesService {
     try {
       // Asegurarnos de que tenemos un token válido
       const tokenSesion = await this.authService.ensureAuthenticated(
-        "user@example.com", 
+        "user@example.com",
         "passwordSeguro123"
       );
 
