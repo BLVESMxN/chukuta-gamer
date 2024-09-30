@@ -9,10 +9,9 @@ from rest_framework.settings import api_settings
 from rest_framework import pagination
 from rest_framework import status
 
-from core.models import IsLabAdmin, IsLogged, getAdminRole, getAssistantRole
-from django.contrib.auth import login, logout
 from django.contrib.auth.models import AnonymousUser
-from core.models import Session, logIn, logOut
+from core.models import Session, Role
+from core.permissions import IsLogged, HasRole
 from core.utils import LogInThrottle
 
 from django.contrib.auth import get_user_model
@@ -20,8 +19,6 @@ from django.contrib.auth import get_user_model
 from user.serializers import (
     AuthTokenSerializer,
     UserSerializer,
-    AssistanSerializer,
-    AdminSerializer,
     ManageUserSerializer,
     SessionSerializer,
     HealthCheckSerializer,
@@ -59,33 +56,25 @@ class LogListPagination(pagination.CursorPagination):
 class ListUsersView(generics.ListAPIView):
     """List shows users in the api"""
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated, IsLabAdmin, IsLogged]
+    #permission_classes = [HasRole([Role.get_admin()]), IsLogged]
     #pagination_class = UserListPagination
     queryset = get_user_model().objects.all().order_by('email')
     filterset_class = UserFilter
 
     def get_queryset(self):
 
-        admin_param = self.request.query_params.get('is_admin', None)
+        rol_param = self.request.query_params.get('rol', None)
         queryset = self.queryset
-        # Filter queryset based on the 'admin' parameter
-        if admin_param is not None:
-            if admin_param.lower() in ['true', '1', 'yes']:
-                admin = getAdminRole()
-                queryset = queryset.filter(role = admin)
-
-            elif admin_param.lower() in ['false', '0', 'no']:
-                assistant = getAssistantRole()
-                queryset = queryset.filter(role = assistant)
-
+        search_role = Role.objects.get(role_name=rol_param)
+        queryset = queryset.filter(role=search_role)
         return queryset
 
     @extend_schema(parameters=[
         OpenApiParameter(
-            name='is_admin',
-            description="Filter users by their admin status.",
+            name='rol',
+            description="Filtrar usuarios por su rol.",
             required=False,
-            type=bool
+            type=str
         )
     ])
     def get(self, request, *args, **kwargs):
@@ -95,7 +84,7 @@ class ListUsersView(generics.ListAPIView):
 class ListUserLogsView(generics.ListAPIView):
     """List shows user logs in the api"""
     serializer_class = SessionSerializer
-    permission_classes = [permissions.IsAuthenticated, IsLabAdmin, IsLogged]
+    #permission_classes = [HasRole([Role.get_admin()]), IsLogged]
     #pagination_class = LogListPagination
     queryset = Session.objects.all()
 
@@ -124,18 +113,7 @@ class ListUserLogsView(generics.ListAPIView):
     ])
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
-
-
-
-class CreateLabAssistantView(generics.CreateAPIView):
-    serializer_class = AssistanSerializer
-    permission_classes = [permissions.IsAuthenticated, IsLabAdmin, IsLogged]
-
-
-class CreateLabAdminView(generics.CreateAPIView):
-    serializer_class = AdminSerializer
-    permission_classes = [permissions.IsAuthenticated, IsLabAdmin, IsLogged]
-
+    
 
 class CreateTokenView(ObtainAuthToken):
     """Create a new auth toker for user."""
@@ -156,11 +134,9 @@ class CreateTokenView(ObtainAuthToken):
 
         if(isinstance(user, AnonymousUser)):
             return Response({'message'  : 'El usuario no está registrado'}, status= status.HTTP_404_NOT_FOUND)
-
-        login(request, user)
-        logIn(request.user)
+        
+        Session.login(request=request)
         response_serializer  = UserSerializer(instance = user)
-        #response_serializer.is_valid(raise_exception=True)
         return Response(data = response_serializer.data, status=status.HTTP_200_OK)
 
 
@@ -172,21 +148,16 @@ class LogoutView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated, IsLogged]
     def post(self, request, *args, **kwargs):
-        # Perform logout logic here
         if(isinstance(request.user, AnonymousUser)):
             return Response(status=status.HTTP_412_PRECONDITION_FAILED)
-
-        logout(request)  # Delete user's auth token
-        logOut(request.user)
-
-
+        Session.logout(request=request)
         return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
     """Manage the authenticated user."""
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated, IsLogged]
+    permission_classes = [IsLogged]
 
     def get_object(self):
         """Retrieve and return the authenticated user."""
@@ -196,7 +167,7 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 class ManageUserView(generics.RetrieveUpdateAPIView):
     """Edit user profiles"""
     serializer_class = ManageUserSerializer
-    permission_classes = [permissions.IsAuthenticated, IsLabAdmin, IsLogged]
+    #permission_classes = [HasRole([Role.get_admin()]), IsLogged]
 
     @extend_schema(parameters=[
         OpenApiParameter(
@@ -219,8 +190,6 @@ class HealthCheck(views.APIView):
     serializer_class = HealthCheckSerializer
     def get(self, request, *args, **kargs):
         return Response({'status':'OK'}, status=status.HTTP_200_OK)
-
-
 
 
 class MissingQueryParameterException(exceptions.APIException):

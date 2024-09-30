@@ -8,13 +8,10 @@ from django.contrib.auth import (
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 
-
-from core.models import Session, getAdminRole, getAssistantRole, LAB_ADMIN, LAB_ASSIST
-
 from rest_framework.exceptions import APIException
 
 from django.contrib.auth.models import AnonymousUser
-
+from core.models import Role, Session
 
 
 class NotValidRole(APIException):
@@ -37,7 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['email', 'password', 'name', 'is_active', 'role_field']
+        fields = ['pk', 'email', 'password', 'name', 'is_active', 'role_field']
         extra_kwargs = {
             'password': {'write_only': True, 'min_length': 12},
             'email': {'read_only': True},
@@ -77,14 +74,12 @@ class ManageUserSerializer(UserSerializer):
         role_name = validated_data.pop('role_field', None)
         user = get_user_model().objects.create_user(**validated_data)
 
-        if role_name:
-            if(role_name == LAB_ASSIST):
-                user.role = getAssistantRole()
-            elif(role_name == LAB_ADMIN):
-                user.role = getAdminRole()
-            else:
-                raise NotValidRole()
-
+        try:
+            role = Role.objects.get(role_name=role_name)
+        except:
+            raise ValueError("Rol inválido")
+        
+        user.role = role
         return user
 
 
@@ -94,22 +89,6 @@ class ManageUserSerializer(UserSerializer):
         user = super().update(instance, validated_data)
 
         return user
-
-class AssistanSerializer(ManageUserSerializer):
-
-    def create(self, validated_data):
-        """Create and return a user with encrypted password"""
-        return get_user_model().objects.create_lab_assistant(**validated_data)
-
-
-class AdminSerializer(ManageUserSerializer):
-
-    def create(self, validated_data):
-        """Create and return a user with encrypted password"""
-        return get_user_model().objects.create_lab_admin(**validated_data)
-
-
-
 
 class AuthTokenSerializer(serializers.Serializer):
     """Serializer for the user auth token."""
