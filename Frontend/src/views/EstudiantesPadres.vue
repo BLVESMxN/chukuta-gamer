@@ -151,11 +151,11 @@
   }
   
   .card-2 .wave {
-    background: linear-gradient(744deg, #ff6347, #ffa07a 60%, #dbf080);
+    background: linear-gradient(744deg, #ff6347, #ffa07a 60%, #f006b5);
   }
   
   .card-3 .wave {
-    background: linear-gradient(744deg, #32cd32, #98fb98 60%, #e67214);
+    background: linear-gradient(744deg, #32cd32, #98fb98 60%, #144ce6);
   }
   
   .card-4 .wave {
