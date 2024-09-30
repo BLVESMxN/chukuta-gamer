@@ -12,6 +12,15 @@ import HorariosDocente from "./views/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
 import LoginPrueba from "./views/previews/LoginTest.vue";
 import AsignaturasCrud from "./views/AsignaturasCrud.vue";
+import GradosCrud from "./views/GradosCrud.vue";
+import CrearGrado from "./views/CrearGrado.vue";
+import EditarGrado from "./views/EditarGrado.vue";
+
+import AgregarAsignatura from "./views/AgregarAsignatura.vue";
+import EditarAsignatura from "./views/EditarAsignatura.vue";
+
+import AgregarEstudiante from "./views/AgregarEstudiante.vue";
+import EstudiantesCrud from "./views/EstudiantesCrud.vue";
 
 import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
@@ -27,6 +36,14 @@ const routes = [
   { path: "/prueba-crud", component: prueba },
   { path: "/Login-Test", component: LoginPrueba },
   { path: "/Asignatura-Crud", component: AsignaturasCrud },
+  { path: "/Grados-Crud", component: GradosCrud },
+  { path: "/Crear-Grado", component: CrearGrado },
+  { path: "/Editar-Grado/:id", component: EditarGrado },
+  { path: "/Agregar-Asignatura", component: AgregarAsignatura },
+  { path: "/Editar-Asignatura/:id", component: EditarAsignatura },
+
+  { path: "/Estudiantes-Crud", component: EstudiantesCrud },
+  { path: "/Agregar-Estudiante", component: AgregarEstudiante },
 ];
 
 // Configuración del router

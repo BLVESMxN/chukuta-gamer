@@ -1,14 +1,14 @@
 import { AuthService } from "@/controlador/authService.mjs";
 import { RequestHandler } from "@/controlador/RequestHandler.mjs";
 
-export class AsignaturasService {
+export class GradosService {
   constructor() {
     this.requestHandler = new RequestHandler();
     this.authService = new AuthService();
   }
 
-  // Método para obtener las asignaturas
-  async obtenerAsignaturas() {
+  // Método para obtener los grados
+  async obtenerGrados() {
     try {
       const tokenSesion = await this.authService.ensureAuthenticated(
         "admin@example.com",
@@ -20,7 +20,7 @@ export class AsignaturasService {
       }
 
       const response = await this.requestHandler.getRequest(
-        "/academico/asignaturas/",
+        "/academico/grados/",
         {
           headers: {
             Authorization: `Bearer ${tokenSesion}`,
@@ -31,16 +31,16 @@ export class AsignaturasService {
       if (response && response.data) {
         return response.data;
       } else {
-        throw new Error("Error obteniendo las asignaturas.");
+        throw new Error("Error obteniendo los grados.");
       }
     } catch (error) {
-      console.error("Error obteniendo las asignaturas:", error);
+      console.error("Error obteniendo los grados:", error);
       throw error;
     }
   }
 
-  // Método para agregar una nueva asignatura
-  async agregarAsignatura(nombre, grado) {
+  // Método para agregar un nuevo grado
+  async agregarGrado(nombre) {
     try {
       const tokenSesion = await this.authService.ensureAuthenticated(
         "admin@example.com",
@@ -51,14 +51,13 @@ export class AsignaturasService {
         throw new Error("No se pudo autenticar al usuario.");
       }
 
-      const asignaturaData = {
+      const gradoData = {
         nombre: nombre,
-        grado: grado,
       };
 
       const response = await this.requestHandler.postRequest(
-        "/academico/asignaturas/",
-        asignaturaData,
+        "/academico/grados/",
+        gradoData,
         {
           headers: {
             Authorization: `Bearer ${tokenSesion}`,
@@ -69,16 +68,16 @@ export class AsignaturasService {
       if (response.status === 201) {
         return response.data;
       } else {
-        throw new Error("Error agregando la asignatura.");
+        throw new Error("Error agregando el grado.");
       }
     } catch (error) {
-      console.error("Error agregando la asignatura:", error);
+      console.error("Error agregando el grado:", error);
       throw error;
     }
   }
 
-  // Método para actualizar una asignatura
-  async actualizarAsignatura(id, nombre, grado) {
+  // Método para actualizar un grado
+  async actualizarGrado(id, nombre) {
     try {
       const tokenSesion = await this.authService.ensureAuthenticated(
         "admin@example.com",
@@ -89,14 +88,13 @@ export class AsignaturasService {
         throw new Error("No se pudo autenticar al usuario.");
       }
 
-      const asignaturaData = {
+      const gradoData = {
         nombre: nombre,
-        grado: grado,
       };
 
       const response = await this.requestHandler.putRequest(
-        `/academico/asignaturas/${id}/`,
-        asignaturaData,
+        `/academico/grados/${id}/`,
+        gradoData,
         {
           headers: {
             Authorization: `Bearer ${tokenSesion}`,
@@ -107,16 +105,16 @@ export class AsignaturasService {
       if (response.status === 200) {
         return response.data;
       } else {
-        throw new Error("Error actualizando la asignatura.");
+        throw new Error("Error actualizando el grado.");
       }
     } catch (error) {
-      console.error("Error actualizando la asignatura:", error);
+      console.error("Error actualizando el grado:", error);
       throw error;
     }
   }
 
-  // Método para eliminar una asignatura
-  async eliminarAsignatura(id) {
+  // Método para eliminar un grado
+  async eliminarGrado(id) {
     try {
       const tokenSesion = await this.authService.ensureAuthenticated(
         "admin@example.com",
@@ -128,7 +126,7 @@ export class AsignaturasService {
       }
 
       const response = await this.requestHandler.deleteRequest(
-        `/academico/asignaturas/${id}/`,
+        `/academico/grados/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${tokenSesion}`,
@@ -139,10 +137,10 @@ export class AsignaturasService {
       if (response.status === 204) {
         return true; // Eliminación exitosa
       } else {
-        throw new Error("Error eliminando la asignatura.");
+        throw new Error("Error eliminando el grado.");
       }
     } catch (error) {
-      console.error("Error eliminando la asignatura:", error);
+      console.error("Error eliminando el grado:", error);
       throw error;
     }
   }
