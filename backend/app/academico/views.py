@@ -1,122 +1,196 @@
+# views.py
+
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
+from rest_framework.response import Response
+from .permissions import IsAuthenticatedAndRelatedToColegio, IsAuthenticatedAndRelatedToCurso
 from .models import (
-    Estudiante, Grado, Asignatura, Periodo, AsignaturaPeriodo, 
-    AsignaturaEstudiante, Asistencia, EstadoAsistencia, 
-    Tarea, EstadoTarea, Licencia, TareaEstudiante
+    Grado, Colegio, Profesor, Padre, Estudiante,
+    Asignatura, Periodo, Horario, Curso, Inscripcion,
+    Tarea, Revision, Entrega, Asistencia
 )
 from .serializers import (
-    EstudianteSerializer, GradoSerializer, AsignaturaSerializer, PeriodoSerializer, 
-    AsignaturaPeriodoSerializer, AsignaturaEstudianteSerializer, AsistenciaSerializer,
-    EstadoAsistenciaSerializer, TareaSerializer, EstadoTareaSerializer, LicenciaSerializer, TareaEstudianteSerializer
+    GradoSerializer, ColegioSerializer, ProfesorSerializer,
+    PadreSerializer, EstudianteSerializer, AsignaturaSerializer,
+    PeriodoSerializer, HorarioSerializer, CursoSerializer,
+    InscripcionSerializer, TareaSerializer, RevisionSerializer,
+    EntregaSerializer, AsistenciaSerializer
 )
+from django.contrib.auth import get_user_model
 
-
-class EstudianteViewSet(viewsets.ModelViewSet):
-    queryset = Estudiante.objects.all()
-    serializer_class = EstudianteSerializer
-    #permission_classes = [IsAuthenticated]
-
+User = get_user_model()
 
 class GradoViewSet(viewsets.ModelViewSet):
     queryset = Grado.objects.all()
     serializer_class = GradoSerializer
     permission_classes = [IsAuthenticated]
 
+class ColegioViewSet(viewsets.ModelViewSet):
+    queryset = Colegio.objects.all()
+    serializer_class = ColegioSerializer
+    permission_classes = [IsAuthenticated]
+
+class ProfesorViewSet(viewsets.ModelViewSet):
+    queryset = Profesor.objects.all()
+    serializer_class = ProfesorSerializer
+    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
+
+    def get_queryset(self):
+        user_colegio = self.get_user_colegio(self.request.user)
+        return Profesor.objects.filter(colegio=user_colegio)
+
+    def get_user_colegio(self, user):
+        if hasattr(user, 'colegio'):
+            return user.colegio
+        elif hasattr(user, 'profesor'):
+            return user.profesor.colegio
+        elif hasattr(user, 'padre'):
+            return user.padre.colegio
+        elif hasattr(user, 'estudiante'):
+            return user.estudiante.colegio
+        elif hasattr(user, 'institucion'):
+            return user.institucion
+        return None
+
+class PadreViewSet(viewsets.ModelViewSet):
+    queryset = Padre.objects.all()
+    serializer_class = PadreSerializer
+    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
+
+    def get_queryset(self):
+        user_colegio = self.get_user_colegio(self.request.user)
+        return Padre.objects.filter(colegio=user_colegio)
+
+    def get_user_colegio(self, user):
+        return ProfesorViewSet.get_user_colegio(self, user)
+
+class EstudianteViewSet(viewsets.ModelViewSet):
+    queryset = Estudiante.objects.all()
+    serializer_class = EstudianteSerializer
+    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
+
+    def get_queryset(self):
+        user = self.request.user
+        if hasattr(user, 'estudiante'):
+            return Estudiante.objects.filter(pk=user.pk)
+        elif hasattr(user, 'padre'):
+            return Estudiante.objects.filter(user_padre=user) | Estudiante.objects.filter(user_madre=user)
+        else:
+            user_colegio = self.get_user_colegio(user)
+            return Estudiante.objects.filter(colegio=user_colegio)
+
+    def get_user_colegio(self, user):
+        return ProfesorViewSet.get_user_colegio(self, user)
 
 class AsignaturaViewSet(viewsets.ModelViewSet):
     queryset = Asignatura.objects.all()
     serializer_class = AsignaturaSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
 
+    def get_queryset(self):
+        user_colegio = self.get_user_colegio(self.request.user)
+        return Asignatura.objects.filter(colegio=user_colegio)
+
+    def get_user_colegio(self, user):
+        return ProfesorViewSet.get_user_colegio(self, user)
 
 class PeriodoViewSet(viewsets.ModelViewSet):
     queryset = Periodo.objects.all()
     serializer_class = PeriodoSerializer
     permission_classes = [IsAuthenticated]
 
-
-class AsignaturaPeriodoViewSet(viewsets.ModelViewSet):
-    queryset = AsignaturaPeriodo.objects.all()
-    serializer_class = AsignaturaPeriodoSerializer
+class HorarioViewSet(viewsets.ModelViewSet):
+    queryset = Horario.objects.all()
+    serializer_class = HorarioSerializer
     permission_classes = [IsAuthenticated]
 
+class CursoViewSet(viewsets.ModelViewSet):
+    queryset = Curso.objects.all()
+    serializer_class = CursoSerializer
+    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
 
-class AsignaturaEstudianteViewSet(viewsets.ModelViewSet):
-    queryset = AsignaturaEstudiante.objects.all()
-    serializer_class = AsignaturaEstudianteSerializer
-    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        user = self.request.user
+        if hasattr(user, 'profesor'):
+            return Curso.objects.filter(profesor=user)
+        else:
+            user_colegio = self.get_user_colegio(user)
+            return Curso.objects.filter(asignatura__colegio=user_colegio)
 
+    def get_user_colegio(self, user):
+        return ProfesorViewSet.get_user_colegio(self, user)
 
-class AsistenciaViewSet(viewsets.ModelViewSet):
-    queryset = Asistencia.objects.all()
-    serializer_class = AsistenciaSerializer
-    permission_classes = [IsAuthenticated]
+    def perform_create(self, serializer):
+        user = self.request.user
+        if hasattr(user, 'profesor') and serializer.validated_data.get('profesor') == user:
+            serializer.save()
+        else:
+            raise PermissionDenied("No tiene permiso para crear este curso.")
 
-    @action(detail=False, methods=['get'], url_path='por-asignatura-periodo/(?P<asignatura_periodo_id>\d+)')
-    def por_asignatura_periodo(self, request, asignatura_periodo_id=None):
-        try:
-            asignatura_periodo = AsignaturaPeriodo.objects.get(pk=asignatura_periodo_id)
-        except AsignaturaPeriodo.DoesNotExist:
-            return Response({"error": "No se encontró la asignatura"}, status=404)
+class InscripcionViewSet(viewsets.ModelViewSet):
+    queryset = Inscripcion.objects.all()
+    serializer_class = InscripcionSerializer
+    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
 
-        # Get all AsignaturaEstudiante instances related to the given AsignaturaPeriodo
-        asignatura_estudiantes = AsignaturaEstudiante.objects.filter(asignatura_periodo=asignatura_periodo)
+    def get_queryset(self):
+        user_colegio = self.get_user_colegio(self.request.user)
+        return Inscripcion.objects.filter(curso__asignatura__colegio=user_colegio)
 
-        # Filter Asistencia based on the retrieved AsignaturaEstudiante instances
-        asistencias = Asistencia.objects.filter(asignatura_estudiante__in=asignatura_estudiantes)
-
-        serializer = AsistenciaSerializer(asistencias, many=True)
-        return Response(serializer.data)
-    
-class EstadoAsistenciaViewSet(viewsets.ModelViewSet):
-    queryset = EstadoAsistencia.objects.all()
-    serializer_class = EstadoAsistenciaSerializer
-    permission_classes = [IsAuthenticated]
-
-class EstadoTareaViewSet(viewsets.ModelViewSet):
-    queryset = EstadoTarea.objects.all()
-    serializer_class = EstadoTareaSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class LicenciaViewSet(viewsets.ModelViewSet):
-    queryset = Licencia.objects.all()
-    serializer_class = LicenciaSerializer
-    permission_classes = [IsAuthenticated]
-
+    def get_user_colegio(self, user):
+        return ProfesorViewSet.get_user_colegio(self, user)
 
 class TareaViewSet(viewsets.ModelViewSet):
     queryset = Tarea.objects.all()
     serializer_class = TareaSerializer
+    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToCurso]
+
+    def get_queryset(self):
+        user = self.request.user
+        if hasattr(user, 'profesor'):
+            return Tarea.objects.filter(curso__profesor=user)
+        elif hasattr(user, 'estudiante'):
+            return Tarea.objects.filter(curso__estudiantes=user)
+        else:
+            return Tarea.objects.none()
+
+class RevisionViewSet(viewsets.ModelViewSet):
+    queryset = Revision.objects.all()
+    serializer_class = RevisionSerializer
     permission_classes = [IsAuthenticated]
 
-    @action(detail=False, methods=['get'], url_path='por-asignatura-periodo/(?P<asignatura_periodo_id>\d+)')
-    def por_asignatura_periodo(self, request, asignatura_periodo_id=None):
+    def get_queryset(self):
+        user = self.request.user
+        if hasattr(user, 'profesor'):
+            return Revision.objects.filter(tarea__curso__profesor=user)
+        elif hasattr(user, 'estudiante'):
+            return Revision.objects.filter(estudiante=user)
+        else:
+            return Revision.objects.none()
 
-        try:
-            asignatura_periodo = AsignaturaPeriodo.objects.get(pk=asignatura_periodo_id)
-        except AsignaturaPeriodo.DoesNotExist:
-            return Response({"error": "No se encontró la asignatura"}, status=404)
-
-        tareas = Tarea.objects.filter(asignatura=asignatura_periodo)
-        serializer = TareaSerializer(tareas, many=True)
-        return Response(serializer.data)
-
-class TareaEstudianteViewSet(viewsets.ModelViewSet):
-    queryset = TareaEstudiante.objects.all()
-    serializer_class = TareaEstudianteSerializer
+class EntregaViewSet(viewsets.ModelViewSet):
+    queryset = Entrega.objects.all()
+    serializer_class = EntregaSerializer
     permission_classes = [IsAuthenticated]
 
-    @action(detail=False, methods=['get'], url_path='por-asignatura-estudiante/(?P<asignatura_estudiante_id>\d+)')
-    def por_asignatura_estudiante(self, request, asignatura_estudiante_id=None):
-        try:
-            asignatura_estudiante = AsignaturaEstudiante.objects.get(pk=asignatura_estudiante_id)
-        except AsignaturaEstudiante.DoesNotExist:
-            return Response({"error": "No se encontró la asignatura"}, status=404)
+    def get_queryset(self):
+        user = self.request.user
+        if hasattr(user, 'profesor'):
+            return Entrega.objects.filter(revision__tarea__curso__profesor=user)
+        elif hasattr(user, 'estudiante'):
+            return Entrega.objects.filter(revision__estudiante=user)
+        else:
+            return Entrega.objects.none()
 
-        tarea_estudiantes = TareaEstudiante.objects.filter(estudiante=asignatura_estudiante)
-        serializer = TareaEstudianteSerializer(tarea_estudiantes, many=True)
-        return Response(serializer.data)
+class AsistenciaViewSet(viewsets.ModelViewSet):
+    queryset = Asistencia.objects.all()
+    serializer_class = AsistenciaSerializer
+    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
+
+    def get_queryset(self):
+        user_colegio = self.get_user_colegio(self.request.user)
+        return Asistencia.objects.filter(inscripcion__curso__asignatura__colegio=user_colegio)
+
+    def get_user_colegio(self, user):
+        return ProfesorViewSet.get_user_colegio(self, user)

@@ -9,11 +9,9 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from core.models import User
 
-from core.models import logIn
+from core.models import Session, Role
 
 from unittest.mock import patch
-
-from core.models import LAB_ADMIN, LAB_ASSIST
 
 CREATE_USER_URL = reverse("user:create")
 TOKEN_URL = reverse("user:token")
@@ -24,38 +22,46 @@ def create_user(**params):
     """Create and return a new user."""
     return get_user_model().objects.create_user(**params)
 
-def create_lab_admin(**params):
+def create_admin(**params):
     """Create and return a new user."""
-    return get_user_model().objects.create_lab_admin(**params)
+    return get_user_model().objects.create_admin(**params)
 
-def create_lab_assistant(**params):
+def create_parent(**params):
     """Create and return a new user."""
-    return get_user_model().objects.create_lab_assistant(**params)
+    return get_user_model().objects.create_parent(**params)
 
+def create_teacher(**params):
+    """Create and return a new user."""
+    return get_user_model().objects.create_teacher(**params)
+
+def create_student(**params):
+    """Create and return a new user."""
+    return get_user_model().objects.create_student(**params)
 
 
 class PublicAdminAPITests(TestCase):
     """Test the public features of the user API."""
 
     def setUp(self):
-        self.user = create_lab_admin(
-            email = 'admin@example.com',
+        self.user = create_admin(
+            email = 'adminn@example.com',
             password = 'Testpass123#Testpass123#',
-            name ='Test Name',
+            name ='Testt Name',
         )
 
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
-        logIn(self.user)
+        Session.login(self.user)
 
+        Role.createRoles()
 
 
     def test_create_user_success(self):
         """Test creating user is succesful"""
         payload = {
-            'email' : 'test@example.com',
+            'email' : 'testt@example.com',
             'password' : 'Testpass123#Testpass123#',
-            'name' : 'TestName',
+            'name' : 'TesttName',
         }
 
         res = self.client.post(CREATE_USER_URL, payload)
@@ -71,9 +77,9 @@ class PublicAdminAPITests(TestCase):
     def test_user_with_email_exists_error(self):
         """Test error returned if user with email exists"""
         payload = {
-            'email' : 'test@example.com',
+            'email' : 'testt@example.com',
             'password' : 'Testpass123#Testpass123#',
-            'name' : 'Test Name',
+            'name' : 'Testt Name',
         }
 
         create_user(**payload)
@@ -85,9 +91,9 @@ class PublicAdminAPITests(TestCase):
     def test_password_too_short_error(self):
         """Test an error is returned if password less then 5 chars."""
         payload  = {
-            'email' : 'test@example.com',
+            'email' : 'testt@example.com',
             'password' : 'pw',
-            'name' : 'TestName',
+            'name' : 'TtestName',
         }
         res = self.client.post(CREATE_USER_URL, payload)
 
@@ -100,11 +106,11 @@ class PublicAdminAPITests(TestCase):
     def test_create_token_for_user(self):
         """Test generates tokem for valid credentials."""
         user_details = {
-            'name' : 'Test Name',
-            'email' : 'test@example.com',
+            'name' : 'Ttest Name',
+            'email' : 'ttest@example.com',
             'password' : 'Testpass123#Testpass123#',
         }
-        create_lab_admin(**user_details)
+        create_admin(**user_details)
 
         payload = {
             'email' : user_details['email'],
@@ -117,11 +123,11 @@ class PublicAdminAPITests(TestCase):
 
     def test_create_token_bad_credentials(self):
         """Test returns error if credentials invalid."""
-        create_lab_admin(email='test@example.com', password ='Testpass123#Testpass123#',)
+        create_admin(email='test@example.com', password ='Testpass123#Testpass123#',)
 
         payload = {
-            'email' : 'test@example.com',
-            'password' : 'TestBadd123#Testpass123#',
+            'email' : 'testt@example.com',
+            'password' : 'TtestBadd123#Testpass123#',
         }
         res = self.client.post(TOKEN_URL, payload)
 
@@ -131,7 +137,7 @@ class PublicAdminAPITests(TestCase):
     def test_create_token_blank_password(self):
         """Test posting a blank password returns an error."""
         payload = {
-            'email' : 'test@example.com',
+            'email' : 'ttest@example.com',
             'password' : '',
         }
         res = self.client.post(TOKEN_URL, payload)
@@ -149,9 +155,9 @@ class PublicAdminAPITests(TestCase):
     def test_reject_random_payload(self):
         """Test posting unformated body in a post return an error"""
         payload = {
-            'email1' : 'test@example.com',
+            'email1' : 'ttest@example.com',
             'password' : 'Testpass123#Testpass123#',
-            'name' : 'Test Name',
+            'name' : 'Ttest Name',
             'gender' : 'Why do you care?'}
         res = self.client.post(CREATE_USER_URL, payload)
 
@@ -162,12 +168,12 @@ class PublicAdminAPITests(TestCase):
     def test_token_request_throtling(self):
         """Test that too many failed authentication requests block the API for a period."""
         user_info = {
-            'name' : 'Test Name',
-            'email' : "test@example.com",
+            'name' : 'Ttest Name',
+            'email' : "ttest@example.com",
             'password' : 'Testpass123#Testpass123#',
         }
 
-        create_lab_admin(**user_info)
+        create_admin(**user_info)
 
         payload = {
             'email' : user_info['email'],
@@ -192,15 +198,17 @@ class PublicAdminAPITests(TestCase):
 class PrivateUserAPITests(TestCase):
     """Test API requests that requiere authentication."""
     def setUp(self):
-        self.user = create_lab_admin(
-            email = 'test@example.com',
+        self.user = create_admin(
+            email = 'ttest@example.com',
             password = 'Testpass123#Testpass123#',
-            name ='Test Name',
+            name ='Ttest Name',
         )
 
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
-        logIn(self.user)
+        Session.login(self.user)
+
+        Role.createRoles()
 
     def test_retrieve_profile_success(self):
         """Test retrieving profine for logged in user."""
@@ -211,7 +219,7 @@ class PrivateUserAPITests(TestCase):
                 'name' : self.user.name,
                 'email' : self.user.email,
                 'is_active' : True,
-                'role_field' : LAB_ADMIN,
+                'role' : Role.ADMIN,
             }
         )
 
