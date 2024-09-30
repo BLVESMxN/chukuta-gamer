@@ -1,110 +1,85 @@
-import { AuthService } from "@/controlador/authService.mjs";
-import { RequestHandler } from "@/controlador/RequestHandler.mjs";
-
 export class EstudiantesService {
   constructor() {
-    this.requestHandler = new RequestHandler();
-    this.authService = new AuthService();
+    this.dummyEstudiantes = [
+      {
+        id: 1,
+        name: "John Doe",
+        email: "john@example.com",
+        is_active: true,
+      },
+      {
+        id: 2,
+        name: "Jane Smith",
+        email: "jane@example.com",
+        is_active: false,
+      },
+    ];
   }
 
   // Método para obtener todos los estudiantes
   async obtenerEstudiantes() {
-    try {
-      const tokenSesion = await this.authService.ensureAuthenticated(
-        "admin@example.com",
-        "#123#AndresHinojosa#123"
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(this.dummyEstudiantes);
+      }, 500);
+    });
+  }
+
+  // Método para obtener un estudiante por ID
+  async obtenerEstudiantePorId(id) {
+    return new Promise((resolve) => {
+      const estudiante = this.dummyEstudiantes.find(
+        (estudiante) => estudiante.id === id
       );
-
-      if (!tokenSesion) {
-        throw new Error("No se pudo autenticar al usuario.");
-      }
-
-      const response = await this.requestHandler.getRequest("/user/list/", {
-        headers: {
-          Authorization: `Bearer ${tokenSesion}`,
-        },
-      });
-
-      if (response && response.data) {
-        return response.data;
-      } else {
-        throw new Error("Error obteniendo los estudiantes.");
-      }
-    } catch (error) {
-      console.error("Error obteniendo los estudiantes:", error);
-      throw error;
-    }
+      setTimeout(() => {
+        resolve(estudiante);
+      }, 500);
+    });
   }
 
   // Método para agregar un nuevo estudiante
   async agregarEstudiante(name, email, password, is_active) {
-    try {
-      const tokenSesion = await this.authService.ensureAuthenticated(
-        "admin@example.com",
-        "#123#AndresHinojosa#123"
-      );
+    const nuevoEstudiante = {
+      id: this.dummyEstudiantes.length + 1,
+      name,
+      email,
+      is_active,
+    };
+    this.dummyEstudiantes.push(nuevoEstudiante);
 
-      if (!tokenSesion) {
-        throw new Error("No se pudo autenticar al usuario.");
-      }
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(nuevoEstudiante);
+      }, 500);
+    });
+  }
 
-      const estudianteData = {
-        name: name,
-        email: email,
-        password: password,
-        is_active: is_active,
-      };
-
-      const response = await this.requestHandler.postRequest(
-        "/user/create/",
-        estudianteData,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenSesion}`,
-          },
-        }
-      );
-
-      if (response.status === 201) {
-        return response.data;
-      } else {
-        throw new Error("Error agregando el estudiante.");
-      }
-    } catch (error) {
-      console.error("Error agregando el estudiante:", error);
-      throw error;
+  // Método para editar un estudiante
+  async editarEstudiante(id, name, email, is_active) {
+    const estudiante = this.dummyEstudiantes.find((est) => est.id === id);
+    if (estudiante) {
+      estudiante.name = name;
+      estudiante.email = email;
+      estudiante.is_active = is_active;
     }
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(estudiante);
+      }, 500);
+    });
   }
 
   // Método para eliminar un estudiante
   async eliminarEstudiante(id) {
-    try {
-      const tokenSesion = await this.authService.ensureAuthenticated(
-        "admin@example.com",
-        "#123#AndresHinojosa#123"
-      );
+    this.dummyEstudiantes = this.dummyEstudiantes.filter(
+      (estudiante) => estudiante.id !== id
+    );
 
-      if (!tokenSesion) {
-        throw new Error("No se pudo autenticar al usuario.");
-      }
-
-      const response = await this.requestHandler.deleteRequest(
-        `/user/delete/${id}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenSesion}`,
-          },
-        }
-      );
-
-      if (response.status === 204) {
-        return true; // Eliminación exitosa
-      } else {
-        throw new Error("Error eliminando el estudiante.");
-      }
-    } catch (error) {
-      console.error("Error eliminando el estudiante:", error);
-      throw error;
-    }
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 500);
+    });
   }
 }
