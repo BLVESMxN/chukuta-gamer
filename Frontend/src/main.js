@@ -12,6 +12,12 @@ import HorariosDocente from "./views/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
 
 import { RequestHandler } from "./controlador/RequestHandler.mjs";
+import MenuPadres from "./views/MenuPadres.vue";
+import EstudiantesPadres from "./views/EstudiantesPadres.vue";
+import AsignaturasPadres from "./views/AsignaturasPadres.vue";
+import AsistenciaPadres from "./views/AsistenciaPadres.vue";
+import KardexPadres from "./views/KardexPadres.vue";
+import TareasPadres from "./views/TareasPadres.vue";
 
 // Definir rutas
 const routes = [
@@ -23,6 +29,12 @@ const routes = [
   { path: "/horarios-docente", component: HorariosDocente },
   { path: "/estudiantes-docente", component: EstudiantesDocente },
   { path: "/prueba-crud", component: prueba },
+  { path: "/MenuPadres", component: MenuPadres },
+  { path: "/EstudiantesPadres/:nombre", name: 'EstudiantesPadres', component: EstudiantesPadres, props: true },
+  { path: "/AsignaturasPadres", component: AsignaturasPadres },
+  { path: "/AsistenciaPadres", component: AsistenciaPadres },
+  { path: "/KardexPadres", component: KardexPadres },
+  { path: "/TareasPadres", component: TareasPadres },
 ];
 
 // Configuración del router
