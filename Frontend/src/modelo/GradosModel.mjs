@@ -69,7 +69,7 @@ export default {
    
       try {
          const response = await this.requestHandler.putRequest(
-            `/academico/grados/${this.gradoEditado.id}`, // Verificación del ID del grado
+            `/academico/grados/${this.gradoEditado.id}/`, // Verificación del ID del grado
             { nombre: this.gradoEditado.nombre } // Asegúrate de enviar solo el campo 'nombre'
          );
          if (response.status === 200) {

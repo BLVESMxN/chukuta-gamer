@@ -1,75 +1,84 @@
 <template>
-  <div>
-    <div id="app">
-      <header id="header">
-        <h1>GESTIÓN DE ASIGNATURAS</h1>
-      </header>
+  <div id="app">
+    <header id="header">
+      <h1>GESTIÓN DE ASIGNATURAS</h1>
+    </header>
 
-      <!-- Formulario para agregar nueva asignatura -->
-      <div class="form-container">
-        <h2>Agregar Asignatura</h2>
-        <input
-          v-model="nuevaAsignatura.nombre"
-          placeholder="Nombre de la Asignatura"
-          class="input-field"
-        />
-        <input
-          v-model="nuevaAsignatura.grado"
-          placeholder="Grado"
-          class="input-field"
-          type="number"
-        />
-        <button @click="agregarAsignatura" class="add-button">
-          Agregar Asignatura
-        </button>
-      </div>
+    <!-- Formulario para agregar nueva asignatura -->
+    <div class="form-container">
+      <h2>Agregar Asignatura</h2>
+      <input
+        v-model="nuevaAsignatura.nombre"
+        placeholder="Nombre de la Asignatura"
+        class="input-field"
+      />
+      <select v-model="nuevaAsignatura.grado" class="select-field">
+        <option value="">Seleccionar Grado</option>
+        <option v-for="grado in grados" :key="grado.id" :value="grado.id">{{ grado.nombre }}</option>
+      </select>
+      <button @click="agregarAsignatura" class="add-button">
+        Agregar Asignatura
+      </button>
+    </div>
 
-      <!-- Formulario para editar asignatura -->
-      <div v-if="asignaturaEditada" class="form-container">
-        <h2>Editar Asignatura</h2>
-        <input
-          v-model="asignaturaEditada.nombre"
-          placeholder="Nombre de la Asignatura"
-          class="input-field"
-        />
-        <input
-          v-model="asignaturaEditada.grado"
-          placeholder="Grado"
-          class="input-field"
-          type="number"
-        />
-        <button @click="editarAsignatura" class="save-button">Guardar Cambios</button>
-        <button @click="cancelarEdicion" class="cancel-button">Cancelar</button>
-      </div>
+    <!-- Formulario para editar asignatura -->
+    <div v-if="asignaturaEditada" class="form-container">
+      <h2>Editar Asignatura</h2>
+      <input
+        v-model="asignaturaEditada.nombre"
+        placeholder="Nombre de la Asignatura"
+        class="input-field"
+      />
+      <select v-model="asignaturaEditada.grado" class="select-field">
+        <option value="">Seleccionar Grado</option>
+        <option v-for="grado in grados" :key="grado.id" :value="grado.id">{{ grado.nombre }}</option>
+      </select>
+      <button @click="editarAsignatura" class="save-button">Guardar Cambios</button>
+      <button @click="cancelarEdicion" class="cancel-button">Cancelar</button>
+    </div>
 
-      <!-- Tabla para mostrar asignaturas -->
-      <div class="container">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Grado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="asignatura in asignaturas" :key="asignatura.id">
-              <td>{{ asignatura.id }}</td>
-              <td>{{ asignatura.nombre }}</td>
-              <td>{{ asignatura.grado }}</td>
-              <td>
-                <button @click="setEditarAsignatura(asignatura)" class="edit-button">
-                  Editar
-                </button>
-                <button @click="deleteAsignatura(asignatura.id)" class="delete-button">
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- Buscador y filtros -->
+    <div class="filter-container">
+      <input
+        v-model="busqueda"
+        placeholder="Buscar Asignaturas..."
+        class="input-field"
+      />
+      <select v-model="filtroGrado" class="select-field">
+        <option value="">Todos los Grados</option>
+        <option v-for="grado in grados" :key="grado.id" :value="grado.id">{{ grado.nombre }}</option>
+      </select>
+      <button @click="ordenarAsignaturas('nombre')" class="sort-button">Ordenar por Nombre</button>
+      <button @click="ordenarAsignaturas('grado')" class="sort-button">Ordenar por Grado</button>
+    </div>
+
+    <!-- Tabla para mostrar asignaturas -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Grado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="asignatura in asignaturasFiltradas" :key="asignatura.id">
+            <td>{{ asignatura.id }}</td>
+            <td>{{ asignatura.nombre }}</td>
+            <td>{{ asignatura.grado }}</td>
+            <td>
+              <button @click="setEditarAsignatura(asignatura)" class="edit-button">
+                Editar
+              </button>
+              <button @click="deleteAsignatura(asignatura.id)" class="delete-button">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -79,6 +88,50 @@ import AsignaturasModel from "@/modelo/AsignaturasModel.mjs";
 
 export default {
   mixins: [AsignaturasModel],
+  data() {
+    return {
+      busqueda: "",
+      filtroGrado: "",
+      grados: [],
+      nuevaAsignatura: {
+        nombre: "",
+        grado: ""
+      },
+      asignaturaEditada: null,
+    };
+  },
+  computed: {
+    asignaturasFiltradas() {
+      return this.asignaturas.filter(asignatura => {
+        const matchesBusqueda = asignatura.nombre.toLowerCase().includes(this.busqueda.toLowerCase());
+        const matchesGrado = this.filtroGrado ? asignatura.grado === Number(this.filtroGrado) : true;
+        return matchesBusqueda && matchesGrado;
+      });
+    },
+  },
+  methods: {
+    ...AsignaturasModel.methods,
+    fetchGrados() {
+      this.requestHandler.getRequest("/academico/grados/")
+        .then(response => {
+          this.grados = response.data.map(grado => ({ id: grado.id, nombre: grado.nombre })); // Cargar ID y nombre de grado
+        })
+        .catch(error => console.error("Error obteniendo grados:", error));
+    },
+    ordenarAsignaturas(criterio) {
+      this.asignaturas.sort((a, b) => {
+        if (criterio === "nombre") {
+          return a.nombre.localeCompare(b.nombre);
+        } else {
+          return a.grado - b.grado;
+        }
+      });
+    },
+  },
+  created() {
+    this.fetchAsignaturas();
+    this.fetchGrados(); // Cargar los grados
+  },
 };
 </script>
 
@@ -93,27 +146,38 @@ export default {
   margin: auto;
 }
 
-h1, h2 {
+#header {
+  background-color: #35853f;
+  color: white;
+  padding: 15px;
   text-align: center;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+h1, h2 {
+  margin: 0;
+}
+
+/* Estilo para los contenedores del formulario y tabla */
+.form-container,
+.filter-container,
+.table-container {
+  margin: 20px auto;
+  max-width: 600px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
   color: #35853f;
 }
 
-/* Centrado del formulario y ajustes de tamaño */
-.form-container {
-  margin: 20px auto;
-  max-width: 400px;
-  text-align: center;
-  padding: 20px;
-  background-color: #fff;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 /* Mejora en los input fields */
-.input-field {
+.input-field,
+.select-field {
   display: block;
   margin-bottom: 15px;
   padding: 10px;
@@ -124,7 +188,8 @@ h1, h2 {
   transition: border-color 0.3s ease;
 }
 
-.input-field:focus {
+.input-field:focus,
+.select-field:focus {
   border-color: #35853f;
 }
 
@@ -133,15 +198,16 @@ h1, h2 {
 .save-button,
 .cancel-button,
 .edit-button,
-.delete-button {
-  padding: 10px 20px;
+.delete-button,
+.sort-button {
+  padding: 10px 15px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin: 5px;
+  margin: 5px 0;
   font-size: 14px;
   transition: background-color 0.3s ease;
-  width: 100%; /* Aumenta el tamaño de los botones para que coincidan con los inputs */
+  width: 100%;
 }
 
 .add-button,
@@ -161,6 +227,11 @@ h1, h2 {
   color: white;
 }
 
+.sort-button {
+  background-color: #007bff;
+  color: white;
+}
+
 /* Hover effects en los botones */
 .add-button:hover,
 .save-button:hover {
@@ -176,13 +247,15 @@ h1, h2 {
   background-color: #d68910;
 }
 
+.sort-button:hover {
+  background-color: #0056b3;
+}
+
 /* Tabla sin fondos internos y bien proporcionada */
 table {
   width: 100%;
-  max-width: 800px;
   border-collapse: collapse;
-  margin: 20px auto;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }
 
 th,
@@ -195,17 +268,17 @@ td {
 
 /* Encabezado de la tabla */
 th {
-  background-color: #333;
+  background-color: #35853f;
   color: white;
 }
 
 /* Quitar el fondo de los td */
 td {
-  background-color: transparent;
+  background-color: #f9f9f9;
 }
 
 /* Centrado del contenido */
-.container {
+.table-container {
   display: flex;
   flex-direction: column;
   align-items: center;

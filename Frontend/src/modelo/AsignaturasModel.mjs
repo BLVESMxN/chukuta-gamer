@@ -10,10 +10,26 @@ export default {
         grado: 0,
       },
       asignaturaEditada: null, // Asignatura que se está editando
+      filtroGrado: null, // Para filtrar asignaturas por grado
     };
   },
   created() {
     this.fetchAsignaturas();
+  },
+  computed: {
+    // Computed property para las asignaturas filtradas
+    asignaturasFiltradas() {
+      let asignaturasFiltradas = this.asignaturas;
+
+      // Filtrar por grado si se ha especificado
+      if (this.filtroGrado !== null && this.filtroGrado !== '') {
+        asignaturasFiltradas = asignaturasFiltradas.filter(
+          (asignatura) => asignatura.grado === Number(this.filtroGrado)
+        );
+      }
+
+      return asignaturasFiltradas;
+    },
   },
   methods: {
     // Método para obtener las asignaturas
@@ -76,7 +92,7 @@ export default {
 
       try {
         const response = await this.requestHandler.putRequest(
-          `/academico/asignaturas/${this.asignaturaEditada.id}`, // Verificar el ID de la asignatura
+          `/academico/asignaturas/${this.asignaturaEditada.id}/`, // Verificar el ID de la asignatura
           { nombre: this.asignaturaEditada.nombre, grado: this.asignaturaEditada.grado } // Enviar los campos requeridos
         );
         if (response.status === 200) {
@@ -92,6 +108,20 @@ export default {
     // Método para cancelar la edición
     cancelarEdicion() {
       this.asignaturaEditada = null; // Restablecer el estado
+    },
+
+    // Método para filtrar asignaturas
+    filtrarAsignaturas() {
+      // No es necesario hacer nada aquí, ya que el filtrado se maneja en la computed property
+    },
+
+    // Método para ordenar asignaturas
+    ordenarAsignaturas(criterio) {
+      if (criterio === 'nombre') {
+        this.asignaturas.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      } else if (criterio === 'grado') {
+        this.asignaturas.sort((a, b) => a.grado - b.grado);
+      }
     },
   },
 };
