@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Navbar from './views/KardexPadres.vue';
+import Navbar from './components/NavbarComponent.vue';
 
 export default {
   components: {
