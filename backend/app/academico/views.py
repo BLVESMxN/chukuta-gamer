@@ -1,13 +1,13 @@
 # views.py
 
-from rest_framework import viewsets
+from rest_framework import viewsets, views, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .permissions import IsAuthenticatedAndRelatedToColegio, IsAuthenticatedAndRelatedToCurso
 from .models import (
-    Grado, Colegio, Profesor, Padre, Estudiante,
+    Grado, Colegio,Administrativo, Profesor, Padre, Estudiante,
     Asignatura, Periodo, Horario, Curso, Inscripcion,
     Tarea, Revision, Entrega, Asistencia
 )
@@ -16,7 +16,7 @@ from .serializers import (
     PadreSerializer, EstudianteSerializer, AsignaturaSerializer,
     PeriodoSerializer, HorarioSerializer, CursoSerializer,
     InscripcionSerializer, TareaSerializer, RevisionSerializer,
-    EntregaSerializer, AsistenciaSerializer
+    EntregaSerializer, AsistenciaSerializer, AdministrativoSerializer
 )
 from django.contrib.auth import get_user_model
 
@@ -31,6 +31,13 @@ class ColegioViewSet(viewsets.ModelViewSet):
     queryset = Colegio.objects.all()
     serializer_class = ColegioSerializer
     permission_classes = [IsAuthenticated]
+
+
+class AdministradorViewSet(generics.CreateAPIView):
+    queryset = Administrativo.objects.all()
+    serializer_class = AdministrativoSerializer
+
+    
 
 class ProfesorViewSet(viewsets.ModelViewSet):
     queryset = Profesor.objects.all()
