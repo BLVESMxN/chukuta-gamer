@@ -135,7 +135,7 @@ class CreateTokenView(ObtainAuthToken):
         if(isinstance(user, AnonymousUser)):
             return Response({'message'  : 'El usuario no está registrado'}, status= status.HTTP_404_NOT_FOUND)
         
-        Session.login(request=request)
+        Session.login(user, request=request)
         response_serializer  = UserSerializer(instance = user)
         return Response(data = response_serializer.data, status=status.HTTP_200_OK)
 
@@ -144,13 +144,12 @@ class CreateTokenView(ObtainAuthToken):
 from django.views.decorators.csrf import csrf_exempt
 
 
-class LogoutView(generics.CreateAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated, IsLogged]
+class LogoutView(views.APIView):
+    permission_classes = [IsLogged]
     def post(self, request, *args, **kwargs):
         if(isinstance(request.user, AnonymousUser)):
             return Response(status=status.HTTP_412_PRECONDITION_FAILED)
-        Session.logout(request=request)
+        Session.logout(request.user, request=request)
         return Response(status=status.HTTP_202_ACCEPTED)
 
 
