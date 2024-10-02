@@ -29,19 +29,35 @@ class Grado(models.Model):
     def __str__(self):
         return f'{self.AVR[self.grado]} de {self.NIVELES[self.nivel]}'
 
-
 class Colegio(models.Model):
-    nombre = models.CharField(max_length=255, null=False, blank=False, unique=True)
-    admin = models.ForeignKey(
-        get_user_model(),
+    nombre = models.CharField(
+        max_length=255,
         null=False,
         blank=False,
-        on_delete=models.RESTRICT,
-        related_name='institucion'
+        unique=True
+    )
+    suscripcion = models.BooleanField(
+        default=False,
+        null=False,
+        blank=False,
     )
 
     def __str__(self):
         return self.nombre
+
+class Administrativo(get_user_model()):
+    colegio = models.ForeignKey(Colegio,
+        blank=False,
+        null=False,
+        on_delete=models.RESTRICT
+    )
+
+    def get_colegio(self):
+        return self.colegio
+    
+    def __str__(self):
+        return f'{self.name}: {self.colegio.__str__()}'
+   
 
 class Profesor(get_user_model()):
     colegio = models.ForeignKey(Colegio,
@@ -266,7 +282,6 @@ class Tarea(models.Model):
     estudiantes = models.ManyToManyField(
         Estudiante,
         blank=True,
-        null=False,
         related_name="tareas",
         through='Revision',
         through_fields=("tarea", "estudiante")

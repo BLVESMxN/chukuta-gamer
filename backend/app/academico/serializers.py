@@ -20,6 +20,11 @@ class ColegioSerializer(serializers.ModelSerializer):
         model = Colegio
         fields = '__all__'
 
+class AdministrativoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profesor
+        fields = '__all__'
+
 class ProfesorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profesor

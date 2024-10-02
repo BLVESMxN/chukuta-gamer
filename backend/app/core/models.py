@@ -161,33 +161,12 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_admin(self, email, password=None, **extra_fields):
-        role = Role.getAdminRole()
-        return self.create_user(email, password, role, **extra_fields)
-
-    def create_teacher(self, first_name, last_name, password=None, **extra_fields):
-        role = Role.getTeacherRole()
-        email = self.generate_email(first_name, last_name)
-        return self.create_user(email, password, role, **extra_fields)
-        
-
-    def create_parent(self, first_name, last_name, password=None, **extra_fields):
-        role = Role.getParentRole()
-        email = self.generate_email(first_name, last_name)
-        return self.create_user(email, password, role, **extra_fields)
-        
-    def create_student(self, first_name, last_name, password=None, **extra_fields):
-        role = Role.getStudentRole()
-        email = self.generate_email(first_name, last_name)
-        return self.create_user(email, password, role, **extra_fields)
-    
-    @classmethod
-    def createSuperInstance(cls):
+    def createSuperInstance(self):
         data = {
                 'email' : 'admin@example.com',
                 'password' : 'admin',
         }
-        admin = cls.filter(email = data['email']).first()
+        admin = self.filter(email = data['email']).first()
         if admin:
             print("Admin instance already created")
             return
@@ -252,7 +231,7 @@ class Session(models.Model):
             return
         last_session.logout_time = timezone.now()
         last_session.save()
-        DjangoAuth.logout(user)
+        if request: DjangoAuth.logout(request)
 
     @classmethod
     def login(self, user, request=None):
@@ -262,6 +241,6 @@ class Session(models.Model):
         if self.get_open_session(user):
             self.logout(user)
         Session.objects.create(user=user)
-        DjangoAuth.login(request, user)
+        if request: DjangoAuth.login(request, user)
 
 
