@@ -25,17 +25,17 @@ User = get_user_model()
 class GradoViewSet(viewsets.ModelViewSet):
     queryset = Grado.objects.all()
     serializer_class = GradoSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
 class ColegioViewSet(viewsets.ModelViewSet):
     queryset = Colegio.objects.all()
     serializer_class = ColegioSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
 class ProfesorViewSet(viewsets.ModelViewSet):
     queryset = Profesor.objects.all()
     serializer_class = ProfesorSerializer
-    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
+    #permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
 
     def get_queryset(self):
         user_colegio = self.get_user_colegio(self.request.user)
@@ -57,7 +57,7 @@ class ProfesorViewSet(viewsets.ModelViewSet):
 class PadreViewSet(viewsets.ModelViewSet):
     queryset = Padre.objects.all()
     serializer_class = PadreSerializer
-    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
+    #permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
 
     def get_queryset(self):
         user_colegio = self.get_user_colegio(self.request.user)
@@ -69,7 +69,7 @@ class PadreViewSet(viewsets.ModelViewSet):
 class EstudianteViewSet(viewsets.ModelViewSet):
     queryset = Estudiante.objects.all()
     serializer_class = EstudianteSerializer
-    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
+    #permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
 
     def get_queryset(self):
         user = self.request.user
@@ -87,7 +87,7 @@ class EstudianteViewSet(viewsets.ModelViewSet):
 class AsignaturaViewSet(viewsets.ModelViewSet):
     queryset = Asignatura.objects.all()
     serializer_class = AsignaturaSerializer
-    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
+    #permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
 
     def get_queryset(self):
         user_colegio = self.get_user_colegio(self.request.user)
@@ -99,17 +99,17 @@ class AsignaturaViewSet(viewsets.ModelViewSet):
 class PeriodoViewSet(viewsets.ModelViewSet):
     queryset = Periodo.objects.all()
     serializer_class = PeriodoSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
 class HorarioViewSet(viewsets.ModelViewSet):
     queryset = Horario.objects.all()
     serializer_class = HorarioSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
 class CursoViewSet(viewsets.ModelViewSet):
     queryset = Curso.objects.all()
     serializer_class = CursoSerializer
-    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
+    #permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
 
     def get_queryset(self):
         user = self.request.user
@@ -132,7 +132,7 @@ class CursoViewSet(viewsets.ModelViewSet):
 class InscripcionViewSet(viewsets.ModelViewSet):
     queryset = Inscripcion.objects.all()
     serializer_class = InscripcionSerializer
-    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
+    #permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
 
     def get_queryset(self):
         user_colegio = self.get_user_colegio(self.request.user)
@@ -144,7 +144,7 @@ class InscripcionViewSet(viewsets.ModelViewSet):
 class TareaViewSet(viewsets.ModelViewSet):
     queryset = Tarea.objects.all()
     serializer_class = TareaSerializer
-    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToCurso]
+    #permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToCurso]
 
     def get_queryset(self):
         user = self.request.user
@@ -158,7 +158,7 @@ class TareaViewSet(viewsets.ModelViewSet):
 class RevisionViewSet(viewsets.ModelViewSet):
     queryset = Revision.objects.all()
     serializer_class = RevisionSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -172,7 +172,7 @@ class RevisionViewSet(viewsets.ModelViewSet):
 class EntregaViewSet(viewsets.ModelViewSet):
     queryset = Entrega.objects.all()
     serializer_class = EntregaSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -186,7 +186,7 @@ class EntregaViewSet(viewsets.ModelViewSet):
 class AsistenciaViewSet(viewsets.ModelViewSet):
     queryset = Asistencia.objects.all()
     serializer_class = AsistenciaSerializer
-    permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
+    #permission_classes = [IsAuthenticated, IsAuthenticatedAndRelatedToColegio]
 
     def get_queryset(self):
         user_colegio = self.get_user_colegio(self.request.user)

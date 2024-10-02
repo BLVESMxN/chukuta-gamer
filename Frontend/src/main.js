@@ -10,6 +10,7 @@ import PaginaPrincipal from "./views/PaginaPrincipal.vue";
 import EstudiantesDocente from "./views/EstudiantesDocente.vue";
 import HorariosDocente from "./views/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
+import TareasEstudiante from "./views/TareasEstudiante.vue";
 
 import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
@@ -23,6 +24,7 @@ const routes = [
   { path: "/horarios-docente", component: HorariosDocente },
   { path: "/estudiantes-docente", component: EstudiantesDocente },
   { path: "/prueba-crud", component: prueba },
+  { path: "/tareas-estudiante", component: TareasEstudiante },
 ];
 
 // Configuración del router
@@ -45,11 +47,12 @@ console.log(res);
 
 //res =  await handler.getRequest('api/user/token/');
 
-// const payload = {
-//   email: 'admin@example.com',
-//   password: '#123#AndresHinojosa#123',
-// }
+ const payload = {
+   email: 'admin@example.com',
+   password: 'admin',
+ }
 
-//res = await handler.postRequest('/user/token/', payload, {})
+res = await handler.postRequest('/user/token/', payload, {})
+res = await handler.postRequest('/user/logout/')
 //res = await handler.getRequest('/academico/estudiantes/')
 //res = await handler.getRequest('/academico/tareas/')
