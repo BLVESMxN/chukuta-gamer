@@ -45,14 +45,11 @@ INSTALLED_APPS = [
     'django_password_validators',
     'django_password_validators.password_history',
     'corsheaders',
-    'core',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
+    'core',
     'user',
-    'item',
-    'loan',
-    #'pages',
     'academico',
     'foro',
     'django_filters',
@@ -107,7 +104,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
+'''AUTH_PASSWORD_VALIDATORS = [
 
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -135,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 
 ]
-
+'''
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -188,13 +185,12 @@ REST_FRAMEWORK = {
 
     'DEFAULT_THROTTLE_RATES': {
 
-        'anon': '20/min',
+        'anon': '50/min',
 
-        'user': '50/min',
+        'user': '100/min',
 
         'login' : '3/min',
     },
-
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -204,15 +200,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'laboratoriofisicaucb@gmail.com'
 EMAIL_HOST_PASSWORD = '#password#labo'
 
-
-
-
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 
 SESSION_COOKIE_AGE = 900
-
-
 
 STATIC_URL = '/static/static/'
 MEDIA_URL = '/static/media/'

@@ -2,7 +2,7 @@ import django_filters
 from django_filters import rest_framework as filters
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Q
-from core.models import User, getAdminRole, getAssistantRole
+from core.models import Role, User
 
 
 class UserFilter(filters.FilterSet):
@@ -16,10 +16,10 @@ class UserFilter(filters.FilterSet):
 
     def filter_by_admin_status(self, queryset, name, value):
         if value:
-            admin_role = getAdminRole()
+            admin_role = Role.get_admin_role
             return queryset.filter(Q(role=admin_role) | Q(is_staff=True))
         else:
-            assistant_role = getAssistantRole()
+            assistant_role = Role.get_admin_role
             return queryset.filter(role=assistant_role)
 
     def filter_by_email_similarity(self, queryset, name, value):

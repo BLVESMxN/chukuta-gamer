@@ -9,11 +9,9 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from core.models import User
 
-from core.models import logIn
+from core.models import Session, Role
 
 from unittest.mock import patch
-
-from core.models import LAB_ADMIN, LAB_ASSIST
 
 CREATE_USER_URL = reverse("user:create")
 TOKEN_URL = reverse("user:token")
@@ -24,21 +22,28 @@ def create_user(**params):
     """Create and return a new user."""
     return get_user_model().objects.create_user(**params)
 
-def create_lab_admin(**params):
+def create_admin(**params):
     """Create and return a new user."""
-    return get_user_model().objects.create_lab_admin(**params)
+    return get_user_model().objects.create_admin(**params)
 
-def create_lab_assistant(**params):
+def create_parent(**params):
     """Create and return a new user."""
-    return get_user_model().objects.create_lab_assistant(**params)
+    return get_user_model().objects.create_parent(**params)
 
+def create_teacher(**params):
+    """Create and return a new user."""
+    return get_user_model().objects.create_teacher(**params)
+
+def create_student(**params):
+    """Create and return a new user."""
+    return get_user_model().objects.create_student(**params)
 
 
 class PublicAdminAPITests(TestCase):
     """Test the public features of the user API."""
 
     def setUp(self):
-        self.user = create_lab_admin(
+        self.user = create_admin(
             email = 'adminn@example.com',
             password = 'Testpass123#Testpass123#',
             name ='Testt Name',
@@ -46,8 +51,9 @@ class PublicAdminAPITests(TestCase):
 
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
-        logIn(self.user)
+        Session.login(self.user)
 
+        Role.createRoles()
 
 
     def test_create_user_success(self):
@@ -104,7 +110,7 @@ class PublicAdminAPITests(TestCase):
             'email' : 'ttest@example.com',
             'password' : 'Testpass123#Testpass123#',
         }
-        create_lab_admin(**user_details)
+        create_admin(**user_details)
 
         payload = {
             'email' : user_details['email'],
@@ -117,7 +123,7 @@ class PublicAdminAPITests(TestCase):
 
     def test_create_token_bad_credentials(self):
         """Test returns error if credentials invalid."""
-        create_lab_admin(email='test@example.com', password ='Testpass123#Testpass123#',)
+        create_admin(email='test@example.com', password ='Testpass123#Testpass123#',)
 
         payload = {
             'email' : 'testt@example.com',
@@ -167,7 +173,7 @@ class PublicAdminAPITests(TestCase):
             'password' : 'Testpass123#Testpass123#',
         }
 
-        create_lab_admin(**user_info)
+        create_admin(**user_info)
 
         payload = {
             'email' : user_info['email'],
@@ -192,7 +198,7 @@ class PublicAdminAPITests(TestCase):
 class PrivateUserAPITests(TestCase):
     """Test API requests that requiere authentication."""
     def setUp(self):
-        self.user = create_lab_admin(
+        self.user = create_admin(
             email = 'ttest@example.com',
             password = 'Testpass123#Testpass123#',
             name ='Ttest Name',
@@ -200,7 +206,9 @@ class PrivateUserAPITests(TestCase):
 
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
-        logIn(self.user)
+        Session.login(self.user)
+
+        Role.createRoles()
 
     def test_retrieve_profile_success(self):
         """Test retrieving profine for logged in user."""
@@ -211,7 +219,7 @@ class PrivateUserAPITests(TestCase):
                 'name' : self.user.name,
                 'email' : self.user.email,
                 'is_active' : True,
-                'role_field' : LAB_ADMIN,
+                'role' : Role.ADMIN,
             }
         )
 
