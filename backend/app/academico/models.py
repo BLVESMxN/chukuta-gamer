@@ -39,6 +39,11 @@ class Administrativo(get_user_model()):
   
 
 class Colegio(models.Model):
+    admin = models.ForeignKey(
+        Administrativo,
+        on_delete=models.RESTRICT,
+        related_name='colegios'
+    )
     nombre = models.CharField(
         max_length=255,
         null=False,
@@ -50,6 +55,12 @@ class Colegio(models.Model):
         null=False,
         blank=False,
     )
+    extension = models.CharField(
+        max_length=5,
+        default='edu',
+        null=False,
+        blank=True,
+    )
 
     def __str__(self):
         return self.nombre
@@ -59,7 +70,8 @@ class Profesor(get_user_model()):
     colegio = models.ForeignKey(Colegio,
         blank=False,
         null=False,
-        on_delete=models.RESTRICT
+        on_delete=models.RESTRICT,
+        related_name='profesores'
     )
 
     def get_colegio(self):
@@ -78,6 +90,9 @@ class Padre(get_user_model()):
 
     def get_colegio(self):
         return self.colegio
+    
+    def get_children(self):
+        return self.padre_estudiante.all() | self.madre_estudiante.all()
     
     def __str__(self):
         return f'{self.name}: {self.colegio.__str__()}'
@@ -384,6 +399,7 @@ class Entrega(models.Model):
 class Asistencia(models.Model):
     
     ESTADOS = [
+        ('PEN', 'Pendiente'),
         ('ASI', 'Asistio'),
         ('FAL', 'Falta'), 
         ('ATR', 'Atraso'),

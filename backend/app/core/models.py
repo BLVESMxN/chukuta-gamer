@@ -76,7 +76,7 @@ class Role(models.Model):
             return None 
     
     @classmethod
-    def get_role(cls):
+    def get_parent(cls):
         try:    
             return cls.objects.get(role_name=cls.PARENT)
         except:
@@ -142,6 +142,7 @@ class UserManager(BaseUserManager):
                     c += 1   
             new_email = f'{names_str}.{last_names_str}@{extension}.com'
             query = self.filter(email=new_email)
+        return new_email
      
     def create_superuser(self, email, password):
         """Create and return a new superuser."""

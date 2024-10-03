@@ -1,58 +1,76 @@
 # permissions.py
 
 from rest_framework.permissions import BasePermission
-from .models import Curso
+from .models import Curso, Colegio
 
-class IsAuthenticatedAndRelatedToColegio(BasePermission):
+from core.models import Role
 
-    def has_permission(self, request, view):
-        return request.user and request.user.is_authenticated and self.get_user_colegio(request.user) is not None
-
-    def has_object_permission(self, request, view, obj):
-        user_colegio = self.get_user_colegio(request.user)
-        object_colegio = self.get_object_colegio(obj)
-        return user_colegio == object_colegio
-
-    def get_user_colegio(self, user):
-        if hasattr(user, 'colegio'):
-            return user.colegio
-        elif hasattr(user, 'profesor'):
-            return user.profesor.colegio
-        elif hasattr(user, 'padre'):
-            return user.padre.colegio
-        elif hasattr(user, 'estudiante'):
-            return user.estudiante.colegio
-        elif hasattr(user, 'institucion'):
-            return user.institucion
-        return None
-
-    def get_object_colegio(self, obj):
-        if hasattr(obj, 'colegio'):
-            return obj.colegio
-        elif hasattr(obj, 'get_colegio'):
-            return obj.get_colegio()
-        return None
-
-class IsAuthenticatedAndRelatedToCurso(BasePermission):
+class RelatedToColegio(BasePermission):
 
     def has_permission(self, request, view):
-        return request.user and request.user.is_authenticated
+        user = request.user
+        if not user.role: return True
+        if user.role == Role.get_admin():
+            set_colegio = Colegio.objects.filter(admin=user.administrativo)
+            return set_colegio.exists()
+        return True
 
     def has_object_permission(self, request, view, obj):
-        user_cursos = self.get_user_cursos(request.user)
-        object_curso = self.get_object_curso(obj)
-        return object_curso in user_cursos
+        obj_colegio=None
+        if hasattr(obj, 'get_colegio'):
+            obj_colegio = obj.get_colegio()
+        elif isinstance(obj, Colegio):
+            obj_colegio = obj
+        else:
+            return False
+        
+        user = request.user
 
-    def get_user_cursos(self, user):
-        if hasattr(user, 'profesor'):
-            return user.profesor.cursos.all()
-        elif hasattr(user, 'estudiante'):
-            return Curso.objects.filter(estudiantes=user)
-        return Curso.objects.none()
+        if user.role == Role.get_admin():
+            set_colegio = Colegio.objects.filter(admin=user.administrativo)
+            return obj_colegio in set_colegio
+        
+        if user.role == Role.get_student():
+            return obj_colegio == user.estudiante.get_colegio()
+        if user.role == Role.get_parent():
+            return obj_colegio == user.padre.get_colegio()
+        if user.role == Role.get_teacher():
+            return obj_colegio == user.profesor.get_colegio()
+        return False
+        
+class RelatedToCurso(RelatedToColegio):
 
-    def get_object_curso(self, obj):
-        if hasattr(obj, 'curso'):
-            return obj.curso
-        elif hasattr(obj, 'get_curso'):
-            return obj.get_curso()
-        return None
+    def has_permission(self, request, view):
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        if not super().has_object_permission(request, view, obj):
+            return False
+
+        if not hasattr(obj, 'get_curso'): return False
+        obj_curso = obj.get_curso()
+        user = request.user
+
+        if user.role == Role.get_admin():
+            return True
+        if user.role == Role.get_teacher():
+            return user.profesor == obj_curso.profesor
+        if user.role == Role.get_student():
+            return user.estudiante in obj_curso.estudiantes
+        if user.role == Role.get_parent():
+            children = user.padre.get_children()
+            cursos = children.values_list('record__pk', flat=True)
+            return obj_curso.pk in cursos
+        return False
+
+class ValidSuscription(BasePermission):
+    def has_permission(self, request, view):
+        return True
+    def has_object_permission(self, request, view, obj):
+        if isinstance(obj, Colegio):
+            return obj.suscripcion
+        
+        if hasattr(obj, 'get_colegio'):
+            return obj.get_colegio().suscripcion
+        
+        return False

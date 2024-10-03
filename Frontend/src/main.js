@@ -45,10 +45,18 @@ console.log(res);
 
 //res =  await handler.getRequest('api/user/token/');
 
-const payload = {
-  email: 'admin@example.com',
-  password: 'admin',
+var payload = {
+  email: 'user@example.com',
+  password: 'string',
 }
 
 res = await handler.postRequest('/user/token/', payload)
-res = await handler.postRequest('/user/logout/')
+
+
+payload = {
+  nombre: 'Sagrado Cocoro 2',
+}
+
+res = await handler.postRequest('/academico/colegios/', payload)
+
+//res = await handler.postRequest('/user/logout/')
