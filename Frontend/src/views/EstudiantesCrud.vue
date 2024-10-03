@@ -1,17 +1,17 @@
 <template>
-  <div class="container">
-    <h1>Gestión de Estudiantes</h1>
+  <div>
+    <h1>Estudiantes</h1>
 
     <!-- Botón para agregar nuevo estudiante -->
     <div class="form-container">
       <button @click="navegarAgregarEstudiante" class="add-button">
-        ➕ Agregar Estudiante
+        Agregar Estudiante
       </button>
     </div>
 
     <!-- Lista de estudiantes -->
     <div class="estudiantes-container">
-      <table class="styled-table">
+      <table>
         <thead>
           <tr>
             <th>ID</th>
@@ -22,36 +22,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="estudiante in estudiantes"
-            :key="estudiante.id"
-            class="table-row"
-          >
+          <tr v-for="estudiante in estudiantes" :key="estudiante.id">
             <td>{{ estudiante.id }}</td>
             <td>{{ estudiante.name }}</td>
             <td>{{ estudiante.email }}</td>
+            <td>{{ estudiante.is_active ? "Sí" : "No" }}</td>
             <td>
-              <span
-                :class="{
-                  'badge-active': estudiante.is_active,
-                  'badge-inactive': !estudiante.is_active,
-                }"
-              >
-                {{ estudiante.is_active ? "Sí" : "No" }}
-              </span>
-            </td>
-            <td class="actions">
               <button
                 @click="navegarEditarEstudiante(estudiante.id)"
                 class="edit-button"
               >
-                ✏️
+                Editar
               </button>
               <button
                 @click="eliminarEstudiante(estudiante.id)"
                 class="delete-button"
               >
-                ❌
+                Eliminar
               </button>
             </td>
           </tr>
@@ -107,118 +94,54 @@ export default {
 </script>
 
 <style scoped>
-/* Contenedor general */
-.container {
-  padding: 20px;
-  max-width: 1000px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-/* Título principal */
-h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin-bottom: 20px;
-}
-
-/* Estilo del botón de agregar estudiante */
-.add-button {
-  background-color: #27ae60;
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.add-button:hover {
-  background-color: #2ecc71;
-}
-
-/* Contenedor de la tabla */
+/* Contenedor de estudiantes en formato de lista */
 .estudiantes-container {
-  margin-top: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
+  padding: 20px;
 }
 
-/* Estilos para la tabla */
-.styled-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 1rem;
-  text-align: left;
-  color: #34495e;
-}
-
-.styled-table th,
-.styled-table td {
-  padding: 12px 15px;
-}
-
-.styled-table th {
-  background-color: #3498db;
+.add-button {
+  background-color: #35853f;
   color: white;
-}
-
-.table-row:hover {
-  background-color: #f0f0f0;
-}
-
-/* Estilo de las filas */
-.table-row td {
-  background-color: #ecf0f1;
-  border-bottom: 1px solid #bdc3c7;
-}
-
-/* Botones de acción */
-.actions {
-  display: flex;
-  justify-content: space-around;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  margin-bottom: 20px;
 }
 
 .edit-button,
 .delete-button {
-  padding: 8px;
+  padding: 8px 12px;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 .edit-button {
-  background-color: #2980b9;
-}
-
-.edit-button:hover {
-  background-color: #3498db;
+  background-color: #007bff;
 }
 
 .delete-button {
-  background-color: #e74c3c;
+  background-color: #dc3545;
 }
 
-.delete-button:hover {
-  background-color: #c0392b;
+table {
+  width: 100%;
+  max-width: 800px;
+  border-collapse: collapse;
+  margin: 20px 0;
 }
 
-/* Badge para activo/inactivo */
-.badge-active {
-  background-color: #27ae60;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 12px;
+th,
+td {
+  padding: 10px;
+  text-align: left;
 }
 
-.badge-inactive {
-  background-color: #e74c3c;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 12px;
+th {
+  background-color: #f4f4f4;
 }
+
+/* Otros estilos */
 </style>

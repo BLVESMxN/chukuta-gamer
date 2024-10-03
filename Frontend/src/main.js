@@ -23,7 +23,6 @@ import AgregarEstudiante from "./views/AgregarEstudiante.vue";
 import EstudiantesCrud from "./views/EstudiantesCrud.vue";
 
 import { RequestHandler } from "./controlador/RequestHandler.mjs";
-import EditarEstudiante from "./views/EditarEstudiante.vue";
 
 // Definir rutas
 const routes = [
@@ -45,7 +44,6 @@ const routes = [
 
   { path: "/Estudiantes-Crud", component: EstudiantesCrud },
   { path: "/Agregar-Estudiante", component: AgregarEstudiante },
-  { path: "/Editar-Estudiante/:id", component: EditarEstudiante },
 ];
 
 // Configuración del router
