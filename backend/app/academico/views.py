@@ -37,8 +37,6 @@ class AdministradorViewSet(generics.CreateAPIView):
     queryset = Administrativo.objects.all()
     serializer_class = AdministrativoSerializer
 
-    
-
 class ProfesorViewSet(viewsets.ModelViewSet):
     queryset = Profesor.objects.all()
     serializer_class = ProfesorSerializer

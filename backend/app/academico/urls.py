@@ -6,7 +6,7 @@ from .views import (
     GradoViewSet, ColegioViewSet, ProfesorViewSet, PadreViewSet,
     EstudianteViewSet, AsignaturaViewSet, PeriodoViewSet,
     HorarioViewSet, CursoViewSet, InscripcionViewSet, TareaViewSet,
-    RevisionViewSet, EntregaViewSet, AsistenciaViewSet
+    RevisionViewSet, EntregaViewSet, AsistenciaViewSet, AdministradorViewSet
 )
 
 router = routers.DefaultRouter()
@@ -27,4 +27,5 @@ router.register(r'asistencias', AsistenciaViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('administrativo/', AdministradorViewSet.as_view(), name='crear')
 ]

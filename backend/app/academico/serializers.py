@@ -4,9 +4,11 @@ from rest_framework import serializers
 from .models import (
     Grado, Colegio, Profesor, Padre, Estudiante,
     Asignatura, Periodo, Horario, Curso, Inscripcion,
-    Tarea, Revision, Entrega, Asistencia
+    Tarea, Revision, Entrega, Asistencia, Administrativo
 )
 from django.contrib.auth import get_user_model
+
+from core.models import Role
 
 User = get_user_model()
 
@@ -22,8 +24,19 @@ class ColegioSerializer(serializers.ModelSerializer):
 
 class AdministrativoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Profesor
-        fields = '__all__'
+        model = Administrativo
+        fields = ['name', 'email', 'password']
+        extra_kwargs = {
+            'password': {'write_only':True},
+        }
+
+    def create(self, validated_data):
+        email = validated_data.get('email', None)
+        name = validated_data.get('name', None)
+        password = validated_data.get('password', None)
+
+        return get_user_model().objects.create_user(email, password, **validated_data)  
+
 
 class ProfesorSerializer(serializers.ModelSerializer):
     class Meta:

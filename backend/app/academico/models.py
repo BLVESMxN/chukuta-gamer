@@ -28,6 +28,16 @@ class Grado(models.Model):
     def __str__(self):
         return f'{self.AVR[self.grado]} de {self.NIVELES[self.nivel]}'
 
+
+class Administrativo(get_user_model()):
+
+    def get_colegio(self):
+        return self.colegio
+    
+    def __str__(self):
+        return f'{self.name}: {self.colegio.__str__()}'
+  
+
 class Colegio(models.Model):
     nombre = models.CharField(
         max_length=255,
@@ -43,20 +53,7 @@ class Colegio(models.Model):
 
     def __str__(self):
         return self.nombre
-
-class Administrativo(get_user_model()):
-    colegio = models.ForeignKey(Colegio,
-        blank=False,
-        null=False,
-        on_delete=models.RESTRICT
-    )
-
-    def get_colegio(self):
-        return self.colegio
-    
-    def __str__(self):
-        return f'{self.name}: {self.colegio.__str__()}'
-   
+ 
 
 class Profesor(get_user_model()):
     colegio = models.ForeignKey(Colegio,
