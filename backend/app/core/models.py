@@ -110,9 +110,9 @@ class UserManager(BaseUserManager):
         for namex in names:
             if not namex.isalpha():
                 raise ValueError(f'El nombre {namex} inválido')
-        for namex in last_names:
-            if not namex.isalpha():
-                raise ValueError(f'El apellido {namex} es inválido')
+        # for namex in last_names:
+        #     if not namex.isalpha():
+        #         raise ValueError(f'El apellido {namex} es inválido')
 
         names_str = names[0]
         last_names_str = last_names[0]
@@ -121,6 +121,7 @@ class UserManager(BaseUserManager):
         last_names = '.' + '.'.join(last_names[1:]) if len(last_names)>1 else ''
 
         new_email = f'{names_str}.{last_names_str}@{extension}.com'
+        if not len(last_names): new_email =  f'{names_str}@{extension}.com'
         query = self.filter(email=new_email)
         i=0
         j=0
@@ -141,8 +142,9 @@ class UserManager(BaseUserManager):
                     last_names_str += str(c)
                     c += 1   
             new_email = f'{names_str}.{last_names_str}@{extension}.com'
+            if not len(last_names): new_email =  f'{names_str}@{extension}.com'
             query = self.filter(email=new_email)
-        return new_email
+        return self.normalize_email(new_email)
      
     def create_superuser(self, email, password):
         """Create and return a new superuser."""

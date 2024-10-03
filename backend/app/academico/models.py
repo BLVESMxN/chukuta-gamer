@@ -113,7 +113,7 @@ class Estudiante(get_user_model()):
     user_padre = models.ForeignKey(
         Padre,
         blank=True,
-        null=False,
+        null=True,
         on_delete=models.RESTRICT,
         related_name='padre_estudiante',
     )
@@ -121,7 +121,7 @@ class Estudiante(get_user_model()):
     user_madre = models.ForeignKey(
         Padre,
         blank=True,
-        null=False,
+        null=True,
         on_delete=models.RESTRICT,
         related_name='madre_estudiante',
     )
@@ -165,8 +165,9 @@ class Periodo(models.Model):
     fecha_inicio = models.DateField(
         null=False,
         blank=False,
-    ),
-    fecha_fin = models.DateField(),
+    )
+    fecha_fin = models.DateField()
+
 
 class Horario(models.Model):
     
@@ -185,7 +186,8 @@ class Horario(models.Model):
         on_delete=models.RESTRICT,
     )
 
-    dia = models.IntegerField(
+    dia = models.CharField(
+        max_length=5,
         blank=False,
         null=False,
         choices=DIAS

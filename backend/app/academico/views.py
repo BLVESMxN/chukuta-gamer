@@ -36,13 +36,13 @@ class ColegioViewSet(viewsets.ModelViewSet):
     permission_classes = [IsLogged, HasRole([Role.get_admin()])]
 
     def get_permissions(self):
-        if self.request.action == 'list':
+        if self.action == 'list':
             return []
         return super().get_permissions()
 
     def get_queryset(self):
         admin = self.request.user
-        if self.request.action == 'list':
+        if self.action == 'list':
             return Colegio.objects.all()
         
         queryset = Colegio.objects.filter(admin = admin)
@@ -70,9 +70,9 @@ class ProfesorViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         permissions = super().get_permissions()
-        action = self.request.action 
+        action = self.action 
         if action in  ['update', 'partial_update', 'create', 'destroy']:
-            permissions.append(HasRole([Role.get_admin()]))
+            permissions.append(HasRole([Role.get_admin()])())
         return permissions 
 
     def get_queryset(self):
@@ -94,15 +94,15 @@ class ProfesorViewSet(viewsets.ModelViewSet):
         return Profesor.objects.none()
     
     def perform_create(self, serializer):
-        colegio_pk = serializer.validated_data.get('colegio', None)
-        colegio = Colegio.objects.get(pk=colegio_pk)
+        #colegio_pk = serializer.validated_data.get('colegio', None)
+        colegio = serializer.validated_data.get('colegio', None)
         
         admin = self.request.user.administrativo
-        if colegio not in admin.colegios:
+        if colegio not in admin.colegios.all():
             raise exceptions.PermissionDenied("Valor de colegio incorrecto")
 
         name = serializer.validated_data.get('name')
-        email = UserManager.generate_email(name, "", colegio.extension)
+        email = User.objects.generate_email(name, "", colegio.extension)
         password = email
         
         serializer.save(email=email, password=password)
@@ -116,7 +116,7 @@ class PadreViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         permissions = super().get_permissions()
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permissions.append(HasRole([Role.get_admin()]))
+            permissions.append(HasRole([Role.get_admin()])())
         return permissions
 
     def get_queryset(self):
@@ -143,7 +143,7 @@ class PadreViewSet(viewsets.ModelViewSet):
             raise exceptions.PermissionDenied("Valor de colegio incorrecto")
 
         name = serializer.validated_data.get('name')
-        email = UserManager.generate_email(name, "", colegio.extension)
+        email = User.objects.generate_email(name, "", colegio.extension)
         password = email
 
         serializer.save(email=email, password=password)
@@ -156,7 +156,7 @@ class EstudianteViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         permissions = super().get_permissions()
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permissions.append(HasRole([Role.get_admin()]))
+            permissions.append(HasRole([Role.get_admin()])())
         return permissions
 
     def get_queryset(self):
@@ -183,7 +183,7 @@ class EstudianteViewSet(viewsets.ModelViewSet):
             raise exceptions.PermissionDenied("Valor de colegio incorrecto")
 
         name = serializer.validated_data.get('name')
-        email = UserManager.generate_email(name, "", colegio.extension)
+        email = User.objects.generate_email(name, "", colegio.extension)
         password = email
 
         serializer.save(email=email, password=password)
@@ -196,7 +196,7 @@ class AsignaturaViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         permissions = super().get_permissions()
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permissions.append(HasRole([Role.get_admin()]))
+            permissions.append(HasRole([Role.get_admin()])())
         return permissions
 
     def get_queryset(self):
@@ -228,7 +228,7 @@ class PeriodoViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         permissions = super().get_permissions()
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permissions.append(HasRole([Role.get_admin()]))
+            permissions.append(HasRole([Role.get_admin()])())
         return permissions
 
     def get_queryset(self):
@@ -243,7 +243,7 @@ class HorarioViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         permissions = super().get_permissions()
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permissions.append(HasRole([Role.get_admin(), Role.get_teacher()]))
+            permissions.append(HasRole([Role.get_admin(), Role.get_teacher()])())
         return permissions
 
     def get_queryset(self):
@@ -277,7 +277,7 @@ class CursoViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         permissions = super().get_permissions()
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permissions.append(HasRole([Role.get_admin()]))
+            permissions.append(HasRole([Role.get_admin()])())
         return permissions
 
     def get_queryset(self):
@@ -338,7 +338,7 @@ class InscripcionViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         permissions = super().get_permissions()
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permissions.append(HasRole([Role.get_admin(), Role.get_teacher()]))
+            permissions.append(HasRole([Role.get_admin(), Role.get_teacher()])())
         return permissions
 
     def get_queryset(self):
@@ -366,7 +366,7 @@ class TareaViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         permissions = super().get_permissions()
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permissions.append(HasRole([Role.get_teacher()]))
+            permissions.append(HasRole([Role.get_teacher()])())
         return permissions
 
     def get_queryset(self):
@@ -425,7 +425,7 @@ class EntregaViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         permissions = super().get_permissions()
         if self.action in ['create']:
-            permissions.append(HasRole([Role.get_student()]))
+            permissions.append(HasRole([Role.get_student()])())
         elif self.action in ['update', 'partial_update', 'destroy']:
             permissions.append(HasRole([Role.get_teacher()]))
         return permissions
@@ -453,7 +453,7 @@ class AsistenciaViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         permissions = super().get_permissions()
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permissions.append(HasRole([Role.get_teacher()]))
+            permissions.append(HasRole([Role.get_teacher()])())
         return permissions
 
     def get_queryset(self):

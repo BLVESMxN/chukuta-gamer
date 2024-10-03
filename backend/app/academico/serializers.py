@@ -26,7 +26,7 @@ class ColegioSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = Colegio
-        fields = ['nombre', 'admin', 'suscripcion', 'extension']
+        fields = ['id', 'nombre', 'admin', 'suscripcion', 'extension']
 
 
 
@@ -59,9 +59,13 @@ class AdministrativoSerializer(serializers.ModelSerializer):
 
 
 class ProfesorSerializer(serializers.ModelSerializer):
+    colegio = serializers.PrimaryKeyRelatedField(queryset=Colegio.objects.all(), many=False, required=True)
     class Meta:
         model = Profesor
-        fields = ['name', 'colegio']
+        fields = ['id', 'name', 'colegio', 'email']
+        extra_kwargs = {
+            'email':{'read_only':True}
+        }
 
     def create(self, validated_data):
         profesor = super().create(validated_data)
@@ -76,14 +80,13 @@ class ProfesorSerializer(serializers.ModelSerializer):
     
 
 class PadreSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True)
-    email = serializers.EmailField(required=True)
-
+    
     class Meta:
         model = Padre
-        fields = ['id', 'name', 'email', 'colegio', 'password']
+        fields = ['id', 'name', 'colegio', 'email']
         extra_kwargs = {
             'colegio': {'required': False},
+            'email':{'read_only':True}
         }
 
     def validate_password(self, value):
@@ -117,17 +120,16 @@ class PadreSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("No tiene permiso para agregar padres a este colegio.")
 
 class EstudianteSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True)
-    email = serializers.EmailField(required=True)
     user_padre = serializers.PrimaryKeyRelatedField(queryset=Padre.objects.all(), required=False, allow_null=True)
     user_madre = serializers.PrimaryKeyRelatedField(queryset=Padre.objects.all(), required=False, allow_null=True)
 
     class Meta:
         model = Estudiante
-        fields = ['id', 'name', 'email', 'colegio', 'grado', 'user_padre', 'user_madre', 'password']
+        fields = ['id', 'name','colegio', 'grado', 'user_padre', 'user_madre','email']
         extra_kwargs = {
             'colegio': {'required': False},
             'grado': {'required': True},
+            'email':{'read_only':True}
         }
 
     def validate_password(self, value):
@@ -227,6 +229,9 @@ class CursoSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("No tiene permiso para crear cursos en este colegio.")
 
 class InscripcionSerializer(serializers.ModelSerializer):
+
+    curso = serializers.PrimaryKeyRelatedField(queryset=Curso.objects.all())
+    estudiante = serializers.PrimaryKeyRelatedField(queryset=Estudiante.objects.all())
     class Meta:
         model = Inscripcion
         fields = ['id', 'curso', 'estudiante', 'promedio']
@@ -237,6 +242,13 @@ class InscripcionSerializer(serializers.ModelSerializer):
         estudiante = validated_data['estudiante']
         colegio = curso.get_colegio()
 
+
+        print("#######################################################")
+        for chuches , chichis in validated_data.items():
+            print(chuches, chichis)
+
+        print(estudiante)
+        print(colegio)
         # Permissions
         if user.role == Role.get_admin() and colegio in user.administrativo.colegios.all():
             if estudiante.get_colegio() != colegio:
