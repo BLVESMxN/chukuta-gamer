@@ -10,9 +10,9 @@ export class GradosService {
   // Método para obtener los grados
   async obtenerGrados() {
     try {
-      const tokenSesion = await this.authService.ensureAuthenticated(
+      const tokenSesion = await this.authService.login(
         "admin@example.com",
-        "#123#AndresHinojosa#123"
+        "admin"
       );
 
       if (!tokenSesion) {
@@ -40,11 +40,11 @@ export class GradosService {
   }
 
   // Método para agregar un nuevo grado
-  async agregarGrado(nombre) {
+  async agregarGrado(nivel, grado) {
     try {
       const tokenSesion = await this.authService.ensureAuthenticated(
         "admin@example.com",
-        "#123#AndresHinojosa#123"
+        "admin"
       );
 
       if (!tokenSesion) {
@@ -52,7 +52,8 @@ export class GradosService {
       }
 
       const gradoData = {
-        nombre: nombre,
+        nivel: nivel,
+        grado: grado,
       };
 
       const response = await this.requestHandler.postRequest(
@@ -77,11 +78,11 @@ export class GradosService {
   }
 
   // Método para actualizar un grado
-  async actualizarGrado(id, nombre) {
+  async actualizarGrado(id, nivel, grado) {
     try {
       const tokenSesion = await this.authService.ensureAuthenticated(
         "admin@example.com",
-        "#123#AndresHinojosa#123"
+        "admin"
       );
 
       if (!tokenSesion) {
@@ -89,7 +90,8 @@ export class GradosService {
       }
 
       const gradoData = {
-        nombre: nombre,
+        nivel: nivel,
+        grado: grado,
       };
 
       const response = await this.requestHandler.putRequest(
@@ -118,7 +120,7 @@ export class GradosService {
     try {
       const tokenSesion = await this.authService.ensureAuthenticated(
         "admin@example.com",
-        "#123#AndresHinojosa#123"
+        "admin"
       );
 
       if (!tokenSesion) {

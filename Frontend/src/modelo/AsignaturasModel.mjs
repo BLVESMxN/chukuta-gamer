@@ -120,7 +120,7 @@ export class AsignaturasService {
     try {
       const tokenSesion = await this.authService.ensureAuthenticated(
         "admin@example.com",
-        "#123#AndresHinojosa#123"
+        "admin"
       );
 
       if (!tokenSesion) {

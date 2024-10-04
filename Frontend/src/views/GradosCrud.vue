@@ -7,8 +7,6 @@
 
     <!-- Contenedor principal -->
     <div class="main-content">
-      <!-- Menú lateral -->
-
       <!-- Sección principal con los grados -->
       <section class="grades">
         <h2>Grados</h2>
@@ -70,7 +68,6 @@ export default {
       this.$router.push(`/Editar-Grado/${id}`);
     },
     async eliminarGrado(id) {
-      // Pregunta de confirmación
       const confirmar = confirm(
         "¿Estás seguro de que deseas eliminar este grado?"
       );
@@ -78,7 +75,7 @@ export default {
         try {
           await this.gradosService.eliminarGrado(id);
           alert("Grado eliminado exitosamente");
-          this.cargarGrados(); // Recargar la lista de grados después de la eliminación
+          this.cargarGrados();
         } catch (error) {
           console.error("Error eliminando el grado:", error);
           alert("Ocurrió un error al eliminar el grado.");
@@ -90,7 +87,7 @@ export default {
 </script>
 
 <style scoped>
-/* Añade los estilos necesarios para el diseño */
+/* Estilo general del panel */
 .admin-panel {
   display: flex;
   flex-direction: column;
@@ -105,43 +102,14 @@ export default {
   font-size: 24px;
 }
 
-.logout {
-  background-color: #ff6b6b;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-}
-
 .main-content {
   display: flex;
   flex: 1;
-}
-
-.sidebar {
-  width: 200px;
-  background-color: #f3f3f3;
   padding: 20px;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar ul li {
-  margin: 20px 0;
-}
-
-.sidebar ul li a {
-  text-decoration: none;
-  color: #333;
-  font-size: 18px;
 }
 
 .grades {
   flex: 1;
-  padding: 20px;
 }
 
 .grades h2 {
@@ -150,7 +118,8 @@ export default {
 }
 
 .grades-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
 }
 
@@ -160,16 +129,33 @@ export default {
   padding: 20px;
   border: 1px solid #ccc;
   text-align: center;
-  width: 200px;
   position: relative;
 }
 
-.grade-card img {
-  width: 100px;
-  height: 100px;
+.grade-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.grade-card p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .edit-button {
+  position: absolute;
+  top: 10px;
+  right: 40px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.delete-button {
   position: absolute;
   top: 10px;
   right: 10px;

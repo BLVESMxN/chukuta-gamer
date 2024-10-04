@@ -8,14 +8,6 @@ export class AuthService {
   // Función para realizar el login con credenciales proporcionadas
   async login(email, password) {
     try {
-      // Credenciales de prueba para testing, están comentadas
-      /*
-      const loginPayload = {
-        email: "admin@example.com",
-        password: "#123#AndresHinojosa#123",
-      };
-      */
-
       // Payload dinámico, con los parámetros recibidos
       const loginPayload = {
         email: email,
@@ -29,18 +21,18 @@ export class AuthService {
       );
 
       if (res && res.status === 200) {
-        // Obtener el token de la cookie 'csrftoken'
-        const tokenSesion = this.requestHandler.getCookie("csrftoken");
+        // Si el token de sesión es devuelto en la respuesta del servidor
+        const tokenSesion =
+          res.data.token || this.requestHandler.getCookie("csrftoken");
 
         if (tokenSesion) {
           // Si el token se obtiene correctamente, retornarlo
-          console.log(
-            "Login exitoso, token obtenido de la cookie:",
-            tokenSesion
-          );
+          console.log("Login exitoso, token obtenido:", tokenSesion);
           return tokenSesion;
         } else {
-          console.error("Error: No se pudo obtener el token de la cookie.");
+          console.error(
+            "Error: No se pudo obtener el token de la cookie ni del cuerpo de la respuesta."
+          );
           return null;
         }
       } else {

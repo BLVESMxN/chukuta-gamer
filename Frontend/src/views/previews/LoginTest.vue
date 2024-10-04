@@ -18,7 +18,7 @@ export default {
       // Paso 1: Login con credenciales reales (datos de la base de datos)
       const loginPayload = {
         email: "admin@example.com",
-        password: "#123#AndresHinojosa#123",
+        password: "admin",
       };
 
       // Realizamos una solicitud POST al endpoint de token

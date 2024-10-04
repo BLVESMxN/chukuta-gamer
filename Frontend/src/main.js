@@ -16,14 +16,17 @@ import GradosCrud from "./views/GradosCrud.vue";
 import CrearGrado from "./views/CrearGrado.vue";
 import EditarGrado from "./views/EditarGrado.vue";
 
+import ColegioAdmin from "./views/ColegioAdmin.vue";
+import ColegioAdminVista from "./views/ColegioAdminVista.vue";
+
 import AgregarAsignatura from "./views/AgregarAsignatura.vue";
 import EditarAsignatura from "./views/EditarAsignatura.vue";
 
 import AgregarEstudiante from "./views/AgregarEstudiante.vue";
 import EstudiantesCrud from "./views/EstudiantesCrud.vue";
+import EditarColegio from "./views/EditarColegio.vue";
 
-import { RequestHandler } from "./controlador/RequestHandler.mjs";
-
+//import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
 // Definir rutas
 const routes = [
@@ -45,6 +48,15 @@ const routes = [
 
   { path: "/Estudiantes-Crud", component: EstudiantesCrud },
   { path: "/Agregar-Estudiante", component: AgregarEstudiante },
+
+  { path: "/colegio-admin", name: "ColegioAdmin", component: ColegioAdmin },
+  { path: "/Colegio-admin-vista", component: ColegioAdminVista },
+  {
+    path: "/editar-colegio/:id",
+    name: "EditarColegio",
+    component: EditarColegio,
+    props: true,
+  },
 ];
 
 // Configuración del router
@@ -60,8 +72,7 @@ const app = createApp(App);
 app.use(router);
 app.mount("#app");
 
-
-
+/*
 async function runTests() {
   let handler = new RequestHandler();
   console.log(handler);
@@ -531,4 +542,46 @@ async function runTests() {
 // Call the runTests function
 runTests().catch((error) => {
   console.error('An unexpected error occurred during testing:', error);
+}); */
+
+/*
+var ojo = new RequestHandler();
+await ojo.postRequest("academico/administrativo/", {
+  name: "Pedro",
+  email: "ojo@amdin.com",
+  password: "123",
 });
+
+//profesor y estudaintes se crean por admin
+
+await ojo.postRequest("user/token/", {
+  email: "ojo@amdin.com",
+  password: "123",
+});
+
+await ojo.getRequest("/user/me/");
+
+await ojo.postRequest("academico/colegios/", {
+  nombre: "hola",
+  admin: 15,
+  suscripcion: true,
+  extension: "bola",
+});
+
+await ojo.postRequest("academico/profesores/", {
+  name: "Hola",
+  colegio: 3,
+});
+
+var pk = await ojo.postRequest("academico/colegios/", {
+  nombre: "bola",
+  admin: 15,
+  suscripcion: true,
+  extension: "nola",
+});
+
+await ojo.postRequest("academico/profesores/", {
+  name: "cole2",
+  colegio: pk["id"],
+});
+*/
