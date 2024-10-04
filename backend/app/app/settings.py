@@ -189,7 +189,7 @@ REST_FRAMEWORK = {
 
         'user': '100/min',
 
-        'login' : '3/min',
+        'login' : '10/min',
     },
 }
 
@@ -228,7 +228,8 @@ CORS_EXPOSE_HEADERS = ['Set-Cookie']
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000',
                         'http://127.0.0.1:8000',
                         'http://localhost:65420',
-                        'http://localhost:58315']  # Add your domain
+                        'http://localhost:58315',
+                        'http://192.168.1.232:8081']  # Add your domain
 
 
 CSRF_COOKIE_NAME = 'csrftoken'
