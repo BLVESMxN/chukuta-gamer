@@ -4,7 +4,8 @@ from django.core import validators
 from django.utils import timezone
 from core.models import Session
 
-
+from datetime import datetime, timedelta
+import pytz
 
 class Grado(models.Model):  
     NIVELES = [
@@ -247,6 +248,8 @@ class Curso(models.Model):
     def get_colegio(self):
         asignatura = self.asignatura
         return asignatura.colegio
+      
+
 
 
 class Inscripcion(models.Model):
@@ -280,6 +283,35 @@ class Inscripcion(models.Model):
         if self.estudiante.get_colegio() != self.curso.get_colegio():
             raise ValueError("El estudiante no pertenece al colegio")
         super().save(*args, **kwargs)
+        horarios = self.curso.horarios.all()
+        periodo = self.curso.periodo
+
+        dia_map = {'LUN': 0, 'MAR': 1, 'MIE': 2, 'JUE': 3, 'VIE': 4}
+        horario_days = set(dia_map[horario.dia] for horario in horarios)
+
+        start_date = periodo.fecha_inicio
+        end_date = periodo.fecha_fin
+        delta = timedelta(days=1)
+
+        current_date = start_date
+        asistencias = []
+
+        while current_date <= end_date:
+            if current_date.weekday() in horario_days:
+                asistencia = Asistencia(
+                    fecha=current_date,
+                    estado='PEN',
+                    inscripcion=self
+                )
+                asistencias.append(asistencia)
+            current_date += delta
+
+        Asistencia.objects.bulk_create(asistencias)
+
+        tareas = Tarea.objects.filter(curso=self.curso)
+        for tarea in tareas:
+            tarea.estudiantes.add(self.estudiante)
+
 
 
 class Tarea(models.Model):
@@ -320,8 +352,7 @@ class Tarea(models.Model):
         estudiantes_pks = estudiantes_inscritos.difference(estudiantes_con_tarea)
         estudiantes_to_add = Estudiante.objects.filter(id__in=estudiantes_pks)
         for estudiante in estudiantes_to_add:
-            revision = Revision(estudiante=estudiante, tarea=self)
-            revision.save()
+            self.estudiantes.add(estudiante)
 
 
 class Revision(models.Model):

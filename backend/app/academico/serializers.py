@@ -258,8 +258,6 @@ class TareaSerializer(serializers.ModelSerializer):
         curso = validated_data['curso']
 
         if user.role == Role.get_teacher() and curso.profesor == user.profesor:
-            # for a,b in validated_data.items():
-            #     print(a, ":", b)
             return super().create(validated_data)
         else:
             raise serializers.ValidationError("No tiene permiso para crear tareas para este curso.")

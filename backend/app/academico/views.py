@@ -94,7 +94,6 @@ class ProfesorViewSet(viewsets.ModelViewSet):
         return Profesor.objects.none()
     
     def perform_create(self, serializer):
-        #colegio_pk = serializer.validated_data.get('colegio', None)
         colegio = serializer.validated_data.get('colegio', None)
         
         admin = self.request.user.administrativo
@@ -232,7 +231,6 @@ class PeriodoViewSet(viewsets.ModelViewSet):
         return permissions
 
     def get_queryset(self):
-        # Periodos are global, but you can filter based on business logic
         return Periodo.objects.all()
 
 class HorarioViewSet(viewsets.ModelViewSet):
@@ -266,9 +264,6 @@ class HorarioViewSet(viewsets.ModelViewSet):
             return Horario.objects.filter(cursos_horario__estudiantes__in=children).distinct()
         return Horario.objects.none()
 
-from datetime import datetime, timedelta
-import pytz
-
 class CursoViewSet(viewsets.ModelViewSet):
     queryset = Curso.objects.all()
     serializer_class = CursoSerializer
@@ -296,39 +291,7 @@ class CursoViewSet(viewsets.ModelViewSet):
             children = user.padre.get_children()
             return Curso.objects.filter(estudiantes__in=children)
         return Curso.objects.none()
-    
-    def perform_create(self, serializer):
-        curso = serializer.save()
-        estudiantes = curso.estudiantes.all()
-        horarios = curso.horarios.all()
-        periodo = curso.periodo
-
-        # Map the days from Horarios to integers (0=Monday, 1=Tuesday, etc.)
-        dia_map = {'LUN': 0, 'MAR': 1, 'MIE': 2, 'JUE': 3, 'VIE': 4}
-        horario_days = set(dia_map[horario.dia] for horario in horarios)
-
-        start_date = periodo.fecha_inicio
-        end_date = periodo.fecha_fin
-        delta = timedelta(days=1)
-
-        current_date = start_date
-        asistencias = []
-
-        while current_date <= end_date:
-            if current_date.weekday() in horario_days:
-                for estudiante in estudiantes:
-                    # Ensure the Inscripcion exists
-                    inscripcion, created = Inscripcion.objects.get_or_create(curso=curso, estudiante=estudiante)
-                    asistencia = Asistencia(
-                        fecha=current_date,
-                        estado='PEN',  # Assuming 'PEN' means 'Pendiente' or 'Pending'
-                        inscripcion=inscripcion
-                    )
-                    asistencias.append(asistencia)
-            current_date += delta
-
-        # Bulk create Asistencias
-        Asistencia.objects.bulk_create(asistencias)
+      
     
 class InscripcionViewSet(viewsets.ModelViewSet):
     queryset = Inscripcion.objects.all()
@@ -346,16 +309,21 @@ class InscripcionViewSet(viewsets.ModelViewSet):
         if not user.role:
             return Inscripcion.objects.none()
 
+        curso = self.request.query_params.get('curso', None)
+        inscripsiones = Inscripcion.objects.all()
+        if curso:
+            inscripsiones = inscripsiones.filter(curso = curso)
+
         if user.role == Role.get_admin():
             colegios = user.administrativo.colegios.all()
-            return Inscripcion.objects.filter(curso__asignatura__colegio__in=colegios)
+            return inscripsiones.filter(curso__asignatura__colegio__in=colegios)
         elif user.role == Role.get_teacher():
-            return Inscripcion.objects.filter(curso__profesor=user.profesor)
+            return inscripsiones.filter(curso__profesor=user.profesor)
         elif user.role == Role.get_student():
-            return Inscripcion.objects.filter(estudiante=user.estudiante)
+            return inscripsiones.filter(estudiante=user.estudiante)
         elif user.role == Role.get_parent():
             children = user.padre.get_children()
-            return Inscripcion.objects.filter(estudiante__in=children)
+            return inscripsiones.filter(estudiante__in=children)
         return Inscripcion.objects.none()
 
 class TareaViewSet(viewsets.ModelViewSet):
