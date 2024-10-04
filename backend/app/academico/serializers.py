@@ -28,8 +28,6 @@ class ColegioSerializer(serializers.ModelSerializer):
         model = Colegio
         fields = ['id', 'nombre', 'admin', 'suscripcion', 'extension']
 
-
-
 class AdministrativoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Administrativo
@@ -242,13 +240,6 @@ class InscripcionSerializer(serializers.ModelSerializer):
         estudiante = validated_data['estudiante']
         colegio = curso.get_colegio()
 
-
-        print("#######################################################")
-        for chuches , chichis in validated_data.items():
-            print(chuches, chichis)
-
-        print(estudiante)
-        print(colegio)
         # Permissions
         if user.role == Role.get_admin() and colegio in user.administrativo.colegios.all():
             if estudiante.get_colegio() != colegio:
@@ -260,13 +251,15 @@ class InscripcionSerializer(serializers.ModelSerializer):
 class TareaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tarea
-        fields = ['id', 'descripcion', 'fecha_inicio', 'fecha_fin', 'curso', 'sesion']
+        fields = ['id', 'descripcion', 'fecha_inicio', 'fecha_fin', 'curso']
 
     def create(self, validated_data):
         user = self.context['request'].user
         curso = validated_data['curso']
 
         if user.role == Role.get_teacher() and curso.profesor == user.profesor:
+            # for a,b in validated_data.items():
+            #     print(a, ":", b)
             return super().create(validated_data)
         else:
             raise serializers.ValidationError("No tiene permiso para crear tareas para este curso.")

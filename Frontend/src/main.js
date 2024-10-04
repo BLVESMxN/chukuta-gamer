@@ -50,9 +50,7 @@ async function runTests() {
 
   let adminToken;
   let profesorToken;
-  let estudianteToken;
   let profesorPassword = 'string'; // Assuming default password
-  let estudiantePassword = 'string'; // Assuming default password
 
   // 1. Create an Admin User
   payload = {
@@ -346,6 +344,7 @@ async function runTests() {
 
   // 11. Create a Tarea
   // Authenticate as the profesor to create a Tarea
+  profesorPassword = profesorEmail
   try {
     payload = {
       email: profesorEmail,
@@ -353,7 +352,6 @@ async function runTests() {
     };
     res = await handler.postRequest('/user/token/', payload);
     profesorToken = res.data.token;
-    handler.setToken(profesorToken);
   } catch (error) {
     console.error('Failed to authenticate as profesor.');
     console.error(error.response ? error.response.data : error.message);
@@ -383,11 +381,10 @@ async function runTests() {
   try {
     payload = {
       email: estudianteEmail,
-      password: estudiantePassword,
+      password: estudianteEmail,
     };
     res = await handler.postRequest('/user/token/', payload);
-    estudianteToken = res.data.token;
-    handler.setToken(estudianteToken);
+    
   } catch (error) {
     console.error('Failed to authenticate as estudiante.');
     console.error(error.response ? error.response.data : error.message);
