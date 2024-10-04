@@ -64,7 +64,8 @@ class ListUsersView(generics.ListAPIView):
     def get_queryset(self):
 
         rol_param = self.request.query_params.get('rol', None)
-        queryset = self.queryset
+        if not rol_param:
+            return get_user_model().objects.all()
         search_role = Role.objects.get(role_name=rol_param)
         queryset = queryset.filter(role=search_role)
         return queryset

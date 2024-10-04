@@ -29,7 +29,22 @@ class Grado(models.Model):
     def __str__(self):
         return f'{self.AVR[self.grado]} de {self.NIVELES[self.nivel]}'
 
+
+class Administrativo(get_user_model()):
+
+    def get_colegio(self):
+        return self.colegio
+    
+    def __str__(self):
+        return f'{self.name}: {self.colegio.__str__()}'
+  
+
 class Colegio(models.Model):
+    admin = models.ForeignKey(
+        Administrativo,
+        on_delete=models.RESTRICT,
+        related_name='colegios'
+    )
     nombre = models.CharField(
         max_length=255,
         null=False,
@@ -41,29 +56,23 @@ class Colegio(models.Model):
         null=False,
         blank=False,
     )
+    extension = models.CharField(
+        max_length=5,
+        default='edu',
+        null=False,
+        blank=True,
+    )
 
     def __str__(self):
         return self.nombre
-
-class Administrativo(get_user_model()):
-    colegio = models.ForeignKey(Colegio,
-        blank=False,
-        null=False,
-        on_delete=models.RESTRICT
-    )
-
-    def get_colegio(self):
-        return self.colegio
-    
-    def __str__(self):
-        return f'{self.name}: {self.colegio.__str__()}'
-   
+ 
 
 class Profesor(get_user_model()):
     colegio = models.ForeignKey(Colegio,
         blank=False,
         null=False,
-        on_delete=models.RESTRICT
+        on_delete=models.RESTRICT,
+        related_name='profesores'
     )
 
     def get_colegio(self):
@@ -82,6 +91,9 @@ class Padre(get_user_model()):
 
     def get_colegio(self):
         return self.colegio
+    
+    def get_children(self):
+        return self.padre_estudiante.all() | self.madre_estudiante.all()
     
     def __str__(self):
         return f'{self.name}: {self.colegio.__str__()}'
@@ -102,7 +114,7 @@ class Estudiante(get_user_model()):
     user_padre = models.ForeignKey(
         Padre,
         blank=True,
-        null=False,
+        null=True,
         on_delete=models.RESTRICT,
         related_name='padre_estudiante',
     )
@@ -110,7 +122,7 @@ class Estudiante(get_user_model()):
     user_madre = models.ForeignKey(
         Padre,
         blank=True,
-        null=False,
+        null=True,
         on_delete=models.RESTRICT,
         related_name='madre_estudiante',
     )
@@ -154,8 +166,9 @@ class Periodo(models.Model):
     fecha_inicio = models.DateField(
         null=False,
         blank=False,
-    ),
-    fecha_fin = models.DateField(),
+    )
+    fecha_fin = models.DateField()
+
 
 class Horario(models.Model):
     
@@ -174,7 +187,8 @@ class Horario(models.Model):
         on_delete=models.RESTRICT,
     )
 
-    dia = models.IntegerField(
+    dia = models.CharField(
+        max_length=5,
         blank=False,
         null=False,
         choices=DIAS
@@ -388,6 +402,7 @@ class Entrega(models.Model):
 class Asistencia(models.Model):
     
     ESTADOS = [
+        ('PEN', 'Pendiente'),
         ('ASI', 'Asistio'),
         ('FAL', 'Falta'), 
         ('ATR', 'Atraso'),

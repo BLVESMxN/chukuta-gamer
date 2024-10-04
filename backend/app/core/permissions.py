@@ -7,16 +7,17 @@ from core.models import Session, Role
 
 def HasRole(role_list):
     class HasRole(BasePermission):
-        roles = role_list
-
-        def __innit__(self):
-            super().__init__
+        def __init__(self):
+            super().__init__()
             self.roles = role_list
 
         def has_permission(self, request, view):
             user = request.user 
+            if not user or not user.is_authenticated:
+                return False
             return user.role in self.roles
-    
+    return HasRole
+                
 
 class IsLogged(BasePermission):
     def has_permission(self, request, view):
