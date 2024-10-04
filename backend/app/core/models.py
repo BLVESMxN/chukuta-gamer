@@ -96,12 +96,22 @@ class Role(models.Model):
         except:
             return None
 
-
+import unicodedata
+import re
 
 class UserManager(BaseUserManager):
     """Manager for users."""
 
+    def remove_accents(self, text):
+        nfkd_form = unicodedata.normalize('NFKD', text)
+        text_without_accents = ''.join([c for c in nfkd_form if not unicodedata.combining(c)])
+        return text_without_accents
+
     def generate_email(self, names, last_names, extension, **extra_fields):
+
+        names = self.remove_accents(names).lower()
+        last_names = self.remove_accents(last_names).lower()
+        
         names = names.split(' ')
         last_names = last_names.split(' ')
         if(len(names)<1 or len(last_names)<1):
@@ -132,19 +142,21 @@ class UserManager(BaseUserManager):
                     if(last_names[j]=='.'):
                         j += 1
                         last_names_str += last_names[j]
+                    j+=1
             else:
                 if(len(names_str)>i):
                     names_str += names[i]
                     if(names[i]=='.'):
                         i += 1
                         names_str += names[i]
+                    i+=1
                 else:
                     last_names_str += str(c)
                     c += 1   
             new_email = f'{names_str}.{last_names_str}@{extension}.com'
             if not len(last_names): new_email =  f'{names_str}@{extension}.com'
             query = self.filter(email=new_email)
-        return self.normalize_email(new_email)
+        return self.normalize_email(new_email).lower()
      
     def create_superuser(self, email, password):
         """Create and return a new superuser."""

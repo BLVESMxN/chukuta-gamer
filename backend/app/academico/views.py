@@ -383,13 +383,6 @@ class TareaViewSet(viewsets.ModelViewSet):
             return Tarea.objects.filter(curso__estudiantes__in=children)
         return Tarea.objects.none()
     
-    def perform_create(self, serializer):
-        tarea = serializer.save()
-        estudiantes = tarea.curso.estudiantes.all()
-
-        for estudiante in estudiantes:
-            Revision.objects.create(estudiante=estudiante, tarea=tarea)
-
 
 class RevisionViewSet(viewsets.ModelViewSet):
     queryset = Revision.objects.all()

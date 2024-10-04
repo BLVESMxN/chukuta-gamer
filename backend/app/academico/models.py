@@ -321,7 +321,7 @@ class Tarea(models.Model):
         estudiantes_to_add = Estudiante.objects.filter(id__in=estudiantes_pks)
         for estudiante in estudiantes_to_add:
             revision = Revision(estudiante=estudiante, tarea=self)
-            revision.save(student_validated=True)
+            revision.save()
 
 
 class Revision(models.Model):
@@ -336,12 +336,12 @@ class Revision(models.Model):
         Estudiante, 
         blank=False,
         null=False,
-        on_delete=models.PROTECT)
+        on_delete=models.CASCADE)
     tarea = models.ForeignKey(
         Tarea,
         blank=False,
         null=False,   
-        on_delete=models.RESTRICT
+        on_delete=models.CASCADE
     )
     estado = models.CharField(
         max_length=10,
