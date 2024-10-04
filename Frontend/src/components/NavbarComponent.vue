@@ -22,15 +22,14 @@
         <img src="@/assets/usuario_icon.png" alt="user-icon" class="user-icon" />
       </button>
 
-      <!-- Si el usuario está autenticado, mostrar el icono y el panel de opciones -->
       <div v-else class="user-panel">
         <img src="@/assets/usuario_icon.png" alt="user-icon" class="user-icon" @click="toggleUserOptions" />
-        <!-- Mostrar el panel de opciones al hacer clic en el icono -->
         <div v-if="showUserOptions" class="user-options-panel">
           <p class="user-name">{{ username }}</p>
           <router-link to="/editar-datos" class="user-option">Editar datos personales</router-link>
           <router-link to="/cambiar-contrasena" class="user-option">Cambio de contraseña</router-link>
           <button @click="logout" class="user-option logout-button">Cerrar Sesión</button>
+          <button @click="showAdminModal = true" class="user-option">Crear Admin</button>
         </div>
       </div>
     </div>
@@ -47,6 +46,20 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal para Crear Usuario Admin -->
+    <div v-if="showAdminModal" class="admin-modal">
+      <div class="modal-content">
+        <span class="close" @click="showAdminModal = false">&times;</span>
+        <h2 class="modal-title">Crear Usuario Admin</h2>
+        <div class="modal-body">
+          <input type="email" placeholder="Email" v-model="adminEmail" class="input-field" />
+          <input type="text" placeholder="Nombre" v-model="adminName" class="input-field" />
+          <input type="password" placeholder="Contraseña" v-model="adminPassword" class="input-field" />
+          <button @click="crearUsuarioAdmin" class="login-button">Crear Admin</button>
+        </div>
+      </div>
+    </div>
   </nav>
 </template>
 
@@ -57,10 +70,14 @@ export default {
   data() {
     return {
       showLogin: false,
-      showUserOptions: false, // Para controlar el panel de opciones del usuario
+      showUserOptions: false,
+      showAdminModal: false,
       username: '',
       password: '',
       userRole: 'guest', // guest, estudiante, docente
+      adminEmail: '',
+      adminPassword: '',
+      adminName: '',
     };
   },
   methods: {
@@ -70,26 +87,36 @@ export default {
     toggleUserOptions() {
       this.showUserOptions = !this.showUserOptions;
     },
-    login() {
-      const result = authService.login(this.username, this.password);
-      if (result.route) {
-        this.userRole = result.role;
-        this.$router.push(result.route);
+    async crearUsuarioAdmin() {
+      const resultado = await authService.crearUsuarioAdmin(this.adminEmail, this.adminPassword, this.adminName);
+      if (resultado.exito) {
+        alert('Usuario admin creado exitosamente.');
       } else {
-        alert(result.error);
+        alert(`Error: ${resultado.error}`);
+      }
+      this.showAdminModal = false;
+    },
+    async login() {
+      const resultado = await authService.login(this.username, this.password);
+      if (resultado.exito) {
+        this.userRole = resultado.rol;
+        this.$router.push('/'); // Redirigir a tu ruta deseada
+      } else {
+        alert(`Error: ${resultado.error}`);
       }
       this.showLogin = false;
     },
     logout() {
-      const result = authService.logout();
-      this.userRole = result.role;
+      const resultado = authService.logout();
+      this.userRole = resultado.rol;
       this.username = '';
       this.password = '';
-      this.$router.push(result.route);
+      this.$router.push(resultado.ruta);
     }
   }
 };
 </script>
 
 <style src="../views/styles/navbarcomponent.css"></style>
+
 
