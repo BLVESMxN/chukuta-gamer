@@ -27,7 +27,7 @@ class Grado(models.Model):
     ])
 
     def __str__(self):
-        return f'{self.AVR[self.grado]} de {self.NIVELES[self.nivel]}'
+        return f'{self.AVR[self.grado]} de {self.NIVELES[self.nivel][1]}'
 
 
 class Administrativo(get_user_model()):
@@ -238,6 +238,9 @@ class Curso(models.Model):
         Horario,
         related_name='cursos_horario',
     )
+    
+    def __str__(self):
+        return f'{self.asignatura.nombre} : {self.periodo}'
 
     def get_profesor(self):
         return self.profesor
@@ -250,17 +253,20 @@ class Curso(models.Model):
 class Inscripcion(models.Model):
     curso = models.ForeignKey(
         Curso,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE
+    )
     estudiante = models.ForeignKey(
         Estudiante,
         blank=False,
         null=False,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE
+    )
     promedio = models.IntegerField(
     validators=[
         validators.MinValueValidator(0),
         validators.MaxValueValidator(100),
-    ])
+        ]
+    )
 
     def get_curso(self):
         return self.curso
@@ -271,9 +277,10 @@ class Inscripcion(models.Model):
     def get_colegio(self):
         return self.curso.get_colegio()
     
-    def save(self):
+    def save(self, *args, **kwargs):
         if self.estudiante.get_colegio() != self.curso.get_colegio():
             raise ValueError("El estudiante no pertenece al colegio")
+        super().save(*args, **kwargs)
 
 
 class Tarea(models.Model):
@@ -286,12 +293,6 @@ class Tarea(models.Model):
         null=False,
         on_delete=models.CASCADE, 
         related_name="evaluaciones"
-    )
-    sesion = models.ForeignKey(
-        Session,
-        blank=True,
-        null=False,
-        on_delete=models.RESTRICT,
     )
     estudiantes = models.ManyToManyField(
         Estudiante,
@@ -321,7 +322,7 @@ class Tarea(models.Model):
         estudiantes_to_add = Estudiante.objects.filter(id__in=estudiantes_pks)
         for estudiante in estudiantes_to_add:
             revision = Revision(estudiante=estudiante, tarea=self)
-            revision.save(student_validated=True)
+            revision.save()
 
 
 class Revision(models.Model):
@@ -336,12 +337,12 @@ class Revision(models.Model):
         Estudiante, 
         blank=False,
         null=False,
-        on_delete=models.PROTECT)
+        on_delete=models.CASCADE)
     tarea = models.ForeignKey(
         Tarea,
         blank=False,
         null=False,   
-        on_delete=models.RESTRICT
+        on_delete=models.CASCADE
     )
     estado = models.CharField(
         max_length=10,

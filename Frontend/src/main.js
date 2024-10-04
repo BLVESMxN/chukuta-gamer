@@ -50,11 +50,7 @@ async function runTests() {
   let res;
   let payload;
 
-  let adminToken;
-  let profesorToken;
-  let estudianteToken;
   let profesorPassword = 'string'; // Assuming default password
-  let estudiantePassword = 'string'; // Assuming default password
 
   // 1. Create an Admin User
   payload = {
@@ -85,7 +81,7 @@ async function runTests() {
     return;
   }
 
-  adminToken = res.data.token;
+
   // 2. Create a Colegio
   payload = {
     nombre: 'Sagrado Cocorolo 2',
@@ -348,14 +344,13 @@ async function runTests() {
 
   // 11. Create a Tarea
   // Authenticate as the profesor to create a Tarea
+  profesorPassword = profesorEmail
   try {
     payload = {
       email: profesorEmail,
       password: profesorPassword,
     };
     res = await handler.postRequest('/user/token/', payload);
-    profesorToken = res.data.token;
-    handler.setToken(profesorToken);
   } catch (error) {
     console.error('Failed to authenticate as profesor.');
     console.error(error.response ? error.response.data : error.message);
@@ -385,11 +380,10 @@ async function runTests() {
   try {
     payload = {
       email: estudianteEmail,
-      password: estudiantePassword,
+      password: estudianteEmail,
     };
     res = await handler.postRequest('/user/token/', payload);
-    estudianteToken = res.data.token;
-    handler.setToken(estudianteToken);
+    
   } catch (error) {
     console.error('Failed to authenticate as estudiante.');
     console.error(error.response ? error.response.data : error.message);
@@ -421,7 +415,19 @@ async function runTests() {
 
   // 13. Record Asistencia (Attendance)
   // Authenticate back as the profesor to record attendance
-  handler.setToken(profesorToken);
+  profesorPassword = profesorEmail
+  try {
+    payload = {
+      email: profesorEmail,
+      password: profesorPassword,
+    };
+    res = await handler.postRequest('/user/token/', payload);
+  } catch (error) {
+    console.error('Failed to authenticate as profesor.');
+    console.error(error.response ? error.response.data : error.message);
+    return;
+  }
+
 
   payload = {
     fecha: '2024-02-01',
@@ -439,7 +445,20 @@ async function runTests() {
 
   // 14. Update the Colegio
   // Authenticate back as the admin
-  handler.setToken(adminToken);
+
+  try {
+    payload = {
+      email:'user@example.com',
+      password: 'string',
+    };
+    res = await handler.postRequest('/user/token/', payload);
+  } catch (error) {
+    console.error('Failed to authenticate as profesor.');
+    console.error(error.response ? error.response.data : error.message);
+    return;
+  }
+
+
 
   payload = {
     nombre: 'Sagrado Corazón Renovado' + Math.random(),
@@ -456,7 +475,19 @@ async function runTests() {
 
   // 15. Delete the Tarea
   // Authenticate as the profesor
-  handler.setToken(profesorToken);
+  
+  profesorPassword = profesorEmail
+  try {
+    payload = {
+      email: profesorEmail,
+      password: profesorPassword,
+    };
+    res = await handler.postRequest('/user/token/', payload);
+  } catch (error) {
+    console.error('Failed to authenticate as profesor.');
+    console.error(error.response ? error.response.data : error.message);
+    return;
+  }
 
   try {
     res = await handler.deleteRequest(`/academico/tareas/${tareaId}/`);
