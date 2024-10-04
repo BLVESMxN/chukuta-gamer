@@ -53,4 +53,5 @@ const payload = {
 }
 
 res = await handler.postRequest('/user/token/', payload)
-res = await handler.postRequest('/user/logout/')
+//res = await handler.postRequest('/user/logout/')
+res = await habdler.postRequest('/academico/administrativo')

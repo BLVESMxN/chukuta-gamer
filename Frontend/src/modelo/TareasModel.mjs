@@ -26,6 +26,7 @@ export default {
       try {
         const response = await this.requestHandler.getRequest("/academico/tareas/");
         this.tareas = response.data; // Asigna las tareas obtenidas a la lista
+        console.log(this.tareas)
       } catch (error) {
         console.error("Error obteniendo las tareas:", error);
       }
