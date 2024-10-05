@@ -1,43 +1,66 @@
 <template>
-  <div class="navbar-container">
-    <nav class="navbar">
-      <ul class="navbar-list">
-        <li class="navbar-item" @click="navegar('asignaturas')">
-          📚 Asignaturas
-        </li>
-        <li class="navbar-item" @click="navegar('colegios')">🏫 Colegios</li>
-        <li class="navbar-item" @click="navegar('grados')">🎓 Grados</li>
-        <li class="navbar-item" @click="navegar('estudiantes')">
-          👨‍🎓 Estudiantes
-        </li>
-      </ul>
-    </nav>
+  <div class="navbar-lateral">
+    <h2 class="navbar-title">Panel de Administración</h2>
+    <ul class="navbar-list">
+      <li class="navbar-item" @click="navigate('/grados-admin')">
+        <i class="fas fa-graduation-cap"></i> Grados
+      </li>
+      <li class="navbar-item" @click="navigate('/colegios-admin')">
+        <i class="fas fa-school"></i> Colegios
+      </li>
+      <li class="navbar-item" @click="navigate('/asignaturas-admin')">
+        <i class="fas fa-book"></i> Asignaturas
+      </li>
+      <li class="navbar-item" @click="navigate('/periodos-admin')">
+        <i class="fas fa-calendar"></i> Periodos
+      </li>
+      <li class="navbar-item" @click="navigate('/horarios-admin')">
+        <i class="fas fa-clock"></i> Horarios
+      </li>
+      <li class="navbar-item" @click="navigate('/profesores-admin')">
+        <i class="fas fa-chalkboard-teacher"></i> Profesores
+      </li>
+      <li class="navbar-item" @click="navigate('/cursos-admin')">
+        <i class="fas fa-book-open"></i> Cursos
+      </li>
+      <li class="navbar-item" @click="navigate('/administrativo-admin')">
+        <i class="fas fa-users-cog"></i> Administrativo
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
 export default {
   methods: {
-    navegar(ruta) {
-      this.$router.push({ name: ruta });
+    navigate(route) {
+      this.$router.push(route); // Cambia la ruta
     },
   },
 };
 </script>
 
 <style scoped>
-.navbar-container {
+.navbar-lateral {
   width: 250px;
-  height: 100vh;
-  background-color: #f4f7f6;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  background-color: #004d40; /* Cambiado a un verde oscuro similar al navbar superior */
+  color: white;
+  padding: 20px;
+  position: fixed; /* Fijo al lado izquierdo de la pantalla */
+  top: 0;
+  left: 0;
+  overflow-y: auto; /* Permitir scroll si el contenido es demasiado largo */
 }
 
-.navbar {
-  width: 100%;
-  padding: 20px;
+.navbar-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #ffffff; /* Texto del título en blanco */
+  text-align: center;
+  border-bottom: 2px solid #ffffff;
+  padding-bottom: 10px;
 }
 
 .navbar-list {
@@ -46,17 +69,28 @@ export default {
 }
 
 .navbar-item {
-  padding: 15px;
   margin: 10px 0;
-  background-color: #0073e6;
-  color: white;
-  border-radius: 8px;
-  text-align: center;
+  padding: 12px;
   cursor: pointer;
+  background-color: #00695c; /* Fondo verde intermedio */
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
   transition: background-color 0.3s ease;
+  color: white;
+  font-weight: 500;
+}
+
+.navbar-item i {
+  margin-right: 10px;
 }
 
 .navbar-item:hover {
-  background-color: #005bb5;
+  background-color: #00796b; /* Fondo ligeramente más claro en hover */
+}
+
+.navbar-item.active {
+  background-color: #004d40; /* Mantener el color activo como el fondo del navbar */
 }
 </style>
+

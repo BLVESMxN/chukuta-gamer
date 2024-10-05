@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Navbar />
-    <router-view></router-view>
+    <Navbar /> <!-- Navbar superior -->
+    <router-view></router-view> <!-- Contenido dinámico -->
   </div>
 </template>
 
@@ -16,5 +16,14 @@ export default {
 </script>
 
 <style>
-/* Estilos globales si es necesario */
+/* Asegúrate de que el contenedor principal ocupe toda la pantalla */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+router-view {
+  flex: 1;
+}
 </style>

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import ListaEstudiantes from '../components/ListaComponent.vue';
+import ListaEstudiantes from '../../components/ListaComponent.vue';
 
 export default {
   name: 'EstudiantesDocente',

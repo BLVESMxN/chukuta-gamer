@@ -2,13 +2,13 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
-import InicioEstudiante from "./views/InicioEstudiante.vue";
-import MateriasEstudiante from "./views/MateriasEstudiante.vue";
-import InicioDocente from "./views/InicioDocente.vue";
-import MateriasDocente from "./views/MateriasDocente.vue";
+import InicioEstudiante from "./views/Estudiante/InicioEstudiante.vue";
+import MateriasEstudiante from "./views/Estudiante/MateriasEstudiante.vue";
+import InicioDocente from "./views/Docente/InicioDocente.vue";
+import MateriasDocente from "./views/Docente/MateriasDocente.vue";
 import PaginaPrincipal from "./views/PaginaPrincipal.vue";
-import EstudiantesDocente from "./views/EstudiantesDocente.vue";
-import HorariosDocente from "./views/HorariosDocente.vue";
+import EstudiantesDocente from "./views/Docente/EstudiantesDocente.vue";
+import HorariosDocente from "./views/Docente/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
 
 //Admin
@@ -22,7 +22,11 @@ import HorariosAdmin from "./views/admin/HorariosAdmin.vue";
 import CursosAdmin from "./views/admin/CursosAdmin.vue";
 import ProfesoresAdmin from "./views/admin/ProfesoresAdmin.vue";
 
+
+import AdminLayout from "./views/Layouts/AdminLayout.vue";
+
 import "@fortawesome/fontawesome-free/css/all.css";
+//import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
 // Definir rutas
 const routes = [
@@ -35,14 +39,21 @@ const routes = [
   { path: "/estudiantes-docente", component: EstudiantesDocente },
   //admin
 
-  { path: "/grados-admin", component: GradosAdmin },
-  { path: "/colegios-admin", component: ColegiosAdmin },
-  { path: "/asignaturas-admin", component: AsignaturasAdmin },
-  { path: "/periodos-admin", component: PeriodosAdmin },
-  { path: "/horarios-admin", component: HorariosAdmin },
-  { path: "/profesores-admin", component: ProfesoresAdmin },
-  { path: "/cursos-admin", component: CursosAdmin },
-  { path: "/administrativo-admin", component: AdministrativoAdmin },
+ // Rutas del admin, utilizando el AdminLayout
+ {
+  path: "/admin",
+  component: AdminLayout,
+  children: [
+    { path: "/grados-admin", component: GradosAdmin },
+    { path: "/colegios-admin", component: ColegiosAdmin },
+    { path: "/asignaturas-admin", component: AsignaturasAdmin },
+    { path: "/periodos-admin", component: PeriodosAdmin },
+    { path: "/horarios-admin", component: HorariosAdmin },
+    { path: "/profesores-admin", component: ProfesoresAdmin },
+    { path: "/cursos-admin", component: CursosAdmin },
+    { path: "/administrativo-admin", component: AdministrativoAdmin },
+  ],
+},
   //
   { path: "/prueba-crud", component: prueba },
 ];
@@ -539,3 +550,19 @@ app.mount("#app");
 //let handler = new RequestHandler()
 //handler.postRequest('/user/token/', user1)
 //handler.postRequest('/academico/profesores/', profesor1)
+
+
+/*
+var admin = new RequestHandler()
+admin.postRequest('/user/token/',{
+  email: 'pedro@pruebas.com',
+  password: '123'
+})
+
+/*admin.postRequest('/academico/administrativo/',{
+  name: 'Pedro',
+  email:'pedro@pruebas.com',
+  password:'123'
+})*/
+
+//admin.getRequest('/user/me/',)

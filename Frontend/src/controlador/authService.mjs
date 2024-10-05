@@ -1,74 +1,49 @@
-import { RequestHandler } from "@/controlador/RequestHandler.mjs";
+import { RequestHandler } from "./RequestHandler.mjs";
 
-export class AuthService {
-  constructor() {
-    this.requestHandler = new RequestHandler();
-  }
+export default {
+  async login(username, password) {
+    const handler = new RequestHandler();
 
-  // Función para realizar el login con credenciales proporcionadas
-  async login(email, password) {
     try {
-      // Payload dinámico, con los parámetros recibidos
-      const loginPayload = {
-        email: email,
+      const loginResponse = await handler.postRequest('/user/token/', {
+        email: username,
         password: password,
-      };
+      });
 
-      // Realizamos la solicitud POST para obtener el token
-      let res = await this.requestHandler.postRequest(
-        "/user/token/",
-        loginPayload
-      );
+      if (loginResponse && loginResponse.status === 200) {
+        // Obtener el rol del usuario
+        const userResponse = await handler.getRequest('/user/me/');
+        if (userResponse && userResponse.status === 200) {
+          const userData = userResponse.data;
+          const userRole = userData.role_field;
 
-      if (res && res.status === 200) {
-        // Si el token de sesión es devuelto en la respuesta del servidor
-        const tokenSesion =
-          res.data.token || this.requestHandler.getCookie("csrftoken");
+          // Almacenar el rol en el localStorage para acceder en el futuro
+          localStorage.setItem('userRole', userRole);
 
-        if (tokenSesion) {
-          // Si el token se obtiene correctamente, retornarlo
-          console.log("Login exitoso, token obtenido:", tokenSesion);
-          return tokenSesion;
+          if (userRole === 'Administrador') {
+            return { role: 'Administrador', route: '/grados-admin' };
+          } else if (userRole === 'Docente') {
+            return { role: 'docente', route: '/inicio-docente' };
+          } else {
+            return { role: 'estudiante', route: '/inicio-estudiante' };
+          }
         } else {
-          console.error(
-            "Error: No se pudo obtener el token de la cookie ni del cuerpo de la respuesta."
-          );
-          return null;
+          return { role: 'guest', route: null, error: 'Error al obtener los datos del usuario' };
         }
       } else {
-        console.error("Error en el login: Respuesta inesperada del servidor.");
-        return null;
+        return { role: 'guest', route: null, error: 'Credenciales incorrectas' };
       }
     } catch (error) {
-      console.error("Error durante el login:", error);
-      return null;
+      return { role: 'guest', route: null, error: 'Error en el servidor' };
     }
-  }
+  },
 
-  // Función para obtener el token sin necesidad de login si ya está en la cookie
-  getTokenFromCookie() {
-    const tokenSesion = this.requestHandler.getCookie("csrftoken");
-    if (tokenSesion) {
-      console.log("Token obtenido desde la cookie:", tokenSesion);
-      return tokenSesion;
-    } else {
-      console.error("No se encontró el token en la cookie.");
-      return null;
-    }
-  }
+  logout() {
+    localStorage.removeItem('userRole'); // Eliminar el rol del usuario en el logout
+    return { role: 'guest', route: '/' };
+  },
 
-  // Función para asegurarse de que tenemos un token válido (login si es necesario)
-  async ensureAuthenticated(email, password) {
-    // Intentar obtener el token directamente de la cookie
-    let tokenSesion = this.getTokenFromCookie();
-
-    // Si no hay token en la cookie, hacer login para obtener uno
-    if (!tokenSesion) {
-      console.log("No hay token en la cookie, realizando login...");
-      tokenSesion = await this.login(email, password);
-    }
-
-    // Devolver el token, o null si no se pudo obtener
-    return tokenSesion;
-  }
-}
+  getUserRole() {
+    return { role: localStorage.getItem('userRole') || 'guest' };
+  },
+};
