@@ -10,67 +10,41 @@ import PaginaPrincipal from "./views/PaginaPrincipal.vue";
 import EstudiantesDocente from "./views/EstudiantesDocente.vue";
 import HorariosDocente from "./views/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
-import LoginPrueba from "./views/previews/LoginTest.vue";
-import GradosCrud from "./views/GradosCrud.vue";
-import CrearGrado from "./views/CrearGrado.vue";
-import EditarGrado from "./views/EditarGrado.vue";
-//colegios
-import AgregarColegio from "./views/ColegioAdmin.vue";
-import VerColegio from "./views/ColegioAdminVista.vue";
-import EditarColegio from "./views/EditarColegio.vue";
-//asignaturas
-import AgregarAsignatura from "./views/AgregarAsignatura.vue";
-import EditarAsignatura from "./views/EditarAsignatura.vue";
-import MirarAsignaturas from "./views/AsignaturasCrud.vue";
 
-import AgregarEstudiante from "./views/AgregarEstudiante.vue";
-import EstudiantesCrud from "./views/EstudiantesCrud.vue";
+//Admin
 
-import viewGrados from "./views/viewGrados.vue";
+import GradosAdmin from "./views/admin/GradosAdmin.vue";
+import AdministrativoAdmin from "./views/admin/AdministrativoAdmin.vue";
+import ColegiosAdmin from "./views/admin/ColegiosAdmin.vue";
+import AsignaturasAdmin from "./views/admin/AsignaturasAdmin.vue";
+import PeriodosAdmin from "./views/admin/PeriodosAdmin.vue";
+import HorariosAdmin from "./views/admin/HorariosAdmin.vue";
+import CursosAdmin from "./views/admin/CursosAdmin.vue";
+import ProfesoresAdmin from "./views/admin/ProfesoresAdmin.vue";
 
-//import { RequestHandler } from "./controlador/RequestHandler.mjs";
+import "@fortawesome/fontawesome-free/css/all.css";
 
 // Definir rutas
 const routes = [
   { path: "/", component: PaginaPrincipal },
   { path: "/inicio-estudiante", component: InicioEstudiante },
-  { path: "/  ", component: MateriasEstudiante },
+  { path: "/materias-estudiante", component: MateriasEstudiante },
   { path: "/inicio-docente", component: InicioDocente },
   { path: "/materias-docente", component: MateriasDocente },
   { path: "/horarios-docente", component: HorariosDocente },
   { path: "/estudiantes-docente", component: EstudiantesDocente },
+  //admin
+
+  { path: "/grados-admin", component: GradosAdmin },
+  { path: "/colegios-admin", component: ColegiosAdmin },
+  { path: "/asignaturas-admin", component: AsignaturasAdmin },
+  { path: "/periodos-admin", component: PeriodosAdmin },
+  { path: "/horarios-admin", component: HorariosAdmin },
+  { path: "/profesores-admin", component: ProfesoresAdmin },
+  { path: "/cursos-admin", component: CursosAdmin },
+  { path: "/administrativo-admin", component: AdministrativoAdmin },
+  //
   { path: "/prueba-crud", component: prueba },
-  { path: "/Login-Test", component: LoginPrueba },
-  { path: "/Asignatura-Crud", component: MirarAsignaturas },
-  { path: "/Grados-Crud", component: GradosCrud },
-  { path: "/Crear-Grado", component: CrearGrado },
-  { path: "/Editar-Grado/:id", component: EditarGrado },
-  {
-    path: "/Agregar-Asignatura",
-    name: "AgregarAsignatura",
-    component: AgregarAsignatura,
-  },
-
-  {
-    path: "/Editar-Asignatura/:id",
-    name: "EditarAsignatura",
-    component: EditarAsignatura,
-    props: true,
-  },
-
-  { path: "/Estudiantes-Crud", component: EstudiantesCrud },
-  { path: "/Agregar-Estudiante", component: AgregarEstudiante },
-
-  { path: "/colegio-admin", name: "ColegioAdmin", component: AgregarColegio },
-  { path: "/Colegio-admin-vista", component: VerColegio },
-  {
-    path: "/editar-colegio/:id",
-    name: "EditarColegio",
-    component: EditarColegio,
-    props: true,
-  },
-
-  { path: "/Grados-vista", component: viewGrados },
 ];
 
 // Configuración del router
@@ -86,13 +60,12 @@ const app = createApp(App);
 app.use(router);
 app.mount("#app");
 
-/*
-async function runTests() {
-  let handler = new RequestHandler();
-  console.log(handler);
+// async function runTests() {
+//   let handler = new RequestHandler();
+//   console.log(handler);
 
-  let res;
-  let payload;
+//   let res;
+//   let payload;
 
 //   let profesorPassword = 'string'; // Assuming default password
 
@@ -124,7 +97,6 @@ async function runTests() {
 //     console.error(error.response ? error.response.data : error.message);
 //     return;
 //   }
-
 
 //   // 2. Create a Colegio
 //   payload = {
@@ -427,7 +399,7 @@ async function runTests() {
 //       password: estudianteEmail,
 //     };
 //     res = await handler.postRequest('/user/token/', payload);
-    
+
 //   } catch (error) {
 //     console.error('Failed to authenticate as estudiante.');
 //     console.error(error.response ? error.response.data : error.message);
@@ -472,7 +444,6 @@ async function runTests() {
 //     return;
 //   }
 
-
 //   payload = {
 //     fecha: '2024-02-01',
 //     estado: 'ASI', // Asistio
@@ -481,14 +452,6 @@ async function runTests() {
 
 //   try {
 //     res = await handler.postRequest('/academico/asistencias/', payload);
-//     console.log('Asistencia recorded with ID:', res.data.id);
-//   } catch (error) {
-//     console.log('Failed to record asistencia.');
-//     console.error(error.response ? error.response.data : error.message);
-//   }
-
-//   try {
-//     res = await handler.getRequest('/academico/asistencias/');
 //     console.log('Asistencia recorded with ID:', res.data.id);
 //   } catch (error) {
 //     console.log('Failed to record asistencia.');
@@ -510,8 +473,6 @@ async function runTests() {
 //     return;
 //   }
 
-
-
 //   payload = {
 //     nombre: 'Sagrado Corazón Renovado' + Math.random(),
 //     suscripcion: false,
@@ -527,7 +488,7 @@ async function runTests() {
 
 //   // 15. Delete the Tarea
 //   // Authenticate as the profesor
-  
+
 //   profesorPassword = profesorEmail
 //   try {
 //     payload = {
@@ -549,7 +510,6 @@ async function runTests() {
 //     console.error(error.response ? error.response.data : error.message);
 //   }
 
-
 //   try {
 //     res = await handler.getRequest('/academico/cursos/');
 //     console.log('Cursos retrieved:', res.data);
@@ -561,78 +521,21 @@ async function runTests() {
 //   console.log('Tests completed successfully.');
 // }
 
-// Call the runTests function
-runTests().catch((error) => {
-  console.error('An unexpected error occurred during testing:', error);
-}); */
+// // Call the runTests function
+// runTests().catch((error) => {
+//   console.error('An unexpected error occurred during testing:', error);
+// });
 
-/*
-var ojo = new RequestHandler();
-await ojo.postRequest("academico/administrativo/", {
-  name: "Pedro",
-  email: "ojo@amdin.com",
-  password: "123",
-});
+//var profesor1 = {
+//"name": "Juan Perez",
+//"colegio": 1
+//}
 
-//profesor y estudaintes se crean por admin
+//var user1 = {
+//"email": "user@example.com",
+//"password": "string"
+//}
 
-await ojo.postRequest("user/token/", {
-  email: "ojo@amdin.com",
-  password: "123",
-});
-
-await ojo.getRequest("/user/me/");
-
-await ojo.postRequest("academico/colegios/", {
-  nombre: "hola",
-  admin: 15,
-  suscripcion: true,
-  extension: "bola",
-});
-
-await ojo.postRequest("academico/profesores/", {
-  name: "Hola",
-  colegio: 3,
-});
-
-var pk = await ojo.postRequest("academico/colegios/", {
-  nombre: "bola",
-  admin: 15,
-  suscripcion: true,
-  extension: "nola",
-});
-
-await ojo.postRequest("academico/profesores/", {
-  name: "cole2",
-  colegio: pk["id"],
-});
-*/
-
-/*
-let handler = new RequestHandler();
-
-await handler.postRequest("user/token/", {
-  email: "user@example.com",
-  password: "string",
-});
-
-await handler.postRequest("academico/colegios/", {
-  nombre: "Alv",
-});
-
-await handler.postRequest("academico/estudiantes/", {
-  name: "cococlolo",
-  grado: 1,
-  colegio: 2,
-});
-
-await handler.getRequest("academico/estudiantes/?colegio=2");
-
-// await handler.postRequest('user/token/', {
-//   email: 'juan.p@edu.com',
-//   password: 'juan.p@edu.com',
-// })
-
-// await handler.getRequest('academico/cursos/')
-// await handler.getRequest('academico/inscripciones/?curso=37')Co
-*/
+//let handler = new RequestHandler()
+//handler.postRequest('/user/token/', user1)
+//handler.postRequest('/academico/profesores/', profesor1)
