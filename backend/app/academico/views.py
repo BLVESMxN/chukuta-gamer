@@ -61,25 +61,8 @@ class ColegioViewSet(viewsets.ModelViewSet):
         
 
 class AdministradorViewSet(generics.CreateAPIView):
-    queryset = Administrativo.objects.all()
     serializer_class = AdministrativoSerializer
-    def get_queryset(self):
-        user = self.request.user
-        if not user.role: 
-            return Profesor.objects.all()
-        
-        if user.role == Role.get_admin():
-            colegios = user.administrativo.colegios.all()
-            return Profesor.objects.filter(colegio__in=colegios)
-        if user.role == Role.get_student():
-            return Profesor.objects.filter(colegio=user.estudiante.colegio)
-        if user.role == Role.get_teacher():
-            return Profesor.objects.filter(colegio=user.profesor.colegio)
-        if user.role == Role.get_parent():
-            children  = user.padre.get_children()
-            colegios = children.values_list('colegio', flat=True)
-            return Profesor.objects.filter(colegio__in=colegios)
-        return Profesor.objects.none()
+
 class ProfesorViewSet(viewsets.ModelViewSet):
     queryset = Profesor.objects.all()
     serializer_class = ProfesorSerializer
