@@ -10,6 +10,7 @@ export default class AdministrativoModel {
     // Validaciones de entrada
     if (!nuevoAdmin.name || !nuevoAdmin.email || !nuevoAdmin.password) {
       throw new Error("Por favor, completa todos los campos.");
+      console.log("a");
     }
 
     try {
@@ -21,11 +22,15 @@ export default class AdministrativoModel {
       if (response.status === 201) {
         return response; // Se devuelve la respuesta si se agrega correctamente
       } else {
-        throw new Error("Hubo un error al agregar el administrador. Verifica los datos.");
+        throw new Error(
+          "Hubo un error al agregar el administrador. Verifica los datos."
+        );
       }
     } catch (error) {
       console.error("Error al agregar el administrador:", error);
-      throw new Error("Hubo un error al agregar el administrador. Verifica los datos.");
+      throw new Error(
+        "Hubo un error al agregar el administrador. Verifica los datos."
+      );
     }
   }
 
