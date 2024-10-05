@@ -23,9 +23,9 @@
       <li class="navbar-item" @click="navigate('/cursos-admin')">
         <i class="fas fa-book-open"></i> Cursos
       </li>
-      <li class="navbar-item" @click="navigate('/administrativo-admin')">
+      <!--li class="navbar-item" @click="navigate('/administrativo-admin')">
         <i class="fas fa-users-cog"></i> Administrativo
-      </li>
+      </li-->
     </ul>
   </div>
 </template>

@@ -31,7 +31,7 @@
         <!-- Mostrar el panel de opciones al hacer clic en el icono -->
         <div v-if="showUserOptions" class="user-options-panel">
           <p class="user-name">{{ username }}</p>
-          <router-link to="/editar-datos" class="user-option">Editar datos personales</router-link>
+          <router-link to="/editar-usuario" class="user-option">Editar datos personales</router-link>
           <router-link to="/cambiar-contrasena" class="user-option">Cambio de contraseña</router-link>
           <button @click="logout" class="user-option logout-button">Cerrar Sesión</button>
         </div>

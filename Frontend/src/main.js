@@ -22,6 +22,8 @@ import HorariosAdmin from "./views/admin/HorariosAdmin.vue";
 import CursosAdmin from "./views/admin/CursosAdmin.vue";
 import ProfesoresAdmin from "./views/admin/ProfesoresAdmin.vue";
 
+import UserManage from "./views/admin/usuario/UserManage.vue";
+
 
 import AdminLayout from "./views/Layouts/AdminLayout.vue";
 
@@ -37,6 +39,7 @@ const routes = [
   { path: "/materias-docente", component: MateriasDocente },
   { path: "/horarios-docente", component: HorariosDocente },
   { path: "/estudiantes-docente", component: EstudiantesDocente },
+  { path: "/editar-usuario", component: UserManage },
   //admin
 
  // Rutas del admin, utilizando el AdminLayout
