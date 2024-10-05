@@ -10,6 +10,9 @@ import PaginaPrincipal from "./views/PaginaPrincipal.vue";
 import EstudiantesDocente from "./views/EstudiantesDocente.vue";
 import HorariosDocente from "./views/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
+
+//Admin
+
 import GradosAdmin from "./views/admin/GradosAdmin.vue";
 import AdministrativoAdmin from "./views/admin/AdministrativoAdmin.vue";
 import ColegiosAdmin from "./views/admin/ColegiosAdmin.vue";
@@ -19,7 +22,7 @@ import HorariosAdmin from "./views/admin/HorariosAdmin.vue";
 import CursosAdmin from "./views/admin/CursosAdmin.vue";
 import ProfesoresAdmin from "./views/admin/ProfesoresAdmin.vue";
 
-import '@fortawesome/fontawesome-free/css/all.css';
+import "@fortawesome/fontawesome-free/css/all.css";
 
 // Definir rutas
 const routes = [
@@ -30,14 +33,17 @@ const routes = [
   { path: "/materias-docente", component: MateriasDocente },
   { path: "/horarios-docente", component: HorariosDocente },
   { path: "/estudiantes-docente", component: EstudiantesDocente },
+  //admin
+
   { path: "/grados-admin", component: GradosAdmin },
   { path: "/colegios-admin", component: ColegiosAdmin },
   { path: "/asignaturas-admin", component: AsignaturasAdmin },
-  { path: "/periodos-admin", component:PeriodosAdmin },
-  { path: "/horarios-admin", component:HorariosAdmin },
-  { path: "/profesores-admin", component:ProfesoresAdmin },
-  { path: "/cursos-admin", component:CursosAdmin },
+  { path: "/periodos-admin", component: PeriodosAdmin },
+  { path: "/horarios-admin", component: HorariosAdmin },
+  { path: "/profesores-admin", component: ProfesoresAdmin },
+  { path: "/cursos-admin", component: CursosAdmin },
   { path: "/administrativo-admin", component: AdministrativoAdmin },
+  //
   { path: "/prueba-crud", component: prueba },
 ];
 
@@ -53,8 +59,6 @@ const app = createApp(App);
 // Usar el router en la aplicación
 app.use(router);
 app.mount("#app");
-
-
 
 // async function runTests() {
 //   let handler = new RequestHandler();
@@ -93,7 +97,6 @@ app.mount("#app");
 //     console.error(error.response ? error.response.data : error.message);
 //     return;
 //   }
-
 
 //   // 2. Create a Colegio
 //   payload = {
@@ -396,7 +399,7 @@ app.mount("#app");
 //       password: estudianteEmail,
 //     };
 //     res = await handler.postRequest('/user/token/', payload);
-    
+
 //   } catch (error) {
 //     console.error('Failed to authenticate as estudiante.');
 //     console.error(error.response ? error.response.data : error.message);
@@ -441,7 +444,6 @@ app.mount("#app");
 //     return;
 //   }
 
-
 //   payload = {
 //     fecha: '2024-02-01',
 //     estado: 'ASI', // Asistio
@@ -471,8 +473,6 @@ app.mount("#app");
 //     return;
 //   }
 
-
-
 //   payload = {
 //     nombre: 'Sagrado Corazón Renovado' + Math.random(),
 //     suscripcion: false,
@@ -488,7 +488,7 @@ app.mount("#app");
 
 //   // 15. Delete the Tarea
 //   // Authenticate as the profesor
-  
+
 //   profesorPassword = profesorEmail
 //   try {
 //     payload = {
@@ -510,7 +510,6 @@ app.mount("#app");
 //     console.error(error.response ? error.response.data : error.message);
 //   }
 
-
 //   try {
 //     res = await handler.getRequest('/academico/cursos/');
 //     console.log('Cursos retrieved:', res.data);
@@ -528,16 +527,15 @@ app.mount("#app");
 // });
 
 //var profesor1 = {
-  //"name": "Juan Perez",
-  //"colegio": 1
+//"name": "Juan Perez",
+//"colegio": 1
 //}
 
 //var user1 = {
-  //"email": "user@example.com",
-  //"password": "string"
-//} 
+//"email": "user@example.com",
+//"password": "string"
+//}
 
 //let handler = new RequestHandler()
 //handler.postRequest('/user/token/', user1)
 //handler.postRequest('/academico/profesores/', profesor1)
-
