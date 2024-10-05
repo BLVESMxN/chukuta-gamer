@@ -11,9 +11,8 @@ import EstudiantesDocente from "./views/EstudiantesDocente.vue";
 import HorariosDocente from "./views/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
 
-import { RequestHandler } from "./controlador/RequestHandler.mjs";
-
-
+import sessionPlugin from './controlador/SessionPlugin.mjs';
+import { Session } from "./controlador/Session";
 // Definir rutas
 const routes = [
   { path: "/", component: PaginaPrincipal },
@@ -26,19 +25,16 @@ const routes = [
   { path: "/prueba-crud", component: prueba },
 ];
 
-// Configuración del router
 const router = createRouter({
   history: createWebHistory(),
   routes,
 });
-
-// Crear la aplicación Vue
+Session.getInstance();
 const app = createApp(App);
 
-// Usar el router en la aplicación
+app.use(sessionPlugin);
 app.use(router);
 app.mount("#app");
-
 
 
 // async function runTests() {
@@ -520,24 +516,29 @@ app.mount("#app");
 // });
 
 
- let handler = new RequestHandler()
+//let handler = new RequestHandler()
 
-await handler.postRequest('user/token/', {
-  email: 'user@example.com',
-  password: 'string'
-})
+// await handler.postRequest('user/token/', {
+//   email: 'user@example.com',
+//   password: 'string'
+// })
 
-await handler.postRequest('academico/colegios/', {
-  nombre: "Alv",
-})
 
-await handler.postRequest('academico/estudiantes/', {
-  name: 'cococlolo',
-  grado: 1,
-  colegio: 2
-})
+// await handler.getRequest('user/me/')
 
-await handler.getRequest('academico/estudiantes/?colegio=2')
+
+
+// await handler.postRequest('academico/colegios/', {
+//   nombre: "Alv",
+// })
+
+// await handler.postRequest('academico/estudiantes/', {
+//   name: 'cococlolo',
+//   grado: 1,
+//   colegio: 2
+// })
+
+// await handler.getRequest('academico/estudiantes/?colegio=2')
 
 // await handler.postRequest('user/token/', {
 //   email: 'juan.p@edu.com',
@@ -545,4 +546,43 @@ await handler.getRequest('academico/estudiantes/?colegio=2')
 // })
 
 // await handler.getRequest('academico/cursos/')
-// await handler.getRequest('academico/inscripciones/?curso=37')Co
+// await handler.getRequest('academico/inscripciones/?curso=37')
+
+
+
+// var as = await handler.postRequest('academico/asignaturas/', {
+//   nombre: "A ver que pasa",
+//   grado: 1,
+//   colegio: 1,
+// })
+
+// await handler.getRequest('academico/profesores/')
+
+
+// var curso = await handler.postRequest('academico/cursos/', {
+//   asignatura: as.data['id'],
+//   periodo: 1,
+//   horarios: [1],
+//   profesor: 3,
+// })
+
+// let prof = {"email":"juan@sag.com", "password":"juan@sag.com"}
+// await handler.postRequest('user/token/', prof)
+
+
+// await handler.postRequest('academico/tareas/', {
+//   curso: curso.data['id'],
+//   fecha_inicio: "2024-10-05T03:06:36.404Z",
+//   fecha_fin: "2024-10-05T03:06:36.404Z",
+//   descripcion: "vxc"
+// })
+
+
+// await handler.postRequest('academico/tareas/', {
+//   curso: curso.data['id'],
+//   fecha_inicio: "2024-10-05T03:06:36.404Z",
+//   fecha_fin: "2024-10-05T03:06:36.404Z",
+//   descripcion: "vxc"
+// })
+
+// await handler.getRequest(`academico/tareas/?curso=${curso.data['id']}`)
