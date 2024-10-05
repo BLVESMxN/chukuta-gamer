@@ -65,9 +65,10 @@ export default {
     return {
       showLogin: false,
       showUserOptions: false, // Para controlar el panel de opciones del usuario
-      username: '',
-      password: '',
+      usernameInput: '', // Entrada del nombre de usuario en el modal
+      passwordInput: '', // Entrada de la contraseña en el modal
       userRole: 'guest', // guest, estudiante, docente, Administrador
+      username: '', // Nombre de usuario para mostrar después de login
     };
   },
   methods: {
@@ -78,9 +79,11 @@ export default {
       this.showUserOptions = !this.showUserOptions;
     },
     async login() {
-      const result = await authService.login(this.username, this.password);
+      // Usamos usernameInput y passwordInput en lugar de this.username y this.password
+      const result = await authService.login(this.usernameInput, this.passwordInput);
       if (result.route) {
         this.userRole = result.role;
+        this.username = this.usernameInput; // Guardamos el nombre de usuario para mostrar
         console.log("Login exitoso:", result);
         this.$router.push(result.route);
       } else {
@@ -91,8 +94,9 @@ export default {
     logout() {
       const result = authService.logout();
       this.userRole = result.role;
-      this.username = '';
-      this.password = '';
+      this.usernameInput = ''; // Limpiar los campos de entrada
+      this.passwordInput = ''; // Limpiar los campos de entrada
+      this.username = ''; // Limpiar el nombre de usuario mostrado
       this.$router.push(result.route);
     }
   }

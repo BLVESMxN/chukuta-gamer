@@ -26,6 +26,8 @@ import UserManage from "./views/admin/usuario/UserManage.vue";
 
 
 import AdminLayout from "./views/Layouts/AdminLayout.vue";
+import { Session} from "./controlador/Session";
+import { sessionPlugin } from "./controlador/SessionPlugin.mjs";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 //import { RequestHandler } from "./controlador/RequestHandler.mjs";
@@ -65,6 +67,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
 Session.getInstance();
 const app = createApp(App);
 
