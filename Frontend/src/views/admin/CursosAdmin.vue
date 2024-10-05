@@ -14,7 +14,9 @@
             <label for="asignaturaFilter">Filtrar por Asignatura</label>
             <select v-model="filtroAsignatura" class="input-field">
               <option value="">Todas</option>
-              <option v-for="asignatura in asignaturas" :key="asignatura.id" :value="asignatura.id">{{ asignatura.nombre }}</option>
+              <option v-for="asignatura in asignaturas" :key="asignatura.id" :value="asignatura.id">
+                {{ asignatura.nombre }} - {{ obtenerDescripcionGrado(asignatura.grado) }} - {{ obtenerNombreColegio(asignatura.colegio) }}
+              </option>
             </select>
           </div>
   
@@ -32,7 +34,7 @@
             <label for="profesorFilter">Filtrar por Profesor</label>
             <select v-model="filtroProfesor" class="input-field">
               <option value="">Todos</option>
-              <option v-for="profesor in profesores" :key="profesor.id" :value="profesor.id">{{ profesor.name }}</option>
+              <option v-for="profesor in profesores" :key="profesor.id" :value="profesor.id">{{ profesor.name }} - {{ obtenerNombreColegio(profesor.colegio) }}</option>
             </select>
           </div>
   
@@ -55,7 +57,9 @@
             <label for="asignatura">Asignatura</label>
             <select v-model="nuevoCurso.asignatura" class="input-field">
               <option value="0" disabled>Seleccione una Asignatura</option>
-              <option v-for="asignatura in asignaturas" :key="asignatura.id" :value="asignatura.id">{{ asignatura.nombre }} - {{ asignatura.grado }}</option>
+              <option v-for="asignatura in asignaturas" :key="asignatura.id" :value="asignatura.id">
+                {{ asignatura.nombre }} - {{ obtenerDescripcionGrado(asignatura.grado) }} - {{ obtenerNombreColegio(asignatura.colegio) }}
+              </option>
             </select>
           </div>
   
@@ -64,7 +68,9 @@
             <label for="asignatura">Asignatura</label>
             <select v-model="cursoEditado.asignatura" class="input-field">
               <option value="0" disabled>Seleccione una Asignatura</option>
-              <option v-for="asignatura in asignaturas" :key="asignatura.id" :value="asignatura.id">{{ asignatura.nombre }} - {{ asignatura.grado }}</option>
+              <option v-for="asignatura in asignaturas" :key="asignatura.id" :value="asignatura.id">
+                {{ asignatura.nombre }} - {{ obtenerDescripcionGrado(asignatura.grado) }} -  - {{ obtenerNombreColegio(asignatura.colegio) }}
+              </option>
             </select>
           </div>
   
@@ -91,16 +97,9 @@
             <label for="profesor">Profesor</label>
             <select v-model="nuevoCurso.profesor" class="input-field">
               <option value="0" disabled>Seleccione un Profesor</option>
-              <option v-for="profesor in profesores" :key="profesor.id" :value="profesor.id">{{ profesor.name }} - {{ profesor.colegio }}</option>
-            </select>
-          </div>
-  
-          <!-- Selector de profesor para editar -->
-          <div class="form-field" v-if="cursoEditado">
-            <label for="profesor">Profesor</label>
-            <select v-model="cursoEditado.profesor" class="input-field">
-              <option value="0" disabled>Seleccione un Profesor</option>
-              <option v-for="profesor in profesores" :key="profesor.id" :value="profesor.id">{{ profesor.name }} - {{ profesor.colegio }}</option>
+              <option v-for="profesor in profesores" :key="profesor.id" :value="profesor.id">
+                {{ profesor.name }} - {{ obtenerNombreColegio(profesor.colegio) }}
+              </option>
             </select>
           </div>
   
@@ -108,15 +107,6 @@
           <div class="form-field" v-if="!cursoEditado">
             <label for="horarios">Horarios</label>
             <select v-model="nuevoCurso.horarios" multiple class="input-field">
-              <option value="0" disabled>Seleccione Horarios</option>
-              <option v-for="horario in horarios" :key="horario.id" :value="horario.id">{{ horario.dia }} - {{ horario.inicio }} a {{ horario.fin }}</option>
-            </select>
-          </div>
-  
-          <!-- Selector de horarios para editar -->
-          <div class="form-field" v-if="cursoEditado">
-            <label for="horarios">Horarios</label>
-            <select v-model="cursoEditado.horarios" multiple class="input-field">
               <option value="0" disabled>Seleccione Horarios</option>
               <option v-for="horario in horarios" :key="horario.id" :value="horario.id">{{ horario.dia }} - {{ horario.inicio }} a {{ horario.fin }}</option>
             </select>
@@ -136,26 +126,18 @@
                 <th>ID</th>
                 <th>
                   Asignatura
-                  <button @click="ordenarPorAsignatura" class="sort-button">
-                    Ordenar {{ ordenAsignaturaAscendente ? 'Ascendente' : 'Descendente' }}
-                  </button>
                 </th>
                 <th>
                   Periodo
-                  <button @click="ordenarPorPeriodo" class="sort-button">
-                    Ordenar {{ ordenPeriodoAscendente ? 'Ascendente' : 'Descendente' }}
-                  </button>
                 </th>
                 <th>
                   Profesor
-                  <button @click="ordenarPorProfesor" class="sort-button">
-                    Ordenar {{ ordenProfesorAscendente ? 'Ascendente' : 'Descendente' }}
-                  </button>
                 </th>
                 <th>
                   Horarios
                   <button @click="ordenarPorHorario" class="sort-button">
                     Ordenar {{ ordenHorarioAscendente ? 'Ascendente' : 'Descendente' }}
+                    <i :class="ordenHorarioAscendente ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                   </button>
                 </th>
                 <th>Acciones</th>
@@ -179,7 +161,7 @@
       </div>
     </div>
   </template>
-  
+
   <script>
   import CursosModel from "@/modelo/CursosModel.mjs";
   
@@ -187,14 +169,13 @@
     mixins: [CursosModel],
     data() {
       return {
-        ordenAsignaturaAscendente: true,   // Estado para ordenar asignaturas
-        ordenPeriodoAscendente: true,      // Estado para ordenar periodos
-        ordenProfesorAscendente: true,     // Estado para ordenar profesores
-        ordenHorarioAscendente: true,      // Estado para ordenar horarios
+        ordenAsignaturaAscendente: true,
+        ordenPeriodoAscendente: true,
+        ordenProfesorAscendente: true,
+        ordenHorarioAscendente: true,
       };
     },
     computed: {
-      // Filtrar cursos por asignatura, periodo, profesor y horario
       cursosFiltrados() {
         return this.cursos.filter(curso => {
           const cumpleAsignatura = this.filtroAsignatura ? curso.asignatura === parseInt(this.filtroAsignatura) : true;
@@ -204,7 +185,6 @@
           return cumpleAsignatura && cumplePeriodo && cumpleProfesor && cumpleHorario;
         });
       },
-      // Ordenar cursos por asignatura, periodo, profesor y horario
       cursosOrdenados() {
         return [...this.cursosFiltrados].sort((a, b) => {
           if (this.ordenAsignaturaAscendente) {
@@ -226,7 +206,7 @@
           }
         }).sort((a, b) => {
           if (this.ordenHorarioAscendente) {
-            return a.horarios[0] - b.horarios[0];  // Ordenar por el primer horario
+            return a.horarios[0] - b.horarios[0];
           } else {
             return b.horarios[0] - a.horarios[0];
           }
@@ -234,52 +214,48 @@
       }
     },
     methods: {
-      // Alternar ordenamiento por asignatura
       ordenarPorAsignatura() {
         this.ordenAsignaturaAscendente = !this.ordenAsignaturaAscendente;
       },
-      // Alternar ordenamiento por periodo
       ordenarPorPeriodo() {
         this.ordenPeriodoAscendente = !this.ordenPeriodoAscendente;
       },
-      // Alternar ordenamiento por profesor
       ordenarPorProfesor() {
         this.ordenProfesorAscendente = !this.ordenProfesorAscendente;
       },
-      // Alternar ordenamiento por horario
       ordenarPorHorario() {
         this.ordenHorarioAscendente = !this.ordenHorarioAscendente;
       },
-  
-      // Obtener nombre de asignatura basado en ID
       obtenerNombreAsignatura(idAsignatura) {
         const asignatura = this.asignaturas.find(a => a.id === idAsignatura);
-        return asignatura ? asignatura.nombre : "N/A";
+        return asignatura ? `${asignatura.nombre} - ${this.obtenerDescripcionGrado(asignatura.grado)} - ${this.obtenerNombreColegio(asignatura.colegio)}` : "N/A" ;
       },
-  
-      // Obtener descripción del periodo basado en ID
       obtenerDescripcionPeriodo(idPeriodo) {
         const periodo = this.periodos.find(p => p.id === idPeriodo);
         return periodo ? `${periodo.anio} - ${periodo.trimestre}º Trimestre` : "N/A";
       },
-  
-      // Obtener nombre del profesor basado en ID
       obtenerNombreProfesor(idProfesor) {
         const profesor = this.profesores.find(p => p.id === idProfesor);
-        return profesor ? profesor.name : "N/A";
+        return profesor ? `${profesor.name} - ${this.obtenerNombreColegio(profesor.colegio)}` : "N/A";
       },
-  
-      // Obtener descripción de horarios basado en IDs
       obtenerDescripcionHorarios(idsHorarios) {
         return idsHorarios.map(id => {
           const horario = this.horarios.find(h => h.id === id);
           return horario ? `${horario.dia} - ${horario.inicio} a ${horario.fin}` : "N/A";
         }).join(", ");
+      },
+      obtenerDescripcionGrado(idGrado) {
+        const grado = this.grados.find(gr => gr.id === idGrado);
+        return grado ? `${grado.nivel === 1 ? 'Primaria' : 'Secundaria'} - ${grado.grado}º` : 'N/A';
+      },
+      obtenerNombreColegio(idColegio) {
+        const colegio = this.colegios.find(col => col.id === idColegio);
+        return colegio ? colegio.nombre : 'N/A';
       }
     }
   };
   </script>
-  
+
   <style scoped>
   /* Estilos generales */
   #app {

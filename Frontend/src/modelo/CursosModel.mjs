@@ -8,6 +8,8 @@ export default {
       periodos: [],         // Lista de periodos
       profesores: [],       // Lista de profesores
       horarios: [],         // Lista de horarios
+      grados: [],           // Lista de grados disponibles
+      colegios: [],         // Lista de colegios disponibles
       requestHandler: new RequestHandler(),
       nuevoCurso: {
         asignatura: 0,     // ID de la asignatura seleccionada
@@ -28,6 +30,8 @@ export default {
     this.fetchPeriodos();      // Obtener lista de periodos
     this.fetchProfesores();    // Obtener lista de profesores
     this.fetchHorarios();      // Obtener lista de horarios
+    this.fetchGrados();  // Obtenemos los grados al montar el componente
+    this.fetchColegios();
   },
   methods: {
     // Obtener la lista de cursos
@@ -79,6 +83,27 @@ export default {
         console.error("Error obteniendo horarios:", error);
       }
     },
+
+    // Método para obtener grados con debug
+    async fetchGrados() {
+        try {
+          const response = await this.requestHandler.getRequest("/academico/grados/");
+          console.log("Grados obtenidos:", response.data);  // Para verificar si los datos se están obteniendo
+          this.grados = response.data;
+        } catch (error) {
+          console.error("Error obteniendo los grados:", error);
+        }
+      },
+  
+      // Método para obtener colegios
+      async fetchColegios() {
+        try {
+          const response = await this.requestHandler.getRequest("/academico/colegios/");
+          this.colegios = response.data;
+        } catch (error) {
+          console.error("Error obteniendo los colegios:", error);
+        }
+      },
 
     // Agregar un nuevo curso
     async agregarCurso() {
