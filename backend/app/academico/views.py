@@ -348,14 +348,19 @@ class TareaViewSet(viewsets.ModelViewSet):
         if not user.role:
             return Tarea.objects.none()
 
+        qp_curso = self.request.query_params.get('curso', None)
+        tareas = Tarea.objects.all()
+        if qp_curso:
+            tareas = tareas.filter(curso=qp_curso)
+
         if user.role == Role.get_teacher():
-            return Tarea.objects.filter(curso__profesor=user.profesor)
+            return tareas.filter(curso__profesor=user.profesor)
         elif user.role == Role.get_student():
-            return Tarea.objects.filter(curso__estudiantes=user.estudiante)
+            return tareas.filter(curso__estudiantes=user.estudiante)
         elif user.role == Role.get_parent():
             children = user.padre.get_children()
-            return Tarea.objects.filter(curso__estudiantes__in=children)
-        return Tarea.objects.none()
+            return tareas.filter(curso__estudiantes__in=children)
+        return tareas.none()
     
 
 class RevisionViewSet(viewsets.ModelViewSet):
@@ -369,18 +374,25 @@ class RevisionViewSet(viewsets.ModelViewSet):
             permissions.append(HasRole([Role.get_teacher(), Role.get_student()]))
         return permissions
 
+
     def get_queryset(self):
         user = self.request.user
+
+        entregas = Entrega.objects.all()
+        qp_curso = self.request.query_params.get("curso", None)
+        if(qp_curso):
+            entregas = entregas.filter(curso=qp_curso)
+
         if not user.role:
             return Revision.objects.none()
 
         if user.role == Role.get_teacher():
-            return Revision.objects.filter(tarea__curso__profesor=user.profesor)
+            return entregas.filter(tarea__curso__profesor=user.profesor)
         elif user.role == Role.get_student():
-            return Revision.objects.filter(estudiante=user.estudiante)
+            return entregas.objects.filter(estudiante=user.estudiante)
         elif user.role == Role.get_parent():
             children = user.padre.get_children()
-            return Revision.objects.filter(estudiante__in=children)
+            return entregas.filter(estudiante__in=children)
         return Revision.objects.none()
 
 

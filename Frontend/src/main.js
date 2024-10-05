@@ -61,16 +61,14 @@ const routes = [
   { path: "/prueba-crud", component: prueba },
 ];
 
-// Configuración del router
 const router = createRouter({
   history: createWebHistory(),
   routes,
 });
-
-// Crear la aplicación Vue
+Session.getInstance();
 const app = createApp(App);
 
-// Usar el router en la aplicación
+app.use(sessionPlugin);
 app.use(router);
 app.mount("#app");
 
