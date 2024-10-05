@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import authService from '../controlador/authService';
 export default {
   data() {
     return {
