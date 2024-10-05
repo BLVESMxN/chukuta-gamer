@@ -8,26 +8,37 @@ export default {
       email: username,
       password: password,
     }, {})
-    .then(res => {
-      // Log the response to debug
-      console.log('Response:', res);
-      alert("Login exitoso");
+    .then(async (res) => {
       if (res && res.status === 200) {
-        
-        return { role: 'estudiante', route: '/inicio-estudiante' };
+        const userDetails = await handler.getRequest('/user/me/');  // Obtener los detalles del usuario logueado
+
+        if (userDetails && userDetails.data && userDetails.data.role) {
+          const role = userDetails.data.role;
+
+          // Redireccionar según el rol
+          if (role === 'admin') {
+            return { role: 'admin', route: '/grados-admin' };
+          } else if (role === 'estudiante') {
+            return { role: 'estudiante', route: '/inicio-estudiante' };
+          } else if (role === 'docente') {
+            return { role: 'docente', route: '/inicio-docente' };
+          } else {
+            return { role: 'guest', route: '/', error: 'Rol desconocido' };
+          }
+        } else {
+          return { role: 'guest', route: null, error: 'Error al obtener los datos del usuario' };
+        }
       } else {
         return { role: 'guest', route: null, error: 'Credenciales incorrectas' };
       }
     })
     .catch(error => {
-      alert("Error");
       console.error('Error during login:', error);
       return { role: 'guest', route: null, error: 'Error en el servidor' };
     });
   },
+
   logout() {
     return { role: 'guest', route: '/' };
   }
 };
-
-  
