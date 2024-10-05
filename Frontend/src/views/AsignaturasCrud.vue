@@ -24,7 +24,7 @@
         <h2>{{ asignatura.nombre }}</h2>
         <p><strong>ID de la Asignatura:</strong> {{ asignatura.id }}</p>
         <p><strong>Grado:</strong> {{ asignatura.grado }}</p>
-        <p><strong>Colegio:</strong> {{ asignatura.colegio }}</p>
+        <p><strong>Colegio:</strong> {{ asignatura.colegioNombre }}</p>
       </div>
 
       <!-- Tarjeta para agregar una nueva asignatura -->
@@ -64,7 +64,23 @@ export default {
     async cargarAsignaturas() {
       try {
         const asignaturaModel = new AsignaturaModel();
-        this.asignaturas = await asignaturaModel.obtenerTodasAsignaturas();
+        const asignaturas = await asignaturaModel.obtenerTodasAsignaturas();
+
+        // Iterar sobre todas las asignaturas para obtener los nombres del colegio y grado
+        for (const asignatura of asignaturas) {
+          const colegio = await asignaturaModel.obtenerColegioPorId(
+            asignatura.colegio
+          );
+          const grado = await asignaturaModel.obtenerGradoPorId(
+            asignatura.grado
+          );
+
+          // Agregar los nombres del colegio y grado a cada asignatura
+          asignatura.colegioNombre = colegio.nombre;
+          asignatura.gradoNombre = grado.nombre;
+        }
+
+        this.asignaturas = asignaturas;
       } catch (error) {
         console.error("Error al cargar las asignaturas:", error);
       }
@@ -108,7 +124,7 @@ export default {
   justify-content: center;
   padding: 20px;
   background-color: #f4f7f6;
-  min-height: 20;
+  min-height: 45vh;
 }
 
 #header {

@@ -45,8 +45,18 @@ const routes = [
   { path: "/Grados-Crud", component: GradosCrud },
   { path: "/Crear-Grado", component: CrearGrado },
   { path: "/Editar-Grado/:id", component: EditarGrado },
-  { path: "/Agregar-Asignatura", component: AgregarAsignatura },
-  { path: "/Editar-Asignatura/:id", component: EditarAsignatura },
+  {
+    path: "/Agregar-Asignatura",
+    name: "AgregarAsignatura",
+    component: AgregarAsignatura,
+  },
+
+  {
+    path: "/Editar-Asignatura/:id",
+    name: "EditarAsignatura",
+    component: EditarAsignatura,
+    props: true,
+  },
 
   { path: "/Estudiantes-Crud", component: EstudiantesCrud },
   { path: "/Agregar-Estudiante", component: AgregarEstudiante },
