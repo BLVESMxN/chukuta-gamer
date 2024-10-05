@@ -124,7 +124,7 @@ export default {
   justify-content: center;
   padding: 20px;
   background-color: #f4f7f6;
-  min-height: 45vh;
+  min-height: 40vh;
 }
 
 #header {

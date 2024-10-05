@@ -11,20 +11,20 @@ import EstudiantesDocente from "./views/EstudiantesDocente.vue";
 import HorariosDocente from "./views/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
 import LoginPrueba from "./views/previews/LoginTest.vue";
-import AsignaturasCrud from "./views/AsignaturasCrud.vue";
 import GradosCrud from "./views/GradosCrud.vue";
 import CrearGrado from "./views/CrearGrado.vue";
 import EditarGrado from "./views/EditarGrado.vue";
-
-import ColegioAdmin from "./views/ColegioAdmin.vue";
-import ColegioAdminVista from "./views/ColegioAdminVista.vue";
-
+//colegios
+import AgregarColegio from "./views/ColegioAdmin.vue";
+import VerColegio from "./views/ColegioAdminVista.vue";
+import EditarColegio from "./views/EditarColegio.vue";
+//asignaturas
 import AgregarAsignatura from "./views/AgregarAsignatura.vue";
 import EditarAsignatura from "./views/EditarAsignatura.vue";
+import MirarAsignaturas from "./views/AsignaturasCrud.vue";
 
 import AgregarEstudiante from "./views/AgregarEstudiante.vue";
 import EstudiantesCrud from "./views/EstudiantesCrud.vue";
-import EditarColegio from "./views/EditarColegio.vue";
 
 import viewGrados from "./views/viewGrados.vue";
 
@@ -41,7 +41,7 @@ const routes = [
   { path: "/estudiantes-docente", component: EstudiantesDocente },
   { path: "/prueba-crud", component: prueba },
   { path: "/Login-Test", component: LoginPrueba },
-  { path: "/Asignatura-Crud", component: AsignaturasCrud },
+  { path: "/Asignatura-Crud", component: MirarAsignaturas },
   { path: "/Grados-Crud", component: GradosCrud },
   { path: "/Crear-Grado", component: CrearGrado },
   { path: "/Editar-Grado/:id", component: EditarGrado },
@@ -61,8 +61,8 @@ const routes = [
   { path: "/Estudiantes-Crud", component: EstudiantesCrud },
   { path: "/Agregar-Estudiante", component: AgregarEstudiante },
 
-  { path: "/colegio-admin", name: "ColegioAdmin", component: ColegioAdmin },
-  { path: "/Colegio-admin-vista", component: ColegioAdminVista },
+  { path: "/colegio-admin", name: "ColegioAdmin", component: AgregarColegio },
+  { path: "/Colegio-admin-vista", component: VerColegio },
   {
     path: "/editar-colegio/:id",
     name: "EditarColegio",
@@ -608,6 +608,7 @@ await ojo.postRequest("academico/profesores/", {
 });
 */
 
+/*
 let handler = new RequestHandler();
 
 await handler.postRequest("user/token/", {
@@ -634,3 +635,4 @@ await handler.getRequest("academico/estudiantes/?colegio=2");
 
 // await handler.getRequest('academico/cursos/')
 // await handler.getRequest('academico/inscripciones/?curso=37')Co
+*/
