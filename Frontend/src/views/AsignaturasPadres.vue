@@ -2,13 +2,18 @@
     <div class="lista-materias">
       <h1>Lista de Materias</h1>
       <div class="materias-grid">
-        <div class="card" v-for="(materia, index) in materias" :key="index">
-            <div class="card-details">
-                <p class="text-title">{{ materia.nombre }}</p>
-                <p class="text-body">{{ materia.profesor }}</p>
-            </div>
-            <button class="card-button">Más...</button>
-            </div>
+        <div class="flip-card" v-for="(materia, index) in materias" :key="index">
+          <div class="flip-card-inner">
+              <div class="flip-card-front">
+                  <p class="title">{{ materia.nombre }}</p>
+                  <p>{{ materia.profesor }}</p>
+              </div>
+              <div class="flip-card-back">
+                  <router-link to="/TareasPadres" class="router-link"> <p class="title">Más...</p> </router-link>
+                  
+              </div>
+          </div>
+      </div>
         </div>
       </div>
     <router-link to="/EstudiantesPadres">Volver a la lista de personas</router-link>
@@ -34,12 +39,15 @@
   </script>
   
   <style scoped>
+  .router-link {
+  text-decoration: none; /* Quita el subrayado */
+  color: inherit;        /* Mantiene el color del texto como el color de su padre */
+}
+
   .lista-materias {
     padding: 20px;
     max-width: 100%;
-    margin: 0 auto;
-    text-align: left;
-    
+    margin: auto;
   }
   
   .lista-materias h1 {
@@ -47,68 +55,66 @@
     margin-bottom: 20px;
   }
 
-  /* From Uiverse.io by alexruix */ 
-.card {
- width: 190px;
- height: 254px;
- border-radius: 20px;
- background: #f5f5f5;
- position: relative;
- padding: 1.8rem;
- border: 2px solid #c3c6ce;
- transition: 0.5s ease-out;
- overflow: visible;
+.flip-card {
+  background-color: transparent;
+  width: 190px;
+  height: 254px;
+  perspective: 1000px;
+  font-family: sans-serif;
 }
 
-.card-details {
- color: black;
- height: 100%;
- gap: .5em;
- display: grid;
- place-content: center;
+.title {
+  font-size: 1.5em;
+  font-weight: 900;
+  text-align: center;
+  margin: 0;
 }
 
-.card-button {
- transform: translate(-50%, 125%);
- width: 60%;
- border-radius: 1rem;
- border: none;
- background-color: #008bf8;
- color: #fff;
- font-size: 1rem;
- padding: .5rem 1rem;
- position: absolute;
- left: 50%;
- bottom: 0;
- opacity: 0;
- transition: 0.3s ease-out;
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
 }
 
-.text-body {
- color: rgb(134, 134, 134);
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
 }
 
-/*Text*/
-.text-title {
- font-size: 1.5em;
- font-weight: bold;
+.flip-card-front, .flip-card-back {
+  box-shadow: 0 8px 14px 0 rgba(0,0,0,0.2);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border: 1px solid coral;
+  border-radius: 1rem;
 }
 
-/*Hover*/
-.card:hover {
- border-color: #008bf8;
- box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+.flip-card-front {
+  background: linear-gradient(120deg, bisque 60%, rgb(255, 231, 222) 88%,
+     rgb(255, 211, 195) 40%, rgba(255, 127, 80, 0.603) 48%);
+  color: coral;
 }
 
-.card:hover .card-button {
- transform: translate(-50%, 50%);
- opacity: 1;
+.flip-card-back {
+  background: linear-gradient(120deg, rgb(255, 174, 145) 30%, coral 88%,
+     bisque 40%, rgb(255, 185, 160) 78%);
+  color: white;
+  transform: rotateY(180deg);
 }
-
 .materias-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  justify-items: center;
+  align-items: center;
 }
   </style>
   

@@ -52,20 +52,6 @@
       </router-link>
       </div>
     
-      <div class="e-card playing card-4">
-        <router-link to="/TareasPadres">
-        <div class="wave"></div>
-        <div class="wave"></div>
-        <div class="wave"></div>
-        <div class="infotop">
-          
-          <br>
-          Ver
-          <br>
-          <div class="name">Tareas</div> 
-        </div>
-      </router-link>
-      </div>
         
       </div>
   
