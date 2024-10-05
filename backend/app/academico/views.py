@@ -163,15 +163,21 @@ class EstudianteViewSet(viewsets.ModelViewSet):
         if not user.role:
             return Estudiante.objects.none()
 
+        estudiantes = Estudiante.objects.all()
+        qp_colegio = self.request.query_params.get('colegio', None)
+
+        if qp_colegio:
+            estudiantes = estudiantes.filter(colegio=qp_colegio)
+
         if user.role == Role.get_admin():
             colegios = user.administrativo.colegios.all()
-            return Estudiante.objects.filter(colegio__in=colegios)
+            return estudiantes.filter(colegio__in=colegios)
         elif user.role == Role.get_teacher():
-            return Estudiante.objects.filter(colegio=user.profesor.colegio)
+            return estudiantes.filter(colegio=user.profesor.colegio)
         elif user.role == Role.get_student():
-            return Estudiante.objects.filter(id=user.estudiante.id)
+            return estudiantes.filter(id=user.estudiante.id)
         elif user.role == Role.get_parent():
-            return user.padre.get_children()
+            return estudiantes.get_children()
         return Estudiante.objects.none()
 
     def perform_create(self, serializer):
