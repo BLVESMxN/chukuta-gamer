@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.core import validators
 from django.utils import timezone
-from core.models import Session
+from core.models import Session, UserManager
 
 from datetime import datetime, timedelta
 import pytz
@@ -58,10 +58,19 @@ class Colegio(models.Model):
     )
     extension = models.CharField(
         max_length=5,
-        default='edu',
+        default='',
         null=False,
         blank=True,
     )
+
+    def get_extension(self):
+        return self.nombre[0:3]
+
+    def save(self, *args, **kwargs):
+        if not self.extension or self.extension=='':
+            extension = UserManager().remove_accents(self.nombre[0:3])
+            self.extension = extension.lower()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.nombre

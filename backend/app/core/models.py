@@ -135,26 +135,27 @@ class UserManager(BaseUserManager):
         query = self.filter(email=new_email)
         i=0
         j=0
-        c=1
+        c=0
         while(query.exists()):
-            if(len(last_names_str)>j):    
-                    last_names_str += last_names[j]
+            f = False
+            if(len(last_names)>j):    
                     if(last_names[j]=='.'):
-                        j += 1
                         last_names_str += last_names[j]
+                        j += 1
+                    last_names_str += last_names[j]
                     j+=1
             else:
-                if(len(names_str)>i):
-                    names_str += names[i]
-                    if(names[i]=='.'):
-                        i += 1
+                if(len(names)>i):
+                    if(names[i]=='.'): 
                         names_str += names[i]
+                        i += 1
+                    names_str += names[i]
                     i+=1
                 else:
-                    last_names_str += str(c)
+                    f = True
                     c += 1   
-            new_email = f'{names_str}.{last_names_str}@{extension}.com'
-            if not len(last_names): new_email =  f'{names_str}@{extension}.com'
+            new_email = f"{names_str}.{last_names_str}{('.' + str(c)) if f else ''}@{extension}.com"
+            if not len(last_names): new_email =  f"{names_str}{('.' + str(c)) if f else ''}@{extension}.com"
             query = self.filter(email=new_email)
         return self.normalize_email(new_email).lower()
      
