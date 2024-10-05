@@ -26,6 +26,8 @@ import AgregarEstudiante from "./views/AgregarEstudiante.vue";
 import EstudiantesCrud from "./views/EstudiantesCrud.vue";
 import EditarColegio from "./views/EditarColegio.vue";
 
+import viewGrados from "./views/viewGrados.vue";
+
 //import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
 // Definir rutas
@@ -57,6 +59,8 @@ const routes = [
     component: EditarColegio,
     props: true,
   },
+
+  { path: "/Grados-vista", component: viewGrados },
 ];
 
 // Configuración del router

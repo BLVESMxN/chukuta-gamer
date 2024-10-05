@@ -1,159 +1,182 @@
 <template>
-  <div>
-    <h1>Asignaturas</h1>
+  <div class="app-container">
+    <header id="header">
+      <h1>Listado de Asignaturas</h1>
+    </header>
 
-    <!-- Contenedor de tarjetas de asignaturas -->
-    <div class="asignaturas-container">
-      <!-- Tarjeta de cada asignatura -->
-      <div
-        class="asignatura-card"
-        v-for="asignatura in asignaturas"
-        :key="asignatura.id"
-      >
-        <p>{{ asignatura.nombre }}</p>
-        <p>Grado: {{ asignatura.grado }}</p>
-        <button
-          @click="navegarEditarAsignatura(asignatura.id)"
-          class="edit-button"
-        >
-          Editar
-        </button>
-        <button
-          @click="eliminarAsignatura(asignatura.id)"
-          class="delete-button"
-        >
-          Eliminar
-        </button>
+    <!-- Sección para mostrar tarjetas de asignaturas -->
+    <div class="cards-container">
+      <div v-for="asignatura in asignaturas" :key="asignatura.id" class="card">
+        <!-- Botones de editar y eliminar -->
+        <div class="card-actions">
+          <button @click="editarAsignatura(asignatura.id)" class="edit-button">
+            📝
+          </button>
+          <button
+            @click="eliminarAsignatura(asignatura.id)"
+            class="delete-button"
+          >
+            ❌
+          </button>
+        </div>
+
+        <!-- Contenido de la tarjeta -->
+        <h2>{{ asignatura.nombre }}</h2>
+        <p><strong>ID de la Asignatura:</strong> {{ asignatura.id }}</p>
+        <p><strong>Grado:</strong> {{ asignatura.grado }}</p>
+        <p><strong>Colegio:</strong> {{ asignatura.colegio }}</p>
       </div>
 
-      <!-- Tarjeta de agregar asignatura -->
-      <div class="add-asignatura-card" @click="navegarAgregarAsignatura">
-        <button class="add-button">➕</button>
-        <p>Agregar Asignatura</p>
+      <!-- Tarjeta para agregar una nueva asignatura -->
+      <div class="card agregar-asignatura-card" @click="irAgregarAsignatura">
+        <div class="add-icon">➕</div>
+        <h2>Agregar Asignatura</h2>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { AsignaturasService } from "@/modelo/AsignaturasModel.mjs";
+import { AsignaturaModel } from "@/modelo/AsignaturaModel"; // Importa el modelo
+import { RequestHandler } from "@/controlador/RequestHandler"; // Importa el manejador de solicitudes
 
 export default {
   data() {
     return {
-      asignaturas: [],
-      asignaturasService: new AsignaturasService(),
+      asignaturas: [], // Lista para almacenar las asignaturas obtenidas
+      usuarioLogueado: null, // Datos del usuario logueado
     };
   },
-  async created() {
+  async mounted() {
+    // Forzar el inicio de sesión
+    const ojo = new RequestHandler();
+    const loginResponse = await ojo.postRequest("user/token/", {
+      email: "ojo@amdin.com",
+      password: "123",
+    });
+    this.usuarioLogueado = loginResponse.data;
+
+    // Cargar las asignaturas al montar el componente
     await this.cargarAsignaturas();
   },
   methods: {
+    // Cargar todas las asignaturas
     async cargarAsignaturas() {
       try {
-        this.asignaturas = await this.asignaturasService.obtenerAsignaturas();
+        const asignaturaModel = new AsignaturaModel();
+        this.asignaturas = await asignaturaModel.obtenerTodasAsignaturas();
       } catch (error) {
-        console.error("Error cargando asignaturas:", error);
+        console.error("Error al cargar las asignaturas:", error);
       }
     },
 
-    navegarAgregarAsignatura() {
-      this.$router.push("/Agregar-Asignatura");
+    // Redirigir al formulario de edición de una asignatura
+    editarAsignatura(id) {
+      this.$router.push({ name: "EditarAsignatura", params: { id: id } });
     },
 
-    navegarEditarAsignatura(id) {
-      this.$router.push(`/Editar-Asignatura/${id}`);
-    },
-
+    // Eliminar una asignatura por ID
     async eliminarAsignatura(id) {
-      if (confirm("¿Estás seguro de eliminar esta asignatura?")) {
+      const confirmar = confirm(
+        "¿Estás seguro de que deseas eliminar esta asignatura?"
+      );
+      if (confirmar) {
         try {
-          await this.asignaturasService.eliminarAsignatura(id);
-          this.cargarAsignaturas();
-          alert("¡Asignatura eliminada exitosamente!");
+          const asignaturaModel = new AsignaturaModel();
+          await asignaturaModel.eliminarAsignatura(id);
+          // Recargar la lista de asignaturas
+          await this.cargarAsignaturas();
         } catch (error) {
-          console.error("Error eliminando la asignatura:", error);
+          console.error("Error al eliminar la asignatura:", error);
         }
       }
+    },
+
+    // Redirigir al formulario para agregar una nueva asignatura
+    irAgregarAsignatura() {
+      this.$router.push({ name: "AgregarAsignatura" });
     },
   },
 };
 </script>
 
 <style scoped>
-/* Contenedor de asignaturas */
-.asignaturas-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  padding: 20px;
-}
-
-/* Tarjeta de cada asignatura */
-.asignatura-card {
-  background-color: #fff;
-  padding: 20px;
-  border: 1px solid #ddd;
-  text-align: center;
-  width: 200px;
-  border-radius: 8px;
-  position: relative;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.asignatura-card p {
-  margin: 10px 0;
-  font-size: 16px;
-}
-
-.edit-button,
-.delete-button {
-  margin-top: 10px;
-  padding: 8px 12px;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.edit-button {
-  background-color: #007bff;
-}
-
-.delete-button {
-  background-color: #dc3545;
-}
-
-/* Tarjeta de agregar asignatura */
-.add-asignatura-card {
-  background-color: #f3f3f3;
-  padding: 20px;
-  border: 1px solid #ccc;
-  text-align: center;
-  width: 200px;
-  border-radius: 8px;
-  cursor: pointer;
+.app-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  background-color: #f4f7f6;
+  min-height: 100vh;
 }
 
-.add-button {
-  background-color: #35853f;
+#header {
+  background-color: #0073e6;
   color: white;
-  border: none;
-  font-size: 24px;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.card {
+  background-color: white;
   padding: 20px;
-  border-radius: 50%;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.agregar-asignatura-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f4f4;
+  color: #0073e6;
   cursor: pointer;
 }
 
-.add-asignatura-card p {
-  margin-top: 10px;
-  font-size: 16px;
-  color: #333;
+.add-icon {
+  font-size: 50px;
+}
+
+.card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-button,
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.edit-button {
+  color: #0073e6;
+}
+
+.delete-button {
+  color: #ff4d4d;
 }
 </style>

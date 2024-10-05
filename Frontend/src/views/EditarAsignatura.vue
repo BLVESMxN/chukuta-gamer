@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { AsignaturasService } from "@/modelo/AsignaturasModel.mjs";
+import { AsignaturasService } from "@/modelo/AsignaturaModel.mjs";
 
 export default {
   data() {
