@@ -24,6 +24,8 @@ import ProfesoresAdmin from "./views/admin/ProfesoresAdmin.vue";
 
 import UserManage from "./views/admin/usuario/UserManage.vue";
 
+import StatisticsView from "./views/Estadisticas/StatisticsView.vue";
+
 
 import AdminLayout from "./views/Layouts/AdminLayout.vue";
 import { Session} from "./controlador/Session";
@@ -57,6 +59,8 @@ const routes = [
     { path: "/profesores-admin", component: ProfesoresAdmin },
     { path: "/cursos-admin", component: CursosAdmin },
     { path: "/administrativo-admin", component: AdministrativoAdmin },
+    { path: "/Estadisticas-admin", component: StatisticsView },
+
   ],
 },
   //
