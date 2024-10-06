@@ -23,8 +23,14 @@
       <li class="navbar-item" @click="navigate('/cursos-admin')">
         <i class="fas fa-book-open"></i> Cursos
       </li>
-      <li class="navbar-item" @click="navigate('/Estadisticas-admin')">
-        <i class="fas fa-users-cog"></i> Estadisticas
+      <li class="navbar-item" @click="navigate('/Padres-Admin')">
+        <i class="fas fa-users-cog"></i> Padres
+      </li>
+      <li class="navbar-item" @click="navigate('/Estudiante-Admin')">
+        <i class="fas fa-pencil"></i> Estudiantes
+      </li>
+      <li class="navbar-item" @click="navigate('/Inscripciones-Admin')">
+        <i class="fas fa-list-check"></i> Estudiantes
       </li>
     </ul>
   </div>

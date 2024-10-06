@@ -1,69 +1,97 @@
 import { RequestHandler } from "@/controlador/RequestHandler.mjs";
 
-export default {
-  data() {
-    return {
-      estudiantes: [],
-      requestHandler: new RequestHandler(),
-      nuevoEstudiante: {
-        nombres: "",
-        apellidos: "",
-        fecha_nacimiento: "",
-      },
-    };
-  },
-  created() {
-    this.fetchEstudiantes();
-  },
-  methods: {
-    // Método para obtener los estudiantes
-    async fetchEstudiantes() {
-      try {
-        const response = await this.requestHandler.getRequest(
-          "/academico/estudiantes/"
-        );
-        this.estudiantes = response.data;
-      } catch (error) {
-        console.error("Error obteniendo los estudiantes:", error);
-      }
-    },
+export default class EstudiantesModel {
+  constructor() {
+    this.requestHandler = new RequestHandler();
+  }
 
-    // Método para agregar un nuevo estudiante
-    async agregarEstudiante() {
-      try {
-        const response = await this.requestHandler.postRequest(
-          "/academico/estudiantes/",
-          this.nuevoEstudiante
-        );
-        if (response.status === 201) {
-          // Verificamos si el estudiante fue creado con éxito
-          this.fetchEstudiantes(); // Refrescamos la lista de estudiantes
-          alert("¡Estudiante agregado exitosamente!");
-          this.nuevoEstudiante = {
-            nombres: "",
-            apellidos: "",
-            fecha_nacimiento: "",
-          }; // Limpiamos el formulario
-        }
-      } catch (error) {
-        console.error("Error agregando el estudiante:", error);
-      }
-    },
+  // Obtener todos los estudiantes
+  async obtenerEstudiantes() {
+    try {
+      const response = await this.requestHandler.getRequest("/academico/estudiantes/");
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener los estudiantes:", error);
+      throw error;
+    }
+  }
 
-    // Método para eliminar un estudiante
-    async deleteEstudiante(id) {
-      const confirmation = confirm("¿Confirma eliminar el registro?");
-      if (confirmation) {
-        try {
-          await this.requestHandler.deleteRequest(
-            `/academico/estudiantes/${id}`
-          );
-          this.fetchEstudiantes(); // Actualizamos la lista después de eliminar
-          alert("¡Eliminado con éxito!");
-        } catch (error) {
-          console.error("Error eliminando el estudiante:", error);
-        }
-      }
-    },
-  },
-};
+  // Crear un nuevo estudiante
+  async crearEstudiante(estudiante) {
+    try {
+      const response = await this.requestHandler.postRequest("/academico/estudiantes/", estudiante);
+      return response.data;
+    } catch (error) {
+      console.error("Error al crear el estudiante:", error);
+      throw error;
+    }
+  }
+
+  // Actualizar un estudiante
+  async actualizarEstudiante(id, estudiante) {
+    try {
+      const response = await this.requestHandler.putRequest(`/academico/estudiantes/${id}/`, estudiante);
+      return response.data;
+    } catch (error) {
+      console.error(`Error al actualizar el estudiante con ID ${id}:`, error);
+      throw error;
+    }
+  }
+
+  // Eliminar un estudiante
+  async eliminarEstudiante(id) {
+    try {
+      const response = await this.requestHandler.deleteRequest(`/academico/estudiantes/${id}/`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error al eliminar el estudiante con ID ${id}:`, error);
+      throw error;
+    }
+  }
+
+  // Obtener todos los colegios
+  async obtenerColegios() {
+    try {
+      const response = await this.requestHandler.getRequest("/academico/colegios/");
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener los colegios:", error);
+      throw error;
+    }
+  }
+
+  // Obtener grados del colegio
+  async obtenerGradosPorColegio(colegioId) {
+    try {
+      const response = await this.requestHandler.getRequest("/academico/grados/", { colegio: colegioId });
+      return response.data;
+    } catch (error) {
+      console.error(`Error al obtener los grados del colegio con ID ${colegioId}:`, error);
+      throw error;
+    }
+  }
+
+  // Verificar si un correo pertenece al padre del colegio
+  async verificarCorreoPadre(colegioId, email) {
+    try {
+      const response = await this.requestHandler.getRequest("/academico/padres/", { colegio: colegioId, email });
+      return response.data.length > 0;
+    } catch (error) {
+      console.error(`Error al verificar el correo del padre: ${email}`, error);
+      throw error;
+    }
+  }
+  // Agregar la función de verificación del grado
+async verificarGradoPorColegio(colegioId, gradoId) {
+  try {
+    const grados = await this.obtenerGradosPorColegio(colegioId);
+    return grados.some(grado => grado.id === gradoId);
+  } catch (error) {
+    console.error("Error al verificar el grado:", error);
+    throw error;
+  }
+}
+
+}
+
+

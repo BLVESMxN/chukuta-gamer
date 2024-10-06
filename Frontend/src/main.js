@@ -21,6 +21,12 @@ import PeriodosAdmin from "./views/admin/PeriodosAdmin.vue";
 import HorariosAdmin from "./views/admin/HorariosAdmin.vue";
 import CursosAdmin from "./views/admin/CursosAdmin.vue";
 import ProfesoresAdmin from "./views/admin/ProfesoresAdmin.vue";
+//padres
+import PadresAdmin from "./views/admin/PadresAdmin.vue";
+//Estudiantes
+import EstudiantesAdmin from "./views/admin/EstudiantesAdmin.vue";
+//inscripciones
+import InscripcionesAdmin from "./views/admin/InscripcionesAdmin.vue";
 
 import UserManage from "./views/admin/usuario/UserManage.vue";
 
@@ -60,6 +66,11 @@ const routes = [
     { path: "/cursos-admin", component: CursosAdmin },
     { path: "/administrativo-admin", component: AdministrativoAdmin },
     { path: "/Estadisticas-admin", component: StatisticsView },
+    //padres
+    {path:"/Padres-Admin",component:PadresAdmin},
+    //Estudiantes
+    {path:"/Estudiante-Admin",component:EstudiantesAdmin},
+    {path:"/Inscripciones-Admin",component:InscripcionesAdmin},
 
   ],
 },
