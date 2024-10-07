@@ -13,10 +13,12 @@
     "chart": "^0.1.2",
     "chart.js": "^4.4.4",
     "core-js": "^3.8.3",
-    "date-fns": "^4.1.0",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.3",
     "vue": "^3.2.13",
     "vue-cal": "^4.10.0",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
