@@ -30,7 +30,7 @@
         <i class="fas fa-pencil"></i> Estudiantes
       </li>
       <li class="navbar-item" @click="navigate('/Inscripciones-Admin')">
-        <i class="fas fa-list-check"></i> Estudiantes
+        <i class="fas fa-list-check"></i> Inscripciones
       </li>
     </ul>
   </div>
@@ -99,3 +99,4 @@ export default {
   background-color: #004d40; /* Mantener el color activo como el fondo del navbar */
 }
 </style>
+
