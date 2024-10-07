@@ -31,39 +31,31 @@ const routes = [
   { path: "/editar-usuario", component: UserManage },
   //admin
 
- // Rutas del admin, utilizando el AdminLayout
- {
-  path: "/admin",
-  component: AdminLayout,
-  children: [
-    { path: "/grados-admin", component: GradosAdmin },
-    { path: "/colegios-admin", component: ColegiosAdmin },
-    { path: "/asignaturas-admin", component: AsignaturasAdmin },
-    { path: "/periodos-admin", component: PeriodosAdmin },
-    { path: "/horarios-admin", component: HorariosAdmin },
-    { path: "/profesores-admin", component: ProfesoresAdmin },
-    { path: "/cursos-admin", component: CursosAdmin },
-    { path: "/administrativo-admin", component: AdministrativoAdmin },
-    { path: "/Estadisticas-admin", component: StatisticsView },
-    //padres
-    {path:"/Padres-Admin",component:PadresAdmin},
-    //Estudiantes
-    {path:"/Estudiante-Admin",component:EstudiantesAdmin},
-    {path:"/Inscripciones-Admin",component:InscripcionesAdmin},
-
-  ],
-},
+  // Rutas del admin, utilizando el AdminLayout
+  {
+    path: "/admin",
+    component: AdminLayout,
+    children: [
+      { path: "/grados-admin", component: GradosAdmin },
+      { path: "/colegios-admin", component: ColegiosAdmin },
+      { path: "/asignaturas-admin", component: AsignaturasAdmin },
+      { path: "/periodos-admin", component: PeriodosAdmin },
+      { path: "/horarios-admin", component: HorariosAdmin },
+      { path: "/profesores-admin", component: ProfesoresAdmin },
+      { path: "/cursos-admin", component: CursosAdmin },
+      { path: "/administrativo-admin", component: AdministrativoAdmin },
+      { path: "/Estadisticas-admin", component: StatisticsView },
+      //padres
+      { path: "/Padres-Admin", component: PadresAdmin },
+      //Estudiantes
+      { path: "/Estudiante-Admin", component: EstudiantesAdmin },
+      { path: "/Inscripciones-Admin", component: InscripcionesAdmin },
+    ],
+  },
   //
   { path: "/prueba-crud", component: prueba },
-  { path: "/MenuPadres", component: MenuPadres },
-  { path: "/EstudiantesPadres/:nombre", name: 'EstudiantesPadres', component: EstudiantesPadres, props: true },
-  { path: "/AsignaturasPadres", component: AsignaturasPadres },
-  { path: "/AsistenciaPadres", component: AsistenciaPadres },
-  { path: "/KardexPadres", component: KardexPadres },
-  { path: "/TareasPadres", component: TareasPadres },
 ];
 
-// Configuración del router
 const router = createRouter({
   history: createWebHistory(),
   routes,
@@ -555,7 +547,6 @@ app.mount("#app");
 //let handler = new RequestHandler()
 //handler.postRequest('/user/token/', user1)
 //handler.postRequest('/academico/profesores/', profesor1)
-
 
 /*
 var admin = new RequestHandler()
