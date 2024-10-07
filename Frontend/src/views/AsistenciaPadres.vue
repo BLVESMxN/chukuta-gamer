@@ -19,40 +19,37 @@
   <script>
   import VueCal from 'vue-cal';
   import 'vue-cal/dist/vuecal.css';
+  import AsistenciaPadres from '@/modelo/AsistenciaPadres.mjs';
   
   export default {
     name: 'CalendarioTareas',
+    mixins:[AsistenciaPadres],
     components: {
       VueCal,
     },
     data() {
       return {
-        tareas: [
-          { titulo: 'Asistencia clase Matemáticas', fecha: '2024-10-05', tipo: 'asistencia', color: '#32CD32' }, // LimeGreen
-          { titulo: 'Falta clase Física', fecha: '2024-10-10', tipo: 'falta', color: '#FF6347' }, // Tomato
-          { titulo: 'Asistencia clase Química', fecha: '2024-10-15', tipo: 'asistencia', color: '#32CD32' }, // LimeGreen
-          { titulo: 'Falta clase Historia', fecha: '2024-10-20', tipo: 'falta', color: '#FF6347' }, // Tomato
-        ],
+        tareas: [],
       };
     },
     computed: {
       eventosTareas() {
-        return this.tareas.map(tarea => ({
-          start: tarea.fecha,
-          end: tarea.fecha,
-          title: tarea.titulo,
-          color: tarea.color,
+        return this.asistencias.map(asistencia => ({
+          start: asistencia.fecha,
+          end: asistencia.fecha,
+          title: asistencia.titulo,
+          color: asistencia.color,
         }));
       },
       totalAsistencias() {
-        return this.tareas.filter(tarea => tarea.tipo === 'asistencia').length;
+        return this.asistencias.filter(asistencia => asistencia.tipo === 'asistencia').length;
       },
       totalFaltas() {
-        return this.tareas.filter(tarea => tarea.tipo === 'falta').length;
+        return this.asistencias.filter(asistencia => asistencia.tipo === 'falta').length;
       },
       fechasDestacadas() {
         // Devuelve una lista de fechas que se desea destacar
-        return this.tareas.map(tarea => tarea.fecha);
+        return this.asistencias.map(asistencia => asistencia.fecha);
       },
     },
   };

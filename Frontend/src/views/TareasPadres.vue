@@ -30,15 +30,13 @@
   </template>
   
   <script>
+  import TareasPadres from '@/modelo/TareasPadres.mjs';
   export default {
     name: 'ListadoTareas',
+    mixins: [TareasPadres],
     data() {
       return {
-        tareas: [
-          { nombre: 'Tarea Matemáticas', fechaEntrega: '2024-09-15', entregado: true, calificacion: 85 },
-          { nombre: 'Tarea Física', fechaEntrega: '2024-09-20', entregado: false, calificacion: null },
-          { nombre: 'Tarea Química', fechaEntrega: '2024-09-25', entregado: true, calificacion: 90 },
-          { nombre: 'Tarea Historia', fechaEntrega: '2024-09-30', entregado: false, calificacion: null },
+        tar: [
         ],
       };
     },

@@ -1,7 +1,5 @@
 <template>
     <div class="detalle-persona">
-      <h1>Detalles de {{ nombre }}</h1>
-      <p>Información de la persona seleccionada: {{ personaSeleccionada ? personaSeleccionada.edad : 'No disponible' }}</p>
       
       <!-- Botones de navegación -->
       <div class="card-container">

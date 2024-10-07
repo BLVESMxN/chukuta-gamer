@@ -1,12 +1,11 @@
 <template>
     <div class="lista-materias">
-      <h1>Lista de Materias</h1>
       <div class="materias-grid">
-        <div class="flip-card" v-for="(materia, index) in materias" :key="index">
+        <div class="flip-card" v-for="(clase, index) in clases" :key="index">
           <div class="flip-card-inner">
               <div class="flip-card-front">
-                  <p class="title">{{ materia.nombre }}</p>
-                  <p>{{ materia.profesor }}</p>
+                  <p class="title">{{ clase.nombre }}</p>
+                  <p>{{ clase.profesor }}</p>
               </div>
               <div class="flip-card-back">
                   <router-link to="/TareasPadres" class="router-link"> <p class="title">Más...</p> </router-link>
@@ -20,19 +19,14 @@
   </template>
   
   <script>
+  import Asignaturaspadres from '@/modelo/Asignaturaspadres.mjs';
+  
   export default {
     name: 'ListaMaterias',
+    mixins: [Asignaturaspadres],
     data() {
       return {
-        materias: [
-          { nombre: 'Matemáticas', profesor: 'Prof. García', horario: 'Lunes y Miércoles 10:00 - 12:00' },
-          { nombre: 'Física', profesor: 'Prof. López', horario: 'Martes y Jueves 08:00 - 10:00' },
-          { nombre: 'Química', profesor: 'Prof. Martínez', horario: 'Miércoles y Viernes 11:00 - 13:00' },
-          { nombre: 'Historia', profesor: 'Prof. Fernández', horario: 'Martes y Jueves 12:00 - 14:00' },
-          { nombre: 'Religion', profesor: 'Prof. Fernández', horario: 'Martes y Jueves 12:00 - 14:00' },
-          { nombre: 'Filosofia', profesor: 'Prof. Fernández', horario: 'Martes y Jueves 12:00 - 14:00' },
-          { nombre: 'Computacion', profesor: 'Prof. Fernández', horario: 'Martes y Jueves 12:00 - 14:00' },
-        ],
+        materias: [],
       };
     },
   };
