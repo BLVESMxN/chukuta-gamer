@@ -14,7 +14,7 @@
         >
           <div class="informacion-materia">
             <p class="nombre-materia"><strong>Materia:</strong> {{ materia.asignatura }}</p>
-            <p><strong>Notas:</strong> {{ materia.notas.parcial1 }} / {{ materia.notas.parcial2 }} / {{ materia.notas.parcial3 }}</p>
+            <p><strong>Notas:</strong> {{ materia.notas.trimestre1 }} / {{ materia.notas.trimestre2 }} / {{ materia.notas.trimestre3 }}</p>
             <p><strong>Tareas:</strong> {{ materia.tareas }}</p>
           </div>
         </div>
@@ -47,27 +47,27 @@
         materias: [
           {
             asignatura: 'Matemáticas',
-            notas: { parcial1: 80, parcial2: 85, parcial3: 90 },
+            notas: { trimestre1: 80, trimestre2: 85, trimestre3: 90 },
             tareas: 'Completado',
           },
           {
             asignatura: 'Ciencias',
-            notas: { parcial1: 75, parcial2: 80, parcial3: 85 },
+            notas: { trimestre1: 75, trimestre2: 80, trimestre3: 85 },
             tareas: 'Completado',
           },
           {
             asignatura: 'Historia',
-            notas: { parcial1: 90, parcial2: 92, parcial3: 88 },
+            notas: { trimestre1: 90, trimestre2: 92, trimestre3: 88 },
             tareas: 'Pendiente',
           },
           {
             asignatura: 'Inglés',
-            notas: { parcial1: 78, parcial2: 85, parcial3: 80 },
+            notas: { trimestre1: 78, trimestre2: 85, trimestre3: 80 },
             tareas: 'Completado',
           },
           {
             asignatura: 'Educación Física',
-            notas: { parcial1: 95, parcial2: 92, parcial3: 96 },
+            notas: { trimestre1: 95, trimestre2: 92, trimestre3: 96 },
             tareas: 'Completado',
           },
         ],
@@ -88,12 +88,12 @@
         doc.text(`Grado: ${this.estudiante.grados}`, 20, 40);
   
         // Datos de materias en tabla
-        const columnas = ['Materia', 'Parcial 1', 'Parcial 2', 'Parcial 3', 'Tareas'];
+        const columnas = ['Materia', 'trimestre 1', 'trimestre 2', 'trimestre 3', 'Tareas'];
         const filas = this.materias.map(materia => [
           materia.asignatura,
-          materia.notas.parcial1,
-          materia.notas.parcial2,
-          materia.notas.parcial3,
+          materia.notas.trimestre1,
+          materia.notas.trimestre2,
+          materia.notas.trimestre3,
           materia.tareas
         ]);
   
@@ -111,12 +111,12 @@
       descargarExcel() {
         const wb = XLSX.utils.book_new();
         const ws_data = [
-          ['Materia', 'Parcial 1', 'Parcial 2', 'Parcial 3', 'Tareas'],
+          ['Materia', 'trimestre 1', 'trimestre 2', 'trimestre 3', 'Tareas'],
           ...this.materias.map(materia => [
             materia.asignatura,
-            materia.notas.parcial1,
-            materia.notas.parcial2,
-            materia.notas.parcial3,
+            materia.notas.trimestre1,
+            materia.notas.trimestre2,
+            materia.notas.trimestre3,
             materia.tareas
           ])
         ];

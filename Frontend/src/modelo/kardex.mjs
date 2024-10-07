@@ -13,7 +13,7 @@ export default {
       },
       materias: [{
         asignatura: 'Matemáticas',
-        notas: { parcial1: 80, parcial2: 85, parcial3: 90 },
+        notas: { trimestre1: 80, trimestre2: 85, trimestre3: 90 },
         tareas: 'Completado',
       },], 
       requestHandler: new RequestHandler(), 
@@ -41,9 +41,9 @@ export default {
           this.materias = materiasResponse.data.map(materia => ({
             asignatura: materia.asignatura,
             notas: {
-              parcial1: materia.notas.parcial1,
-              parcial2: materia.notas.parcial2,
-              parcial3: materia.notas.parcial3,
+              trimestre1: materia.notas.trimestre1,
+              trimestre2: materia.notas.trimestre2,
+              trimestre3: materia.notas.trimestre3,
             },
           }));
       } catch (error) {
