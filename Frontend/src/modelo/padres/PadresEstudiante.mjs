@@ -5,65 +5,32 @@ export default class PadresEstudiantes {
     this.requestHandler = new RequestHandler();
   }
 
-  // Obtener el pk del usuario logueado
-  async obtenerPkUsuario() {
+  // Obtener el usuario logeado para obtener su ID
+  async obtenerUsuarioLogeado() {
     try {
       const response = await this.requestHandler.getRequest("/user/me/");
-      if (response && response.data) {
-        return response.data.pk; // Devolver el pk del usuario logueado
-      } else {
-        throw new Error("Error: Datos de usuario no disponibles");
-      }
+      return response.data; // Devuelve el usuario con su ID (pk)
     } catch (error) {
-      console.error("Error al obtener el pk del usuario logueado:", error);
+      console.error("Error al obtener el usuario logeado:", error);
       throw error;
     }
   }
 
-  // Obtener estudiantes asociados al padre o madre logueado
-  async obtenerEstudiantesPorPadreOMadre() {
+  // Obtener estudiantes donde el user_padre o user_madre coincida con el ID del padre/madre logeado
+  async obtenerEstudiantesPorPadreOMadre(userId) {
     try {
-      const pkUsuario = await this.obtenerPkUsuario(); // Obtener el pk del padre o madre
       const response = await this.requestHandler.getRequest(
         "/academico/estudiantes/"
       );
-      if (response && response.data) {
-        const estudiantes = response.data;
+      const estudiantes = response.data;
 
-        // Filtrar estudiantes donde el pk sea igual al user_padre o user_madre
-        const estudiantesAsociados = estudiantes.filter(
-          (estudiante) =>
-            estudiante.user_padre === pkUsuario ||
-            estudiante.user_madre === pkUsuario
-        );
-
-        return estudiantesAsociados; // Devolver los estudiantes filtrados
-      } else {
-        throw new Error("Error: No se encontraron estudiantes");
-      }
+      // Filtrar estudiantes cuyos padres coinciden con el userId logeado
+      return estudiantes.filter(
+        (estudiante) =>
+          estudiante.user_padre === userId || estudiante.user_madre === userId
+      );
     } catch (error) {
       console.error("Error al obtener los estudiantes asociados:", error);
-      throw error;
-    }
-  }
-
-  // Obtener todos los estudiantes y mostrarlos en consola
-  async obtenerYMostrarEstudiantes() {
-    try {
-      const response = await this.requestHandler.getRequest(
-        "/academico/estudiantes/"
-      );
-      if (response && response.data) {
-        const estudiantes = response.data;
-
-        // Mostrar los estudiantes en la consola
-        console.log("Estudiantes obtenidos:", estudiantes);
-        return estudiantes; // Devolver la lista de estudiantes si se necesita
-      } else {
-        throw new Error("Error: No se encontraron estudiantes");
-      }
-    } catch (error) {
-      console.error("Error al obtener los estudiantes:", error);
       throw error;
     }
   }

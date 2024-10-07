@@ -10,7 +10,7 @@
       </button>
       <div
         class="estudiante"
-        v-for="(estudiante, index) in paginatedestudiantes"
+        v-for="(estudiante, index) in paginatedEstudiantes"
         :key="index"
       >
         <div class="card">
@@ -48,10 +48,11 @@ export default {
       paginaActual: 0,
       estudiantesPorPagina: 3,
       modeloPadresEstudiantes: new PadresEstudiantes(), // Instancia del modelo
+      userId: null, // ID del usuario logeado
     };
   },
   computed: {
-    paginatedestudiantes() {
+    paginatedEstudiantes() {
       const inicio = this.paginaActual * this.estudiantesPorPagina;
       const fin = inicio + this.estudiantesPorPagina;
       return this.estudiantes.slice(inicio, fin);
@@ -61,13 +62,29 @@ export default {
     },
   },
   async mounted() {
+    await this.obtenerUsuarioLogeado();
     await this.obtenerEstudiantesAsociados();
   },
   methods: {
+    // Obtener el ID del usuario logeado
+    async obtenerUsuarioLogeado() {
+      try {
+        const response =
+          await this.modeloPadresEstudiantes.obtenerUsuarioLogeado();
+        this.userId = response.pk;
+      } catch (error) {
+        console.error("Error al obtener el usuario logeado:", error);
+      }
+    },
+    // Obtener los estudiantes asociados al padre o madre logeado
     async obtenerEstudiantesAsociados() {
+      if (!this.userId) return; // Esperar a obtener el ID del usuario
+
       try {
         this.estudiantes =
-          await this.modeloPadresEstudiantes.obtenerEstudiantesPorPadreOMadre();
+          await this.modeloPadresEstudiantes.obtenerEstudiantesPorPadreOMadre(
+            this.userId
+          );
         console.log("Estudiantes asociados:", this.estudiantes);
       } catch (error) {
         console.error("Error al obtener los estudiantes asociados:", error);
