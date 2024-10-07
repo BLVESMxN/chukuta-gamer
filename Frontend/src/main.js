@@ -10,6 +10,7 @@ import PaginaPrincipal from "./views/PaginaPrincipal.vue";
 import EstudiantesDocente from "./views/EstudiantesDocente.vue";
 import HorariosDocente from "./views/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
+import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
 //Admin
 
@@ -21,6 +22,10 @@ import PeriodosAdmin from "./views/admin/PeriodosAdmin.vue";
 import HorariosAdmin from "./views/admin/HorariosAdmin.vue";
 import CursosAdmin from "./views/admin/CursosAdmin.vue";
 import ProfesoresAdmin from "./views/admin/ProfesoresAdmin.vue";
+//Estudiantes
+
+import TareasEstudiante from "./views/TareasEstudiante.vue";
+
 
 import "@fortawesome/fontawesome-free/css/all.css";
 
@@ -43,8 +48,12 @@ const routes = [
   { path: "/profesores-admin", component: ProfesoresAdmin },
   { path: "/cursos-admin", component: CursosAdmin },
   { path: "/administrativo-admin", component: AdministrativoAdmin },
+
   //
   { path: "/prueba-crud", component: prueba },
+  //Estudiantes
+
+  { path: "/tareas-estudiante", component: TareasEstudiante },
 ];
 
 // Configuración del router
@@ -526,16 +535,57 @@ app.mount("#app");
 //   console.error('An unexpected error occurred during testing:', error);
 // });
 
-//var profesor1 = {
-//"name": "Juan Perez",
-//"colegio": 1
-//}
+// var profesor1 = {
+// "name": "Juan Perez",
+// "colegio": 1
+// }
+var profe1 = {
+  email: 'ana@idb.com',
+  password: 'ana@idb.com',
+  }
 
-//var user1 = {
-//"email": "user@example.com",
-//"password": "string"
-//}
 
-//let handler = new RequestHandler()
-//handler.postRequest('/user/token/', user1)
-//handler.postRequest('/academico/profesores/', profesor1)
+// var user1 = {
+// "email": "admin@gmail.com",
+// "password": "string"
+// }
+
+// var colegio1 = {
+//   nombre: 'Colegio La Esperanza',
+//   suscripcion: true,
+//   }
+
+//   var grado1 = {
+//     nivel: 2, // Secundaria
+//     grado: 1, // 1ro de Secundaria
+//     }
+
+//     var profesor1 = {
+//       name: 'Ana Rodríguez',
+//       colegio: colegioId2,
+//       }
+//     var asignatura1 = {
+//       nombre: 'Historia',
+//       grado: gradoId2,
+//       colegio: colegioId2,
+//       }
+
+//       var periodo1 = {
+//         anio: 2024,
+//         trimestre: 2,
+//         fecha_inicio: '2024-04-01',
+//         fecha_fin: '2024-06-30',
+//         }
+// var horario1={
+//     periodo: 1,
+//     dia: 'LUN', // Lunes
+//     inicio: '08:00',
+//     fin: '10:00',
+// }
+let handler = new RequestHandler()
+handler.postRequest('/user/token/', profe1)
+// handler.postRequest('/academico/horarios/', horario1)
+
+// handler.postRequest('/academico/colegios/', colegio1)
+// handler.postRequest('/academico/profesores/', profesor1)
+console.log("letrassssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
