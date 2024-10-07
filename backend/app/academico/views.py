@@ -177,11 +177,7 @@ class EstudianteViewSet(viewsets.ModelViewSet):
         elif user.role == Role.get_student():
             return estudiantes.filter(id=user.estudiante.id)
         elif user.role == Role.get_parent():
-            results = estudiantes
-            if hasattr(user, 'padre_estudiante'):
-                results =  user.padre_estudiante.get_children()
-            if hasattr(user, 'madre_estudiante'):
-                results = results | user.madre_estudiante.get_children()
+            results = user.padre.get_children()
             if qp_colegio:
                 return results.filter(colegio=qp_colegio)
             return results
