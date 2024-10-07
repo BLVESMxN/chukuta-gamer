@@ -30,7 +30,7 @@
         <i class="fas fa-pencil"></i> Estudiantes
       </li>
       <li class="navbar-item" @click="navigate('/Inscripciones-Admin')">
-        <i class="fas fa-list-check"></i> Inscripciones
+        <i class="fas fa-list-check"></i> Estudiantes
       </li>
     </ul>
   </div>
