@@ -158,7 +158,12 @@ export default {
           this.$router.push('/inicio-estudiante');
         } else if (this.userRole.nombre === 'Profesor') {
           this.$router.push('/inicio-docente');
-        } else {
+        } else if(this.userRole.nombre === 'Administrativo'){
+          this.$router.push('/grados-admin');
+        } else if(this.userRole.nombr === 'Padre'){
+          console.log("Y la contraseña ========================================================================")
+        }
+        else {
           this.$router.push('/');
         }
       } catch (error) {

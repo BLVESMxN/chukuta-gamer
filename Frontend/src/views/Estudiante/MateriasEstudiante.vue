@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Materias - Docente </h1>
+    <h1>Materias - Estudiante</h1>
     <div class="materias-grid">
       <tarjetas-materia
         v-for="materia in materias"
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import TarjetasMateria from '../components/tarjeta_materias.vue'; // Importamos el componente
+import TarjetasMateria from '../../components/tarjeta_materias.vue'; // Importamos el componente
 
 export default {
   name: 'MateriasEstudiante',
@@ -33,6 +33,14 @@ export default {
 </script>
 
 <style scoped>
+.materias-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px; 
+}
 
+h1 {
+  text-align: center;
+}
 
 </style>

@@ -9,7 +9,7 @@
   </template>
   
   <script>
-  import ScheduleComponent from '../components/horarioComponente.vue';
+  import ScheduleComponent from '../../components/horarioComponente.vue';
   
   export default {
     name: 'HorariosDocente',

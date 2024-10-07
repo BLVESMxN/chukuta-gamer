@@ -4,7 +4,7 @@
       <div class="card" v-for="estudiante in estudiantes" :key="estudiante.id">
         <div class="info">
           <h3>{{ estudiante.nombre }}</h3>
-          <p>Carrera: {{ estudiante.carrera }}</p>
+          <p>Curso: {{ estudiante.curso }}</p>
         </div>
         <!-- Botones de acciones -->
         <div class="actions">
