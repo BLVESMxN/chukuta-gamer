@@ -3,41 +3,51 @@ import { RequestHandler } from "@/controlador/RequestHandler.mjs";
 export default {
   data() {
     return {
-      estudiantes: [
-        { nombre: 'Juan', edad: 30 },
-        { nombre: 'Ana', edad: 25 },
-        { nombre: 'Pedro', edad: 28 },
-        { nombre: 'Carla', edad: 24 },
-        { nombre: 'Luis', edad: 32 },
-        { nombre: 'Maria', edad: 27 },
-        { nombre: 'Maria', edad: 27 },
-      ],
+      estudiantes: [],
       paginaActual: 0,
       estudiantesPorPagina: 3,
       requestHandler: new RequestHandler(),
-      nuevoEstudiante: {
-        id: "",
-        nombres: "",
-        colegio: "",
-      },
-      idEstudianteActual: null,
+      idPadre: null,
     };
   },
-  created() {
-    this.fetchEstudiantes();
+  computed: {
+    paginatedestudiantes() {
+      const inicio = this.paginaActual * this.estudiantesPorPagina;
+      const fin = inicio + this.estudiantesPorPagina;
+      return this.estudiantes.slice(inicio, fin);
+    },
+    maxPaginas() {
+      return Math.ceil(this.estudiantes.length / this.estudiantesPorPagina);
+    },
   },
   methods: {
-    // Método para obtener los estudiantes
-    async fetchEstudiantes() {
+    async fetchPadreYEstudiantes() {
       try {
-        const response = await this.requestHandler.getRequest(
-          "/academico/estudiantes/"
+        // Obtener información del usuario actual
+        const responseUsuario = await this.requestHandler.getRequest(
+          "/user/me/"
         );
-        this.estudiantes = response.data;
+        this.idPadre = responseUsuario.data.pk;
+
+        // Obtener lista de estudiantes del padre
+        const responseEstudiantes = await this.requestHandler.getRequest(
+          "/academico/estudiantes/",
+          { user_padre: this.idPadre }
+        );
+        this.estudiantes = responseEstudiantes.data;
       } catch (error) {
-        console.error("Error obteniendo los estudiantes:", error);
+        console.error("Error obteniendo estudiantes o usuario:", error);
+      }
+    },
+    paginaSiguiente() {
+      if (this.paginaActual < this.maxPaginas - 1) {
+        this.paginaActual++;
+      }
+    },
+    paginaAnterior() {
+      if (this.paginaActual > 0) {
+        this.paginaActual--;
       }
     },
   },
-  
 };

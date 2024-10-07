@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="banner">
-      <h1>Bienvenido al Sistema del colegio x</h1>
+      <h1>Bienvenido al Sistema del colegio</h1>
     </div>
 
     <div class="lista-estudiantes">
@@ -16,15 +16,16 @@
         <div class="card">
           <div class="card-border-top"></div>
           <div class="img"></div>
-          <span> {{ estudiante.nombre }}</span>
-          <p class="job">{{ estudiante.edad }}</p>
+          <span>{{ estudiante.name }}</span>
+          <p class="job">{{ estudiante.grado }}</p>
           <router-link
             :to="{
               name: 'EstudiantesPadres',
-              params: { nombre: estudiante.nombre },
+              params: { nombre: estudiante.name },
             }"
-            ><button>Ver</button></router-link
           >
+            <button>Ver</button>
+          </router-link>
         </div>
       </div>
       <button
@@ -38,10 +39,17 @@
 </template>
 
 <script>
-import MenuPadres from "@/modelo/padres/MenuPadres.mjs";
+import PadresEstudiantes from "@/modelo/padres/PadresEstudiante.mjs";
+
 export default {
-  name: "MenuPadres",
-  mixins: [MenuPadres],
+  data() {
+    return {
+      estudiantes: [], // Lista de estudiantes asociados al padre/madre
+      paginaActual: 0,
+      estudiantesPorPagina: 3,
+      modeloPadresEstudiantes: new PadresEstudiantes(), // Instancia del modelo
+    };
+  },
   computed: {
     paginatedestudiantes() {
       const inicio = this.paginaActual * this.estudiantesPorPagina;
@@ -52,7 +60,19 @@ export default {
       return Math.ceil(this.estudiantes.length / this.estudiantesPorPagina);
     },
   },
+  async mounted() {
+    await this.obtenerEstudiantesAsociados();
+  },
   methods: {
+    async obtenerEstudiantesAsociados() {
+      try {
+        this.estudiantes =
+          await this.modeloPadresEstudiantes.obtenerEstudiantesPorPadreOMadre();
+        console.log("Estudiantes asociados:", this.estudiantes);
+      } catch (error) {
+        console.error("Error al obtener los estudiantes asociados:", error);
+      }
+    },
     paginaSiguiente() {
       if (this.paginaActual < this.maxPaginas - 1) {
         this.paginaActual++;
@@ -68,6 +88,7 @@ export default {
 </script>
 
 <style scoped>
+/* Estilos para las tarjetas y botones */
 .banner {
   background-color: #4caf50;
   color: white;
@@ -83,7 +104,6 @@ export default {
   justify-content: space-around;
 }
 
-/* From Uiverse.io by alexmaracinaru */
 .card {
   width: 190px;
   height: 254px;

@@ -89,20 +89,24 @@ export default class EstudiantesModel {
     }
   }
 
-  // Verificar si un correo pertenece al padre del colegio
-  async verificarCorreoPadre(colegioId, email) {
+  // Obtener el ID del padre mediante su correo electrónico
+  async obtenerPadrePorCorreo(email) {
     try {
       const response = await this.requestHandler.getRequest(
         "/academico/padres/",
-        { colegio: colegioId, email }
+        { email }
       );
-      return response.data.length > 0;
+      if (response.data.length === 0) {
+        throw new Error(`No se encontró ningún padre con el correo ${email}`);
+      }
+      return response.data[0]; // Retornar el primer padre encontrado
     } catch (error) {
-      console.error(`Error al verificar el correo del padre: ${email}`, error);
+      console.error(`Error al obtener el padre por correo ${email}:`, error);
       throw error;
     }
   }
-  // Agregar la función de verificación del grado
+
+  // Verificar si un grado pertenece al colegio
   async verificarGradoPorColegio(colegioId, gradoId) {
     try {
       const grados = await this.obtenerGradosPorColegio(colegioId);
