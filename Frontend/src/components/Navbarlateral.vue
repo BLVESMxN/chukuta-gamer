@@ -99,4 +99,3 @@ export default {
   background-color: #004d40; /* Mantener el color activo como el fondo del navbar */
 }
 </style>
-
