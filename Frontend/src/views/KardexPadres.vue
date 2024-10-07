@@ -26,6 +26,7 @@
           <v-btn color="primary" @click="descargarExcel" class="print-button">Descargar Excel</v-btn>
         </v-card-actions>
       </div>
+      <router-link to="/EstudiantesPadres">Volver</router-link>
     </div>
   </template>
   
