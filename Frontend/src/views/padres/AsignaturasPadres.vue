@@ -1,120 +1,167 @@
 <template>
-  <div class="calendario-tareas">
-    <h1>Calendario de Asistencias y Faltas</h1>
-    <vue-cal
-      :events="eventosTareas"
-      default-view="month"
-      time="24"
-      class="calendario"
-      :highlight="fechasDestacadas"
-    />
-    <div class="resumen">
-      <p>Total de Asistencias: {{ totalAsistencias }}</p>
-      <p>Total de Faltas: {{ totalFaltas }}</p>
+  <div class="lista-materias">
+    <h1>Asignaturas del Estudiante</h1>
+    <div class="materias-grid">
+      <div class="flip-card" v-for="(materia, index) in materias" :key="index">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <p class="title">{{ materia.nombre }}</p>
+            <p>{{ obtenerProfesor(materia.profesor) }}</p>
+          </div>
+          <div class="flip-card-back">
+            <router-link
+              :to="{
+                name: 'TareasPadres',
+                params: { asignaturaId: materia.id },
+              }"
+              class="router-link"
+            >
+              <p class="title">Más...</p>
+            </router-link>
+          </div>
+        </div>
+      </div>
     </div>
-    <router-link to="/EstudiantesPadres/:nombre"
+    <router-link to="/EstudiantesPadres"
       >Volver a la lista de estudiantes</router-link
     >
   </div>
 </template>
 
 <script>
-import VueCal from "vue-cal";
-import "vue-cal/dist/vuecal.css";
-import AsistenciaPadres from "@/modelo/padres/AsistenciaPadres.mjs"; // Importar el modelo de asistencias
+import VerAsignaturasModel from "@/modelo/VerAsignaturasModel.mjs"; // Modelo para obtener asignaturas
 
 export default {
-  name: "CalendarioAsistencias",
-  components: {
-    VueCal,
-  },
+  name: "AsignaturasPadres",
+  props: ["estudianteId"], // Recibe el ID del estudiante (opcional si es necesario)
   data() {
     return {
-      asistencias: [], // Lista de asistencias obtenidas
-      modeloAsistencia: new AsistenciaPadres(), // Instancia del modelo de asistencias
+      materias: [], // Asignaturas del estudiante
+      modeloVerAsignaturas: new VerAsignaturasModel(), // Instancia del modelo
     };
   },
   async created() {
-    await this.obtenerAsistencias();
-  },
-  computed: {
-    // Mapeo de eventos para el calendario
-    eventosTareas() {
-      return this.asistencias.map((asistencia) => ({
-        start: asistencia.fecha,
-        end: asistencia.fecha,
-        title: asistencia.titulo,
-        color: asistencia.color,
-      }));
-    },
-    totalAsistencias() {
-      return this.asistencias.filter(
-        (asistencia) => asistencia.tipo === "asistencia"
-      ).length;
-    },
-    totalFaltas() {
-      return this.asistencias.filter(
-        (asistencia) => asistencia.tipo === "falta"
-      ).length;
-    },
-    fechasDestacadas() {
-      return this.asistencias.map((asistencia) => asistencia.fecha);
-    },
+    await this.obtenerAsignaturas();
   },
   methods: {
-    async obtenerAsistencias() {
+    async obtenerAsignaturas() {
       try {
-        this.asistencias = await this.modeloAsistencia.obtenerAsistencias();
+        // Obtener el ID del usuario logueado (padre o madre)
+        const userId = await this.modeloVerAsignaturas.obtenerUsuarioActual();
+
+        // Obtener estudiantes asociados a este padre o madre
+        const estudiantes =
+          await this.modeloVerAsignaturas.obtenerEstudiantesPorPadreOMadre(
+            userId
+          );
+
+        if (estudiantes.length > 0) {
+          const estudiante = estudiantes[0]; // Tomamos el primer estudiante encontrado
+          const gradoId = estudiante.grado; // Obtenemos el grado del estudiante
+
+          // Obtener las asignaturas del estudiante basado en el grado
+          this.materias =
+            await this.modeloVerAsignaturas.obtenerAsignaturasPorGrado(gradoId);
+        } else {
+          console.error(
+            "No se encontraron estudiantes para este padre o madre."
+          );
+        }
       } catch (error) {
-        console.error("Error al obtener las asistencias:", error);
+        console.error("Error al obtener las asignaturas:", error);
       }
+    },
+    obtenerProfesor(profesorId) {
+      // Lógica para obtener el nombre del profesor (en este caso solo mostramos el ID)
+      return `Profesor ID: ${profesorId}`;
     },
   },
 };
 </script>
 
 <style scoped>
-.calendario-tareas {
-  padding: 20px;
-  max-width: 80%;
-  margin: 0 auto;
-  text-align: center;
-}
-
-h1 {
-  margin-bottom: 20px;
-}
-
-.calendario {
-  margin: 20px 0;
-  width: 80%;
-  height: 500px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Estilo para las fechas destacadas */
-.vuecal__cell.vuecal__cell--highlighted {
-  background-color: #ea00ff !important;
-  color: #ff0000;
-}
-
-.resumen {
-  margin-top: 20px;
-  text-align: center;
-  font-weight: bold;
-}
-
 .router-link {
-  display: block;
-  margin-top: 20px;
-  text-align: center;
-  color: #4caf50;
   text-decoration: none;
-  font-weight: bold;
+  color: inherit;
 }
 
-.router-link:hover {
-  text-decoration: underline;
+.lista-materias {
+  padding: 20px;
+  max-width: 100%;
+  margin: auto;
+}
+
+.materias-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-items: center;
+  align-items: center;
+}
+
+.flip-card {
+  background-color: transparent;
+  width: 190px;
+  height: 254px;
+  perspective: 1000px;
+  font-family: sans-serif;
+}
+
+.title {
+  font-size: 1.5em;
+  font-weight: 900;
+  text-align: center;
+  margin: 0;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.2);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border: 1px solid coral;
+  border-radius: 1rem;
+}
+
+.flip-card-front {
+  background: linear-gradient(
+    120deg,
+    bisque 60%,
+    rgb(255, 231, 222) 88%,
+    rgb(255, 211, 195) 40%,
+    rgba(255, 127, 80, 0.603) 48%
+  );
+  color: coral;
+}
+
+.flip-card-back {
+  background: linear-gradient(
+    120deg,
+    rgb(255, 174, 145) 30%,
+    coral 88%,
+    bisque 40%,
+    rgb(255, 185, 160) 78%
+  );
+  color: white;
+  transform: rotateY(180deg);
 }
 </style>
