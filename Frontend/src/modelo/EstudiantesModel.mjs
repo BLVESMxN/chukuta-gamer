@@ -89,17 +89,24 @@ export default class EstudiantesModel {
     }
   }
 
-  // Obtener el ID del padre mediante su correo electrónico
-  async obtenerPadrePorCorreo(email) {
+  // Obtener el ID del padre mediante su correo electrónico y colegio
+  async obtenerPadrePorCorreo(email, colegioId) {
     try {
       const response = await this.requestHandler.getRequest(
         "/academico/padres/",
-        { email }
+        { email, colegio: colegioId } // Filtrar por correo y colegio
       );
-      if (response.data.length === 0) {
-        throw new Error(`No se encontró ningún padre con el correo ${email}`);
+
+      const padre = response.data.find(
+        (p) => p.email === email && p.colegio === colegioId
+      );
+      if (!padre) {
+        console.error(
+          `No se encontró ningún padre con el correo ${email} y el colegio con ID ${colegioId}`
+        );
+        return null;
       }
-      return response.data[0]; // Retornar el primer padre encontrado
+      return padre; // Retornar el padre correcto si se encuentra
     } catch (error) {
       console.error(`Error al obtener el padre por correo ${email}:`, error);
       throw error;

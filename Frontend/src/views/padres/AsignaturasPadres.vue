@@ -1,44 +1,88 @@
 <template>
   <div class="lista-materias">
+    <h1>Asignaturas del Estudiante</h1>
     <div class="materias-grid">
-      <div class="flip-card" v-for="(clase, index) in clases" :key="index">
+      <div class="flip-card" v-for="(materia, index) in materias" :key="index">
         <div class="flip-card-inner">
           <div class="flip-card-front">
-            <p class="title">{{ clase.nombre }}</p>
-            <p>{{ clase.profesor }}</p>
+            <p class="title">{{ materia.nombre }}</p>
+            <p>{{ obtenerProfesor(materia.profesor) }}</p>
           </div>
           <div class="flip-card-back">
-            <router-link to="/TareasPadres" class="router-link">
+            <router-link
+              :to="{
+                name: 'TareasPadres',
+                params: { asignaturaId: materia.id },
+              }"
+              class="router-link"
+            >
               <p class="title">Más...</p>
             </router-link>
           </div>
         </div>
       </div>
     </div>
+    <router-link to="/EstudiantesPadres/:nombre"
+      >Volver a la lista de estudiantes</router-link
+    >
   </div>
-  <router-link to="/EstudiantesPadres"
-    >Volver a la lista de personas</router-link
-  >
 </template>
 
 <script>
-import Asignaturaspadres from "@/modelo/padres/Asignaturaspadres.mjs";
+import VerAsignaturasModel from "@/modelo/VerAsignaturasModel.mjs"; // Modelo para obtener asignaturas
 
 export default {
-  name: "ListaMaterias",
-  mixins: [Asignaturaspadres],
+  name: "AsignaturasPadres",
+  props: ["estudianteId"], // Recibe el ID del estudiante (opcional si es necesario)
   data() {
     return {
-      materias: [],
+      materias: [], // Asignaturas del estudiante
+      modeloVerAsignaturas: new VerAsignaturasModel(), // Instancia del modelo
     };
+  },
+  async created() {
+    await this.obtenerAsignaturas();
+  },
+  methods: {
+    async obtenerAsignaturas() {
+      try {
+        // Obtener el ID del usuario logueado (padre o madre)
+        const userId = await this.modeloVerAsignaturas.obtenerUsuarioActual();
+
+        // Obtener estudiantes asociados a este padre o madre
+        const estudiantes =
+          await this.modeloVerAsignaturas.obtenerEstudiantesPorPadreOMadre(
+            userId
+          );
+
+        if (estudiantes.length > 0) {
+          const estudiante = estudiantes[0]; // Tomamos el primer estudiante encontrado
+          const gradoId = estudiante.grado; // Obtenemos el grado del estudiante
+
+          // Obtener las asignaturas del estudiante basado en el grado
+          this.materias =
+            await this.modeloVerAsignaturas.obtenerAsignaturasPorGrado(gradoId);
+        } else {
+          console.error(
+            "No se encontraron estudiantes para este padre o madre."
+          );
+        }
+      } catch (error) {
+        console.error("Error al obtener las asignaturas:", error);
+      }
+    },
+    obtenerProfesor(profesorId) {
+      // Lógica para obtener el nombre del profesor (en este caso solo mostramos el ID)
+      return `Profesor ID: ${profesorId}`;
+    },
   },
 };
 </script>
 
 <style scoped>
 .router-link {
-  text-decoration: none; /* Quita el subrayado */
-  color: inherit; /* Mantiene el color del texto como el color de su padre */
+  text-decoration: none;
+  color: inherit;
 }
 
 .lista-materias {
@@ -47,9 +91,12 @@ export default {
   margin: auto;
 }
 
-.lista-materias h1 {
-  text-align: center;
-  margin-bottom: 20px;
+.materias-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-items: center;
+  align-items: center;
 }
 
 .flip-card {
@@ -116,12 +163,5 @@ export default {
   );
   color: white;
   transform: rotateY(180deg);
-}
-.materias-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  justify-items: center;
-  align-items: center;
 }
 </style>

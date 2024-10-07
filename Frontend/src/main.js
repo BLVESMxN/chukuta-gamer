@@ -96,7 +96,11 @@ const routes = [
   { path: "/AsignaturasPadres", component: AsignaturasPadres },
   { path: "/AsistenciaPadres", component: AsistenciaPadres },
   { path: "/KardexPadres", component: KardexPadres },
-  { path: "/TareasPadres", component: TareasPadres },
+  {
+    path: "/TareasPadres/:asignaturaId",
+    name: "TareasPadres",
+    component: TareasPadres,
+  },
 ];
 
 // Configuración del router

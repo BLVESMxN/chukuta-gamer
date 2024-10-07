@@ -9,22 +9,24 @@ export default {
       requestHandler: new RequestHandler(),
       nuevaAsignatura: {
         nombre: "", // Nombre de la asignatura
-        grado: 0,   // ID del grado
-        colegio: 0  // ID del colegio
+        grado: 0, // ID del grado
+        colegio: 0, // ID del colegio
       },
       asignaturaEditada: null, // Asignatura en edición
     };
   },
   created() {
     this.fetchAsignaturas();
-    this.fetchGrados();  // Obtenemos los grados al montar el componente
+    this.fetchGrados(); // Obtenemos los grados al montar el componente
     this.fetchColegios();
   },
   methods: {
     // Método para obtener asignaturas
     async fetchAsignaturas() {
       try {
-        const response = await this.requestHandler.getRequest("/academico/asignaturas/");
+        const response = await this.requestHandler.getRequest(
+          "/academico/asignaturas/"
+        );
         this.asignaturas = response.data;
       } catch (error) {
         console.error("Error obteniendo asignaturas:", error);
@@ -34,8 +36,10 @@ export default {
     // Método para obtener grados con debug
     async fetchGrados() {
       try {
-        const response = await this.requestHandler.getRequest("/academico/grados/");
-        console.log("Grados obtenidos:", response.data);  // Para verificar si los datos se están obteniendo
+        const response = await this.requestHandler.getRequest(
+          "/academico/grados/"
+        );
+        console.log("Grados obtenidos:", response.data); // Para verificar si los datos se están obteniendo
         this.grados = response.data;
       } catch (error) {
         console.error("Error obteniendo los grados:", error);
@@ -45,7 +49,9 @@ export default {
     // Método para obtener colegios
     async fetchColegios() {
       try {
-        const response = await this.requestHandler.getRequest("/academico/colegios/");
+        const response = await this.requestHandler.getRequest(
+          "/academico/colegios/"
+        );
         this.colegios = response.data;
       } catch (error) {
         console.error("Error obteniendo los colegios:", error);
@@ -74,7 +80,9 @@ export default {
       const confirmation = confirm("¿Confirma eliminar la asignatura?");
       if (confirmation) {
         try {
-          await this.requestHandler.deleteRequest(`/academico/asignaturas/${id}`);
+          await this.requestHandler.deleteRequest(
+            `/academico/asignaturas/${id}`
+          );
           this.fetchAsignaturas();
           alert("¡Asignatura eliminada exitosamente!");
         } catch (error) {
@@ -94,10 +102,10 @@ export default {
       try {
         const response = await this.requestHandler.putRequest(
           `/academico/asignaturas/${this.asignaturaEditada.id}/`,
-          { 
+          {
             nombre: this.asignaturaEditada.nombre,
             grado: this.asignaturaEditada.grado,
-            colegio: this.asignaturaEditada.colegio
+            colegio: this.asignaturaEditada.colegio,
           }
         );
         if (response.status === 200) {
@@ -113,6 +121,6 @@ export default {
     // Cancelar edición
     cancelarEdicion() {
       this.asignaturaEditada = null;
-    }
-  }
+    },
+  },
 };

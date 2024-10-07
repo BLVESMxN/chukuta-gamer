@@ -147,7 +147,7 @@
 </template>
 
 <script>
-import EstudiantesModel from "@/modelo/EstudiantesModel.mjs"; // Importar el modelo de estudiantes
+import EstudiantesModel from "@/modelo/EstudiantesModel.mjs";
 
 export default {
   data() {
@@ -223,10 +223,12 @@ export default {
       try {
         // Obtener los IDs de los padres usando sus correos electrónicos
         const padre = await this.modeloEstudiantes.obtenerPadrePorCorreo(
-          this.estudiante.email_padre
+          this.estudiante.email_padre,
+          this.estudiante.colegio
         );
         const madre = await this.modeloEstudiantes.obtenerPadrePorCorreo(
-          this.estudiante.email_madre
+          this.estudiante.email_madre,
+          this.estudiante.colegio
         );
 
         if (!padre || !madre) {
@@ -234,6 +236,10 @@ export default {
             "Uno o ambos correos no corresponden a los padres registrados en este colegio.";
           return;
         }
+
+        // Imprimir los IDs de los padres
+        console.log(`ID del padre: ${padre.id}`);
+        console.log(`ID de la madre: ${madre.id}`);
 
         // Asignar los IDs obtenidos a los atributos correspondientes
         this.estudiante.user_padre = padre.id;
@@ -328,7 +334,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 /* Estilos generales */
 #header {
