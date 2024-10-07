@@ -1,114 +1,6 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-import { createRouter, createWebHistory } from "vue-router";
-
-import InicioEstudiante from "./views/Estudiante/InicioEstudiante.vue";
-import MateriasEstudiante from "./views/Estudiante/MateriasEstudiante.vue";
-import InicioDocente from "./views/Docente/InicioDocente.vue";
-import MateriasDocente from "./views/Docente/MateriasDocente.vue";
-import PaginaPrincipal from "./views/PaginaPrincipal.vue";
-import EstudiantesDocente from "./views/Docente/EstudiantesDocente.vue";
-import HorariosDocente from "./views/Docente/HorariosDocente.vue";
-import prueba from "./views/previews/PruebaCrud.vue";
-
-//Admin
-
-import GradosAdmin from "./views/admin/GradosAdmin.vue";
-import AdministrativoAdmin from "./views/admin/AdministrativoAdmin.vue";
-import ColegiosAdmin from "./views/admin/ColegiosAdmin.vue";
-import AsignaturasAdmin from "./views/admin/AsignaturasAdmin.vue";
-import PeriodosAdmin from "./views/admin/PeriodosAdmin.vue";
-import HorariosAdmin from "./views/admin/HorariosAdmin.vue";
-import CursosAdmin from "./views/admin/CursosAdmin.vue";
-import ProfesoresAdmin from "./views/admin/ProfesoresAdmin.vue";
-//padres
-import PadresAdmin from "./views/admin/PadresAdmin.vue";
-//Estudiantes
-import EstudiantesAdmin from "./views/admin/EstudiantesAdmin.vue";
-//inscripciones
-import InscripcionesAdmin from "./views/admin/InscripcionesAdmin.vue";
-
-import UserManage from "./views/admin/usuario/UserManage.vue";
-
-import StatisticsView from "./views/Estadisticas/StatisticsView.vue";
-
-import AdminLayout from "./views/Layouts/AdminLayout.vue";
-import { Session } from "./controlador/Session";
-import { sessionPlugin } from "./controlador/SessionPlugin.mjs";
-
-import "@fortawesome/fontawesome-free/css/all.css";
-//import { RequestHandler } from "./controlador/RequestHandler.mjs";
-import MenuPadres from "./views/MenuPadres.vue";
-import EstudiantesPadres from "./views/EstudiantesPadres.vue";
-import AsignaturasPadres from "./views/AsignaturasPadres.vue";
-import AsistenciaPadres from "./views/AsistenciaPadres.vue";
-import KardexPadres from "./views/KardexPadres.vue";
-import TareasPadres from "./views/TareasPadres.vue";
-
-// Definir rutas
-const routes = [
-  { path: "/", component: PaginaPrincipal },
-  { path: "/inicio-estudiante", component: InicioEstudiante },
-  { path: "/materias-estudiante", component: MateriasEstudiante },
-  { path: "/inicio-docente", component: InicioDocente },
-  { path: "/materias-docente", component: MateriasDocente },
-  { path: "/horarios-docente", component: HorariosDocente },
-  { path: "/estudiantes-docente", component: EstudiantesDocente },
-  { path: "/editar-usuario", component: UserManage },
-  //admin
-
-  // Rutas del admin, utilizando el AdminLayout
-  {
-    path: "/admin",
-    component: AdminLayout,
-    children: [
-      { path: "/grados-admin", component: GradosAdmin },
-      { path: "/colegios-admin", component: ColegiosAdmin },
-      { path: "/asignaturas-admin", component: AsignaturasAdmin },
-      { path: "/periodos-admin", component: PeriodosAdmin },
-      { path: "/horarios-admin", component: HorariosAdmin },
-      { path: "/profesores-admin", component: ProfesoresAdmin },
-      { path: "/cursos-admin", component: CursosAdmin },
-      { path: "/administrativo-admin", component: AdministrativoAdmin },
-      { path: "/Estadisticas-admin", component: StatisticsView },
-      //padres
-      { path: "/Padres-Admin", component: PadresAdmin },
-      //Estudiantes
-      { path: "/Estudiante-Admin", component: EstudiantesAdmin },
-      { path: "/Inscripciones-Admin", component: InscripcionesAdmin },
-    ],
-  },
-  //
-  { path: "/prueba-crud", component: prueba },
-  { path: "/MenuPadres", component: MenuPadres },
-  {
-    path: "/EstudiantesPadres/:nombre",
-    name: "EstudiantesPadres",
-    component: EstudiantesPadres,
-    props: true,
-  },
-  { path: "/AsignaturasPadres", component: AsignaturasPadres },
-  { path: "/AsistenciaPadres", component: AsistenciaPadres },
-  { path: "/KardexPadres", component: KardexPadres },
-  { path: "/TareasPadres", component: TareasPadres },
-];
-
-// Configuración del router
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});
-
-Session.getInstance();
-const app = createApp(App);
-
-app.use(sessionPlugin);
-app.use(router);
-app.mount("#app");
 
 // async function runTests() {
 //   let handler = new RequestHandler();
-//   console.log(handler);
 
 //   let res;
 //   let payload;
@@ -143,6 +35,7 @@ app.mount("#app");
 //     console.error(error.response ? error.response.data : error.message);
 //     return;
 //   }
+
 
 //   // 2. Create a Colegio
 //   payload = {
@@ -445,7 +338,7 @@ app.mount("#app");
 //       password: estudianteEmail,
 //     };
 //     res = await handler.postRequest('/user/token/', payload);
-
+    
 //   } catch (error) {
 //     console.error('Failed to authenticate as estudiante.');
 //     console.error(error.response ? error.response.data : error.message);
@@ -490,6 +383,7 @@ app.mount("#app");
 //     return;
 //   }
 
+
 //   payload = {
 //     fecha: '2024-02-01',
 //     estado: 'ASI', // Asistio
@@ -498,6 +392,14 @@ app.mount("#app");
 
 //   try {
 //     res = await handler.postRequest('/academico/asistencias/', payload);
+//     console.log('Asistencia recorded with ID:', res.data.id);
+//   } catch (error) {
+//     console.log('Failed to record asistencia.');
+//     console.error(error.response ? error.response.data : error.message);
+//   }
+
+//   try {
+//     res = await handler.getRequest('/academico/asistencias/');
 //     console.log('Asistencia recorded with ID:', res.data.id);
 //   } catch (error) {
 //     console.log('Failed to record asistencia.');
@@ -519,6 +421,8 @@ app.mount("#app");
 //     return;
 //   }
 
+
+
 //   payload = {
 //     nombre: 'Sagrado Corazón Renovado' + Math.random(),
 //     suscripcion: false,
@@ -534,7 +438,7 @@ app.mount("#app");
 
 //   // 15. Delete the Tarea
 //   // Authenticate as the profesor
-
+  
 //   profesorPassword = profesorEmail
 //   try {
 //     payload = {
@@ -556,6 +460,7 @@ app.mount("#app");
 //     console.error(error.response ? error.response.data : error.message);
 //   }
 
+
 //   try {
 //     res = await handler.getRequest('/academico/cursos/');
 //     console.log('Cursos retrieved:', res.data);
@@ -572,31 +477,13 @@ app.mount("#app");
 //   console.error('An unexpected error occurred during testing:', error);
 // });
 
-//var profesor1 = {
-//"name": "Juan Perez",
-//"colegio": 1
-//}
-
-//var user1 = {
-//"email": "user@example.com",
-//"password": "string"
-//}
 
 //let handler = new RequestHandler()
-//handler.postRequest('/user/token/', user1)
-//handler.postRequest('/academico/profesores/', profesor1)
 
-/*
-var admin = new RequestHandler()
-admin.postRequest('/user/token/',{
-  email: 'pedro@pruebas.com',
-  password: '123'
-})
+//await handler.postRequest('user/token/', {
+//  email: 'juan.p@edu.com',
+//  password: 'juan.p@edu.com',
+//})
 
-/*admin.postRequest('/academico/administrativo/',{
-  name: 'Pedro',
-  email:'pedro@pruebas.com',
-  password:'123'
-})*/
-
-//admin.getRequest('/user/me/',)
+//await handler.getRequest('academico/cursos/')
+//await handler.getRequest('academico/inscripciones/?curso=37')

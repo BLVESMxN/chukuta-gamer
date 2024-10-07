@@ -66,10 +66,11 @@
 </template>
 
 <script>
-import EstudiantesModel from "@/modelo/EstudiantesModel.mjs";
 
 export default {
-  mixins: [EstudiantesModel],
+  props: {
+  },
+  
 };
 </script>
 
