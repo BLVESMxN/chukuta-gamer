@@ -1,0 +1,304 @@
+/* Navbar principal */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #00695C;
+  color: white;
+  padding: 15px 30px;
+  border-bottom: 2px solid #004d40;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Roboto', sans-serif;
+  min-height: 70px; /* Asegura una altura mínima constante */
+}
+
+.navbar:hover {
+  background-color: #00796B;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Sección izquierda del navbar */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  margin-right: auto;
+}
+
+/* Sección derecha del navbar */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* Título o logo del navbar */
+.title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-left: 15px;
+  transition: color 0.3s ease;
+}
+
+.title:hover {
+  color: #B2DFDB;
+}
+
+/* Botones del menú */
+.menu-button, .login-button, .logout-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.1em;
+  cursor: pointer;
+  padding: 10px 15px;
+  transition: color 0.3s ease, transform 0.3s ease;
+  border-radius: 8px;
+}
+
+.menu-button:hover, .login-button:hover, .logout-button:hover {
+  color: #B2DFDB;
+  transform: scale(1.05);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el ícono de usuario */
+.user-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  object-fit: cover;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos para los enlaces de navegación */
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1em;
+  padding: 10px 15px;
+  margin-right: 10px;
+  border-radius: 25px;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link.active, .nav-link:hover {
+  background-color: #004d40;
+  color: #B2DFDB;
+  transform: translateY(-2px);
+}
+
+/* Panel de opciones del usuario (Dropdown) */
+.user-panel {
+  position: relative;
+  display: inline-block;
+}
+
+.user-options-panel {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  border-radius: 10px;
+  min-width: 250px; /* Hacemos el dropdown más grande */
+  padding: 10px 0;
+}
+
+.user-option, .logout-button {
+  background: none;
+  border: none;
+  color: black; /* Color negro para las letras */
+  font-size: 1.2em; /* Aumentamos el tamaño de la letra */
+  cursor: pointer;
+  padding: 15px 20px; /* Más espacio en los elementos del menú */
+  transition: color 0.3s ease, transform 0.3s ease;
+  text-align: left;
+  display: block; /* Aseguramos que los links ocupen todo el ancho */
+  width: 100%;
+}
+
+.user-option:hover, .logout-button:hover {
+  color: #004d40; /* Color al hacer hover */
+  background-color: #f5f5f5; /* Fondo más claro al hacer hover */
+  transform: scale(1.05);
+}
+
+/* Ajustamos el nombre del usuario para que encaje con el nuevo diseño */
+.user-name {
+  font-weight: bold;
+  padding: 15px 20px;
+  color: black;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+  background-color: #eeeeee;
+}
+
+/* Modal de Inicio de Sesión */
+.login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform: scale(1);
+}
+
+.modal-content:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+}
+
+
+.modal-title {
+  font-size: 1.6em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Estilos de los inputs dentro del modal */
+.input-field {
+  width: 100%; /* Ocupa todo el ancho disponible */
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: #00796B;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 123, 131, 0.5);
+}
+
+/* Botón de login debajo de los inputs */
+button.login-button {
+  display: block;
+  width: 100%; /* Hacemos que el botón ocupe todo el ancho */
+  background-color: #00796B;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.1em;
+  margin-top: 15px; /* Añadimos margen superior */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button.login-button:hover {
+  background-color: #004d40;
+  transform: translateY(-2px);
+}
+
+/* Estilos para el botón de cerrar "X" */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.close:hover {
+  color: #d32f2f;
+  transform: rotate(90deg);
+}
+
+/* Panel de opciones del usuario */
+.user-panel {
+  position: relative;
+  display: inline-block;
+}
+
+.user-icon {
+  cursor: pointer;
+}
+
+.user-options-panel {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  border-radius: 10px;
+  min-width: 250px; /* Hacemos el dropdown más grande */
+  padding: 10px 0;
+}
+.user-option, .logout-button {
+  background: none;
+  border: none;
+  color: black; /* Color negro para las letras */
+  font-size: 1.2em; /* Aumentamos el tamaño de la letra */
+  cursor: pointer;
+  padding: 15px 20px; /* Más espacio en los elementos del menú */
+  transition: color 0.3s ease, transform 0.3s ease;
+  text-align: left;
+  display: block; /* Aseguramos que los links ocupen todo el ancho */
+  width: 100%;
+}
+
+.user-option:hover, .logout-button:hover {
+  color: #004d40; /* Color al hacer hover */
+  background-color: #f5f5f5; /* Fondo más claro al hacer hover */
+  transform: scale(1.05);
+}
+
+/* Ajustamos el nombre del usuario para que encaje con el nuevo diseño */
+.user-name {
+  font-weight: bold;
+  padding: 15px 20px;
+  color: black;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+  background-color: #eeeeee;
+}
+
+/* Links dentro del dropdown (como router-link) */
+.user-option a {
+  color: black;
+  text-decoration: none;
+  width: 100%;
+}
+
+.user-option a:hover {
+  color: #004d40;
+  background-color: #f5f5f5;
+}
