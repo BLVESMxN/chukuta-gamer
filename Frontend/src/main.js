@@ -11,7 +11,7 @@ import EstudiantesDocente from "./views/Docente/EstudiantesDocente.vue";
 import HorariosDocente from "./views/Docente/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
 
-import { RequestHandler } from "./controlador/RequestHandler.mjs";
+//import { RequestHandler } from "./controlador/RequestHandler.mjs";
 import MenuPadres from "./views/MenuPadres.vue";
 import EstudiantesPadres from "./views/EstudiantesPadres.vue";
 import AsignaturasPadres from "./views/AsignaturasPadres.vue";
