@@ -2,19 +2,20 @@
 import { reactive } from 'vue';
 import { RequestHandler } from './RequestHandler.mjs';
 
-class Role {
+export class Role {
   static ADMINISTRATIVO = new Role('Administrativo');
   static PROFESOR = new Role('Profesor');
   static ESTUDIANTE = new Role('Estudiante');
   static PADRE = new Role('Padre');
+  static GUEST = new Role('Guest');
 
   constructor(nombre) {
     this.nombre = nombre;
   }
 }
 
-class User {
-  static ANONYMOUS = new User('', '', true, null);
+export class User {
+  static ANONYMOUS = new User('', '', true, Role.GUEST);
 
   constructor(email, name, isActive = false, role = Role.ESTUDIANTE) {
     this.email = email;
@@ -24,28 +25,33 @@ class User {
   }
 }
 
-class Session {
+export class Session {
   static #instance = null;
   static httpHandler = new RequestHandler();
 
   constructor(user) {
-    this.user = reactive(user);
+    // Create a reactive state object
+    this.state = reactive({
+      user: user, // Initialize with the provided user
+    });
   }
 
   static getInstance(user = null) {
     if (!Session.#instance) {
       Session.#instance = new Session(user || User.ANONYMOUS);
     } else if (user) {
-      Session.#instance.user = reactive(user);
+      // Update the user within the reactive state object
+      Session.#instance.state.user = user;
     }
     return Session.#instance;
   }
 
   isAnonymous() {
+    const user = this.state.user;
     return (
-      this.user === User.ANONYMOUS ||
-      !this.user.email ||
-      !this.user.role
+      user === User.ANONYMOUS ||
+      !user.email ||
+      !user.role
     );
   }
 
@@ -64,7 +70,7 @@ class Session {
     const email = userData['email'];
     const name = userData['name'];
     const isActive = userData['is_active'];
-    const roleName = userData['role'];
+    const roleName = userData['role_field'];
 
     let role;
     switch (roleName) {
@@ -81,7 +87,7 @@ class Session {
         role = Role.PROFESOR;
         break;
       default:
-        role = null;
+        role = Role.GUEST;
     }
 
     return new User(email, name, isActive, role);
@@ -98,7 +104,7 @@ class Session {
       throw new Error('Login failed');
     }
 
-    await this.getCurrent(); // This will update the singleton instance
+    await this.getCurrent(); 
     return Session.#instance;
   }
 
@@ -107,9 +113,7 @@ class Session {
       return false;
     }
     let res = await this.httpHandler.postRequest('user/logout/', {});
-    Session.getInstance(User.ANONYMOUS); // Reset to anonymous session
+    Session.getInstance(User.ANONYMOUS);
     return res.status === 200;
   }
 }
-
-export { Session };
