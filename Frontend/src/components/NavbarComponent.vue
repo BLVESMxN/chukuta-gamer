@@ -2,25 +2,15 @@
   <nav class="navbar">
     <div class="navbar-left">
       <!-- Guest Navbar -->
-      <span v-if="userRole.nombre === 'Guest'">
+      <span v-if="userRole === 'guest'">
         <button @click="toggleMenu" class="menu-button">☰</button>
         <span class="title">SISTEMA DE ESTUDIANTES</span>
       </span>
 
       <!-- Estudiante Navbar -->
-      <span v-if="userRole.nombre === 'Estudiante'">
-        <router-link
-          to="/inicio-estudiante"
-          :class="{ active: isActive('/inicio-estudiante') }"
-          class="nav-link"
-          >INICIO</router-link
-        >
-        <router-link
-          to="/materias-estudiante"
-          :class="{ active: isActive('/materias-estudiante') }"
-          class="nav-link"
-          >MATERIAS</router-link
-        >
+      <span v-if="userRole === 'estudiante'">
+        <router-link to="/inicio-estudiante" :class="{ active: isActive('/inicio-estudiante') }" class="nav-link">INICIO</router-link>
+        <router-link to="/materias-estudiante" :class="{ active: isActive('/materias-estudiante') }" class="nav-link">MATERIAS</router-link>
       </span>
 
       <!-- Profesor Navbar -->
@@ -54,26 +44,13 @@
 
     <div class="navbar-right">
       <!-- Login Button for Guests -->
-      <button
-        v-if="userRole.nombre === 'Guest'"
-        @click="showLogin = true"
-        class="login-button"
-      >
-        <img
-          src="@/assets/usuario_icon.png"
-          alt="user-icon"
-          class="user-icon"
-        />
+      <button v-if="userRole === 'guest'" @click="showLogin = true" class="login-button">
+        <img src="@/assets/usuario_icon.png" alt="user-icon" class="user-icon" />
       </button>
 
       <!-- User Panel for Logged-In Users -->
       <div v-else class="user-panel">
-        <img
-          src="@/assets/usuario_icon.png"
-          alt="user-icon"
-          class="user-icon"
-          @click="toggleUserOptions"
-        />
+        <img src="@/assets/usuario_icon.png" alt="user-icon" class="user-icon" @click="toggleUserOptions" />
         <div v-if="showUserOptions" class="user-options-panel">
           <p class="user-name">{{ username }}</p>
           <router-link to="/editar-datos" class="user-option"
@@ -95,18 +72,8 @@
         <span class="close" @click="showLogin = false">&times;</span>
         <h2 class="modal-title">Iniciar Sesión</h2>
         <div class="modal-body">
-          <input
-            type="text"
-            placeholder="Usuario"
-            v-model="usernameInput"
-            class="input-field"
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            v-model="passwordInput"
-            class="input-field"
-          />
+          <input type="text" placeholder="Usuario" v-model="usernameInput" class="input-field" />
+          <input type="password" placeholder="Contraseña" v-model="passwordInput" class="input-field" />
           <button @click="login" class="login-button">Ingresar</button>
         </div>
       </div>

@@ -1,15 +1,16 @@
-import { Session } from './Session.js'; 
+// SessionPlugin.mjs
+import { Session } from './Session.js'; // Adjust the path as needed
 
 export default {
   install(app) {
-    const session = Session.getInstance();
-
+    // Define a getter for the current session
     Object.defineProperty(app.config.globalProperties, '$session', {
       get() {
-        return session;
+        return Session.getInstance();
       },
     });
 
+    // Expose the Session class
     app.config.globalProperties.$Session = Session;
   },
 };
