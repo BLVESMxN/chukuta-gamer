@@ -13,6 +13,9 @@ import prueba from "./views/previews/PruebaCrud.vue";
 
 import sessionPlugin from './controlador/SessionPlugin.mjs';
 import { Session } from "./controlador/Session";
+
+import { RequestHandler } from "./controlador/RequestHandler.mjs";
+
 // Definir rutas
 const routes = [
   { path: "/", component: PaginaPrincipal },
@@ -516,13 +519,34 @@ app.mount("#app");
 // });
 
 
-//let handler = new RequestHandler()
+let handler = new RequestHandler()
 
 // await handler.postRequest('user/token/', {
 //   email: 'user@example.com',
 //   password: 'string'
 // })
 
+// await handler.postRequest('academico/padres/', {
+//   name: 'Raspi',
+//   colegio: 1
+// })
+
+// await handler.postRequest('academico/estudiantes/', {
+//   name: 'cococlolo',
+//   grado: 1,
+//   colegio: 2, 
+//   user_padre: 9,
+// })
+
+await handler.postRequest('user/token/', {
+  email: 'raspi.1@sag.com',
+  password: 'raspi.1@sag.com'
+})
+
+
+await handler.getRequest('academico/estudiantes/'
+
+)
 
 // await handler.getRequest('user/me/')
 
@@ -532,11 +556,7 @@ app.mount("#app");
 //   nombre: "Alv",
 // })
 
-// await handler.postRequest('academico/estudiantes/', {
-//   name: 'cococlolo',
-//   grado: 1,
-//   colegio: 2
-// })
+
 
 // await handler.getRequest('academico/estudiantes/?colegio=2')
 
