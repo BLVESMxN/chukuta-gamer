@@ -177,7 +177,10 @@ class EstudianteViewSet(viewsets.ModelViewSet):
         elif user.role == Role.get_student():
             return estudiantes.filter(id=user.estudiante.id)
         elif user.role == Role.get_parent():
-            return estudiantes.get_children()
+            results = user.padre.get_children()
+            if qp_colegio:
+                return results.filter(colegio=qp_colegio)
+            return results
         return Estudiante.objects.none()
 
     def perform_create(self, serializer):

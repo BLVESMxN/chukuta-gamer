@@ -34,7 +34,7 @@ import StatisticsView from "./views/Estadisticas/StatisticsView.vue";
 
 import AdminLayout from "./views/Layouts/AdminLayout.vue";
 import { Session } from "./controlador/Session";
-import { sessionPlugin } from "./controlador/SessionPlugin.mjs";
+import sessionPlugin from "./controlador/SessionPlugin.mjs";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 //import { RequestHandler } from "./controlador/RequestHandler.mjs";
@@ -44,6 +44,7 @@ import AsignaturasPadres from "./views/padres/AsignaturasPadres.vue";
 import AsistenciaPadres from "./views/padres/AsistenciaPadres.vue";
 import KardexPadres from "./views/padres/KardexPadres.vue";
 import TareasPadres from "./views/padres/TareasPadres.vue";
+//import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
 // Definir rutas
 const routes = [
@@ -80,7 +81,12 @@ const routes = [
   },
   //
   { path: "/prueba-crud", component: prueba },
-  { path: "/MenuPadres", component: MenuPadres },
+  {
+    path: "/MenuPadres",
+    name: "MenuPadres",
+    component: MenuPadres,
+    props: true,
+  },
   {
     path: "/EstudiantesPadres/:nombre",
     name: "EstudiantesPadres",
@@ -600,3 +606,30 @@ admin.postRequest('/user/token/',{
 })*/
 
 //admin.getRequest('/user/me/',)
+<<<<<<< HEAD
+=======
+
+//var padre = new RequestHandler();
+
+/*
+padre
+  .postRequest("user/token/", {
+    email: "prueba@po.com",
+    password: "prueba@po.com",
+  })
+  .then(() => {
+    // Una vez logueado, obten los datos del usuario
+    padre
+      .getRequest("user/me/")
+      .then((response) => {
+        var pk = response.data.pk; // Guarda el pk en la variable
+        console.log("El pk del usuario es:", pk); // Imprime el pk en la consola
+      })
+      .catch((error) => {
+        console.error("Error obteniendo los datos del usuario:", error);
+      });
+  })
+  .catch((error) => {
+    console.error("Error durante el login:", error);
+  });*/
+>>>>>>> origin/AndreSR
