@@ -2,13 +2,13 @@
   <nav class="navbar">
     <div class="navbar-left">
       <!-- Guest Navbar -->
-      <span v-if="userRole.nombre === 'Guest'">
+      <span v-if="userRole === 'guest'">
         <button @click="toggleMenu" class="menu-button">☰</button>
         <span class="title"></span>
       </span>
 
       <!-- Estudiante Navbar -->
-      <span v-if="userRole.nombre === 'Estudiante'">
+      <span v-if="userRole === 'estudiante'">
         <router-link
           to="/inicio-estudiante"
           :class="{ active: isActive('/inicio-estudiante') }"
@@ -62,7 +62,7 @@
     <div class="navbar-right">
       <!-- Login Button for Guests -->
       <button
-        v-if="userRole.nombre === 'Guest'"
+        v-if="userRole === 'guest'"
         @click="showLogin = true"
         class="login-button"
       >
