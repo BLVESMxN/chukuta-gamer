@@ -38,12 +38,12 @@ import { sessionPlugin } from "./controlador/SessionPlugin.mjs";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 //import { RequestHandler } from "./controlador/RequestHandler.mjs";
-import MenuPadres from "./views/MenuPadres.vue";
-import EstudiantesPadres from "./views/EstudiantesPadres.vue";
-import AsignaturasPadres from "./views/AsignaturasPadres.vue";
-import AsistenciaPadres from "./views/AsistenciaPadres.vue";
-import KardexPadres from "./views/KardexPadres.vue";
-import TareasPadres from "./views/TareasPadres.vue";
+import MenuPadres from "./views/padres/MenuPadres.vue";
+import EstudiantesPadres from "./views/padres/EstudiantesPadres.vue";
+import AsignaturasPadres from "./views/padres/AsignaturasPadres.vue";
+import AsistenciaPadres from "./views/padres/AsistenciaPadres.vue";
+import KardexPadres from "./views/padres/KardexPadres.vue";
+import TareasPadres from "./views/padres/TareasPadres.vue";
 
 // Definir rutas
 const routes = [
