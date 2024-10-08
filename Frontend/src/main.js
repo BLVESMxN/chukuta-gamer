@@ -44,7 +44,6 @@ import AsignaturasPadres from "./views/padres/AsignaturasPadres.vue";
 import AsistenciaPadres from "./views/padres/AsistenciaPadres.vue";
 import KardexPadres from "./views/padres/KardexPadres.vue";
 import TareasPadres from "./views/padres/TareasPadres.vue";
-import { RequestHandler } from "./controlador/RequestHandler.mjs";
 //import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
 // Definir rutas
@@ -636,10 +635,10 @@ padre
     console.error("Error durante el login:", error);
   });*/
 
-var padre = new RequestHandler();
-padre.postRequest("user/token/", {
-  email: "ionit@pe.com",
-  password: "ionit@pe.com",
-});
+// var padre = new RequestHandler();
+// padre.postRequest("user/token/", {
+//   email: "ionit@pe.com",
+//   password: "ionit@pe.com",
+// });
 
-padre.getRequest("academico/asistencias/");
+// padre.getRequest("academico/asistencias/");
