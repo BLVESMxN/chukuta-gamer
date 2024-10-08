@@ -28,7 +28,7 @@ User = get_user_model()
 class GradoViewSet(viewsets.ModelViewSet):
     queryset = Grado.objects.all()
     serializer_class = GradoSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
 class ColegioViewSet(viewsets.ModelViewSet):
     queryset = Colegio.objects.all()
