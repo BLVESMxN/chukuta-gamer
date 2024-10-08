@@ -15,13 +15,13 @@
         />
         <input
           v-model="nuevaTarea.fecha_inicio"
-          type="date"
+          type="datetime-local"
           placeholder="Fecha de Inicio"
           class="input-field"
         />
         <input
           v-model="nuevaTarea.fecha_fin"
-          type="date"
+          type="datetime-local"
           placeholder="Fecha de Fin"
           class="input-field"
         />
@@ -54,7 +54,7 @@
         />
         <input
           v-model="tareaEditada.fecha_fin"
-          type="date"
+          type="datetime-local"
           placeholder="Fecha de Fin"
           class="input-field"
         />

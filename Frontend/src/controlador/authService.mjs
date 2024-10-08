@@ -33,11 +33,12 @@ export default {
 
           if (userRole === "Administrador") {
             return { role: "Administrador", route: "/grados-admin" };
-          } else if (userRole === "Docente") {
-            return { role: "docente", route: "/inicio-docente" };
+          } else if (userRole === "Profesor") {
+            return { role: "docente", route: "/tarea-docente" };
           } else if (userRole === "Padre") {
             return { role: "Padre", route: "/MenuPadres" };
-          } else {
+          }
+          else {
             return { role: "estudiante", route: "/inicio-estudiante" };
           }
         } else {

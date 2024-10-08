@@ -34,7 +34,7 @@ import StatisticsView from "./views/Estadisticas/StatisticsView.vue";
 
 import AdminLayout from "./views/Layouts/AdminLayout.vue";
 import { Session } from "./controlador/Session";
-import { sessionPlugin } from "./controlador/SessionPlugin.mjs";
+import sessionPlugin from "./controlador/SessionPlugin.mjs";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 //import { RequestHandler } from "./controlador/RequestHandler.mjs";
@@ -44,6 +44,7 @@ import AsignaturasPadres from "./views/padres/AsignaturasPadres.vue";
 import AsistenciaPadres from "./views/padres/AsistenciaPadres.vue";
 import KardexPadres from "./views/padres/KardexPadres.vue";
 import TareasPadres from "./views/padres/TareasPadres.vue";
+import TareasEstudiante from "./views/TareasEstudiante.vue";
 //import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
 // Definir rutas
@@ -56,6 +57,7 @@ const routes = [
   { path: "/horarios-docente", component: HorariosDocente },
   { path: "/estudiantes-docente", component: EstudiantesDocente },
   { path: "/editar-usuario", component: UserManage },
+  { path: "/tarea-docente", component: TareasEstudiante},
   //admin
 
   // Rutas del admin, utilizando el AdminLayout
