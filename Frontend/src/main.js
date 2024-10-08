@@ -11,6 +11,8 @@ import EstudiantesDocente from "./views/EstudiantesDocente.vue";
 import HorariosDocente from "./views/HorariosDocente.vue";
 import prueba from "./views/previews/PruebaCrud.vue";
 import TareasEstudiante from "./views/TareasEstudiante.vue";
+import TareasDocente from "./views/TareasDocente.vue";
+//import { RequestHandler } from "./controlador/RequestHandler.mjs";
 
 import sessionPlugin from './controlador/SessionPlugin.mjs';
 import { Session } from "./controlador/Session";
@@ -25,6 +27,7 @@ const routes = [
   { path: "/estudiantes-docente", component: EstudiantesDocente },
   { path: "/prueba-crud", component: prueba },
   { path: "/tareas-estudiante", component: TareasEstudiante },
+  { path: "/tareas-docente", component: TareasDocente },
 ];
 
 const router = createRouter({
@@ -518,7 +521,7 @@ app.mount("#app");
 // });
 
 
-//let handler = new RequestHandler()
+// let handler = new RequestHandler()
 
 // await handler.postRequest('user/token/', {
 //   email: 'user@example.com',
@@ -588,3 +591,88 @@ app.mount("#app");
 // })
 
 // await handler.getRequest(`academico/tareas/?curso=${curso.data['id']}`)
+ 
+
+
+
+
+
+
+// let administrador = {name :"admin1",email: "admin1@gmail.com", password: "123"};
+
+// var handler = new RequestHandler()
+// var res = await handler.postRequest('academico/administrativo/', administrador);
+// console.log (res);
+
+
+// // 1. Create an Admin User
+// let  payload = {
+//     email: 'user2@example.com',
+//      password: 'string2',
+//      name: 'user1',
+//    };
+
+//    try {
+//      await handler.postRequest('academico/administrativo/', payload);
+//      console.log('Admin user created.');
+//    } catch (error) {
+//      console.log('Admin user already exists or an error occurred.');
+//     console.error(error.response ? error.response.data : error.message);
+//    }
+
+//await handler.postRequest('academico/administrativo/', payload);
+
+
+
+
+
+
+
+// var tarea1={
+//   descripcion: 'Primera tarea de matemáticas',
+//   fecha_inicio: '2024-02-01T08:00:00Z',
+//   fecha_fin: '2024-02-15T23:59:59Z',
+//   curso: 1
+// }
+
+
+// var colegio1={
+//   "nombre": "string2",
+  
+//   "suscripcion": true
+
+// }
+
+// var asignatura1= {
+//   nombre: 'Matemáticas2',
+//   grado: '1',
+//   colegio:'1'
+// }
+// var grado1= {
+//      nivel: 1,
+//      grado: 3
+// }
+
+// var profesor1= {
+
+//     email: "juan.perez.16@edu.com",
+//     password:"juan.perez.16@edu.com",
+
+
+// }
+
+// 1. Create an Admin User
+
+// var user1={
+//   "name": "nombre1",
+//   "email": "user3@example.com",
+//   "password":"string"
+// }
+//let handler = new RequestHandler()
+// await handler.postRequest('academico/administrativo/', user1)
+//await handler.postRequest('user/token/', profesor1)
+// await handler.postRequest('academico/colegios/', colegio1)
+// await handler.postRequest('academico/profesores/', profesor1)
+// await handler.postRequest('academico/tareas/', tarea1)
+// await handler.postRequest('academico/asignaturas/', asignatura1)
+// await handler.postRequest('academico/grados/', grado1)
