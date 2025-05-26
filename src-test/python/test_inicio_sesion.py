@@ -54,13 +54,13 @@ class InicioSesionTest(unittest.TestCase):
 
         # Esperar a que la URL cambie a /inicio-estudiante
         WebDriverWait(self.driver, 5).until(
-            EC.url_to_be("http://localhost:8081/inicio-estudiante")
+            EC.url_to_be("http://localhost:8081/grados-admin")
         )
 
         # Validación: comprobar que estamos en la URL correcta
         self.assertEqual(
             self.driver.current_url,
-            "http://localhost:8081/inicio-estudiante"
+            "http://localhost:8081/grados-admin"
         )
 
 if __name__ == "__main__":

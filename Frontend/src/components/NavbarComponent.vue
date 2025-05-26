@@ -50,7 +50,7 @@
           >HORARIOS DOCENTE</router-link
         >
       </span>
-      <span v-if="userRole === 'Administrador'">
+      <span v-if="userRole == 'Administrador' || userRole=='SuperAdmin'">
         <router-link
           to="/grados-admin"
           :class="{ active: isActive('/grados-admin') }"
@@ -147,6 +147,7 @@ export default {
         this.usernameInput,
         this.passwordInput
       );
+
       if (result.route) {
         this.userRole = result.role;
         this.username = this.usernameInput; // Guardamos el nombre de usuario para mostrar

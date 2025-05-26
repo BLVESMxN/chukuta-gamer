@@ -54,7 +54,7 @@ class UserLogoutTest(unittest.TestCase):
 
         # Esperar a que se redirija al inicio de estudiante
         WebDriverWait(self.driver, 5).until(
-            EC.url_contains("/inicio-estudiante")
+            EC.url_contains("/grados-admin")
         )
 
         # 3. Hacer click en el menú desplegable

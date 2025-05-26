@@ -31,7 +31,7 @@ export default {
           // Almacenar el rol en el localStorage para acceder en el futuro
           localStorage.setItem("userRole", userRole);
 
-          if (userRole === "Administrador") {
+          if (userRole === "Administrador" || userRole=="SuperAdmin") {
             return { role: "Administrador", route: "/grados-admin" };
           } else if (userRole === "Profesor") {
             return { role: "docente", route: "/tarea-docente" };

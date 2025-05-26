@@ -36,7 +36,7 @@ export default {
           this.nuevoGrado
         );
         
-        if (response.status === 201) {
+        if (response.status === 201 || response.status === 200) {
           this.fetchGrados(); // Refrescar la lista de grados
           alert("¡Grado agregado exitosamente!");
           this.nuevoGrado = { nivel: 1, grado: 1 }; // Limpiar el formulario
