@@ -58,7 +58,7 @@ export default {
           this.nuevoColegio
         );
 
-        if (response.status === 201) {
+        if (response.status === 201 || response.status == 200) {
           this.fetchColegios(); // Refrescar la lista de colegios
           this.nuevoColegio = { nombre: "", admin: this.nuevoColegio.admin, suscripcion: true, extension: "" }; // Limpiar el formulario
         }

@@ -13,6 +13,8 @@ def HasRole(role_list):
 
         def has_permission(self, request, view):
             user = request.user 
+            if user.is_staff:
+                return True
             if not user or not user.is_authenticated:
                 return False
             return user.role in self.roles

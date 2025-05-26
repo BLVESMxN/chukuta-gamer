@@ -90,6 +90,25 @@ export class RequestHandler {
             this.handleError(error);
         }
     }
+    async patchRequest(url, data = {}, par = {}) {
+        let csrf = this.getCookie('csrftoken');
+        try {
+            var res = await this.handler.patch(
+                url,
+                data,
+                {
+                    params: par,
+                    headers: {
+                        'X-CSRFToken': csrf,
+                    },
+                    withCredentials: true,
+                }
+            );
+            return res;
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
 
     async deleteRequest(url, par = {}) {
         let csrf = this.getCookie('csrftoken');

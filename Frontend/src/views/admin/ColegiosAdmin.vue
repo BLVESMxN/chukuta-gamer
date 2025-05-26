@@ -25,7 +25,7 @@
         <input v-model="nuevoColegio.extension" placeholder="Extensión del colegio" class="input-field" />
       </div>
 
-      <button @click="agregarColegio" class="add-button">Agregar Colegio</button>
+      <button @click="agregarColegio" class="add-button" id="add-school-button">Agregar Colegio</button>
     </div>
 
     <!-- Formulario para editar colegio -->

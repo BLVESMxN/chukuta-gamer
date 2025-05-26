@@ -18,20 +18,22 @@ class UserLogoutTest(unittest.TestCase):
         self.driver.quit()
 
     def login_as_admin(self):
-        # Navegar y autenticar
+        # 1) Navegar y autenticar
         self.driver.get("http://localhost:8081")
         login_btn = self.driver.find_element(By.XPATH, '//*[@id="app"]/nav/div[2]/button')
         login_btn.click()
         time.sleep(1)
         inputs = self.driver.find_elements(By.XPATH, '//*[@id="app"]/nav/div[3]/div//input')
-        inputs[0].send_keys("admin@example.com")
-        inputs[1].send_keys("admin")
+        inputs[0].send_keys("admini@example.com")
+        inputs[1].send_keys("safe?admini?123")
         ingresar_btn = self.driver.find_element(By.XPATH, '//*[@id="app"]/nav/div[3]/div/div/button')
         ingresar_btn.click()
-        # Esperar a la página de administración de grados
+
+        # 2) Esperar a la página de administración de grados
         WebDriverWait(self.driver, 5).until(
             EC.url_contains("/grados-admin")
         )
+
 
     def test_create_grade(self):
         self.login_as_admin()

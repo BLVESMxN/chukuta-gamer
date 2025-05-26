@@ -23,7 +23,7 @@ export default class UserModel {
       name: name,
     };
     try {
-      const response = await this.requestHandler.putRequest("/user/manage/", data);
+      const response = await this.requestHandler.patchRequest("/user/me/", data);
       return response.data;
     } catch (error) {
       console.error("Error al actualizar los datos del usuario:", error);
@@ -40,7 +40,7 @@ export default class UserModel {
       old_password: contraseñaActual, // Verificar la contraseña actual
     };
     try {
-      const response = await this.requestHandler.putRequest("/user/manage/", data);
+      const response = await this.requestHandler.patchRequest("/user/me/", data);
       return response.data;
     } catch (error) {
       console.error("Error al actualizar los datos del usuario o la contraseña:", error);
