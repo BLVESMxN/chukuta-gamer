@@ -1,12 +1,3 @@
-"""
-/****************************************/
-// Historia de Usuario: Como usuario quiero abrir el modal de inicio de sesión
-// Prueba de Aceptacion: Verificar que al hacer click en el botón de login se abra el modal
-// 1. Ingresar a la página principal: http://localhost:8080
-// 2. Hacer click en el botón de login ubicado en la barra de navegación
-// Resultado Esperado: El modal de inicio de sesión (id="loginModal") debe estar visible
-/****************************************/
-"""
 
 import unittest
 import time
