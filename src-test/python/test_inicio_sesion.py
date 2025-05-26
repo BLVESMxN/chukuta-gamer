@@ -1,16 +1,4 @@
-"""
-/****************************************/
-// Historia de Usuario: Como usuario administrador quiero iniciar sesión para acceder a la página de inicio de estudiante
-// Prueba de Aceptacion: Verificar que con las credenciales válidas admin@example.com / admin se redirija a /inicio-estudiante
-// Pasos a realizar:
-// 1. Navegar a la página principal: http://localhost:8081
-// 2. Hacer click en el botón de login usando XPath //*[@id="app"]/nav/div[2]/button
-// 3. En el modal, rellenar Usuario con “admin@example.com” y Contraseña con “admin”
-// 4. Hacer click en el botón “Ingresar” usando XPath //*[@id="app"]/nav/div[3]/div/div/button
-//
-// Resultado Esperado: El navegador se redirige a http://localhost:8081/inicio-estudiante
-/****************************************/
-"""
+
 
 import unittest
 import time

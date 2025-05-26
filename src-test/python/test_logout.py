@@ -1,17 +1,4 @@
-"""
-/****************************************/
-// Historia de Usuario: Como usuario administrador quiero cerrar sesión para volver a la página principal
-// Prueba de Aceptacion: Verificar que tras cerrar sesión se redirija a la ruta http://localhost:8081/
-// Pasos a realizar:
-// 1. Navegar a la página principal: http://localhost:8081
-// 2. Abrir el modal de inicio de sesión y autenticar con credenciales válidas:
-//    - Usuario: admin@example.com
-//    - Contraseña: admin
-// 3. Hacer click en el menú desplegable usando XPath //*[@id="app"]/nav/div[2]/div
-// 4. Hacer click en el botón “Cerrar Sesión” usando XPath //*[@id="app"]/nav/div[2]/div/div/button
-// Resultado Esperado: El navegador se redirige a http://localhost:8081/
-/****************************************/
-"""
+
 
 import unittest
 import time
