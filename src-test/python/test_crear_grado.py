@@ -24,8 +24,8 @@ class UserLogoutTest(unittest.TestCase):
         login_btn.click()
         time.sleep(1)
         inputs = self.driver.find_elements(By.XPATH, '//*[@id="app"]/nav/div[3]/div//input')
-        inputs[0].send_keys("admini@example.com")
-        inputs[1].send_keys("safe?admini?123")
+        inputs[0].send_keys("admin@example.com")
+        inputs[1].send_keys("admin")
         ingresar_btn = self.driver.find_element(By.XPATH, '//*[@id="app"]/nav/div[3]/div/div/button')
         ingresar_btn.click()
 
